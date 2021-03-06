@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+        <p:dialog id="AccesModifierDlg" 
+                  widgetVar="AccesModifierDialog" modal="true" 
+                  resizable="false"
+                  visible="#{privilegeController.showPrivilegeDeleteDialog}"
+                  appendTo="@(body)" header="#{langue['Titre.Dlg.Modification']}: de module" 
+                  closeOnEscape="true">
+
+            <h:form id="AccesModifierForm">
+
+                <h:panelGroup id="display" >
+
+                    <p:panelGrid columns="2" columnClasses="column">
+
+                        <p:outputLabel value="Utilisateur" for="user" />
+                        <p:selectOneMenu value="#{privilegeController.utilisateur.idutilisateur}" id="user">
+                            <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
+                            <f:selectItems value="#{privilegeController.utilisateurs}" var="item" itemLabel="#{item.nom} #{item.prenom}" itemValue="#{item.idutilisateur}"/> 
+                            <p:ajax update="access,:AccesListerForm:growl" listener="#{privilegeController.handleUserChange1()}"/>
+                        </p:selectOneMenu>   
+
+
+                        <p:outputLabel value="Taches"/> 
+                        <p:pickList id="access" value="#{privilegeController.dualMenu}" var="menu" effect="bounce"
+                                    itemValue="#{menu}" itemLabel="#{menu.nom}" showSourceControls="true" showTargetControls="true" showCheckbox="false"
+                                    showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="menuConverter">
+
+                            <f:facet name="sourceCaption">Disponibles</f:facet>
+                            <f:facet name="targetCaption">Selectionnés</f:facet>                            
+                        </p:pickList>
+
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{privilegeController.delete()}" value="#{langue['Conv.Enregistrer']}" 
+                                     update="display,:AccesListerForm:datalist,:AccesListerForm:growl" 
+                                     oncomplete="PF('AccesModifierDialog').hide()"/>
+                    <p:commandButton value="#{langue.annuler}" onclick="PF('AccesCreerDialog').hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+
+        <p:dialog id="TypeMatierelCreerDlg" 
+                  widgetVar="TypeMatiereCreerDialog" 
+                  modal="true" resizable="false" 
+                  appendTo="@(body)" 
+                  visible="#{versementController.showVersementCreateDialog}"
+                  header="#{langue['Titre.Dlg.Creation']} : VERSEMENT" 
+                  closeOnEscape="true">
+
+            <h:form id="TypeMatiereCreerForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses ="column">
+
+                        <p:outputLabel value="Mois" for="mois" />
+                        <p:selectOneMenu filter="true" required="true" id="mois" value="#{versementController.anneeMois.idAnneeMois}" requiredMessage="Veuillez selectionner le mois de vente">
+                            <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
+                            <f:selectItems value="#{versementController.anneeMoises}" var="mois" itemLabel="#{mois.idmois.nom}" itemValue="#{mois.idAnneeMois}"/>                                                                             
+                            <p:ajax update="date" listener="#{versementController.updateMois()}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{langue.date}" for="date" />
+                        <p:calendar id="date" mindate="#{versementController.anneeMois.dateDebut}" maxdate="#{versementController.anneeMois.dateFin}" navigator="true" value="#{versementController.versement.date}"/>
+
+                        <p:outputLabel value="Clients" for="client"/>
+                        <p:selectOneMenu filter="true" id="client" disabled="#{versementController.showClient}" required="true" value="#{versementController.versement.idclient}" converter="clientConverter" >
+                            <f:selectItem itemLabel="#{langue.choisir}"/>
+                            <f:selectItems value="#{versementController.clients}" var="client" itemLabel="#{client.numerocarnet} - #{client.nom} #{client.prenom}" itemValue="#{client}" />
+                            <p:ajax update="solde" listener="#{versementController.updateSolde()}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="SOLDE" for="solde" />
+                        <p:inputText id="solde" style="color: blue" disabled="true" value="#{versementController.versement.idclient.solde}"/> 
+
+                        <p:outputLabel value="MONTANT A VERSER" for="montant" />
+                        <p:inputText id="montant" value="#{versementController.versement1}" required="true" 
+                                     requiredMessage="#{langue.montant}: #{langue['Conv.ValeurRequise']}">
+                            <p:ajax event="keyup" update="solde" listener="#{versementController.updateSolde1()}" />   
+                        </p:inputText>
+                    </p:panelGrid>
+
+                    <p:separator />
+
+                    <center>
+                        <p:commandButton value="#{langue.annuler}" onclick="PF('TypeMatiereCreerDialog').hide()"/>
+
+                        <p:commandButton actionListener="#{versementController.create()}" value="#{langue['Conv.Enregistrer']}" 
+                                         update="display,:TypeMatiereListerForm:datalist,:TypeMatiereListerForm:growl, TypeMatiereCreerForm" 
+                                         oncomplete="PF('TypeMatiereCreerDialog').hide()">
+                            <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
+                                       message="Voulez vraiment enregistrer ?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+                    </center>
+
+
+                </h:panelGroup>  
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

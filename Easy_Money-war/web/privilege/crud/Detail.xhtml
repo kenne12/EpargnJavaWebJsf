@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AccesDetailDlg" 
+                  widgetVar="AccesDetailDialog" 
+                  modal="true" resizable="false"  
+                  appendTo="@(body)" 
+                  header="#{langue['Titre.Dlg.Detail']}: de module" closeOnEscape="true">
+
+            <h:form id="AccesDetailForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="column" style="width: 100%;" >
+                        <h:outputText value="Utilisateur :"/>
+                        <h:outputText value="#{accesModuleCtrl.selectedPersonnelmodule.personnel.nom} #{accesModuleCtrl.selectedPersonnelmodule.personnel.prenom}"/>
+
+                        <h:outputText value="Module :"/>
+                        <h:outputText value="#{accesModuleCtrl.selectedPersonnelmodule.module.nom}"/>
+
+                        <h:outputText value="#{accesModuleCtrl.selectedPersonnelmodule.module.nom}"/>
+                        <p:selectBooleanCheckbox value="#{accesModuleCtrl.selectedPersonnelmodule.etat}"/>
+
+
+                    </p:panelGrid>
+                    <p:commandButton value="#{langue['Conv.Fermer']}" onclick="PF('AccesDetailDialog').hide()"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

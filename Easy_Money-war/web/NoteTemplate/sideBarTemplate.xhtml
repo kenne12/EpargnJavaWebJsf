@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+     <f:metadata>
+        <f:event type="preRenderView" listener="#{loginBean.watcher()}" />
+    </f:metadata> 
+
+    <!-- BEGIN SIDEBAR -->
+    <div class="sidebar-scroll">
+        <div id="sidebar" class="nav-collapse collapse">
+
+            <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+            <div class="navbar-inverse">
+                <form class="navbar-search visible-phone">
+                    <input type="text" class="search-query" placeholder="Search" />
+                </form>
+            </div>
+            <!-- END RESPONSIVE QUICK SEARCH FORM -->
+            <!-- BEGIN SIDEBAR MENU -->
+            <ul class="sidebar-menu">
+
+                <!--Accueil-->
+                <li class="sub-menu" id="menuIndex">
+                    <a class="" href="#{request.contextPath}/index.html">
+                        <span>#{langue.accueil}</span>
+                    </a>
+                </li>
+
+                <!--Securité-->
+                <li class="sub-menu" id="securite">
+                    <a href="javascript:;" class="">
+                        <i class="icon-book"></i>
+                        <span>Sécurité</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <li><a class="" href="#{request.contextPath}/utilisateur/utilisateur.html">Utilisateur</a></li>
+                        <li><a class="" href="#{request.contextPath}/privilege/privilege.html">Attribution Privilèges</a></li>
+                        <li><a class="" href="#{request.contextPath}/activercompte/activercompte.html">Activer Compte</a></li>
+                        <li><a class="" href="#{request.contextPath}/desactivercompte/desactivercompte.html">Désactiver Compte </a></li>
+
+                    </ul>
+                </li>
+
+                <!--Client-->
+                <li class="sub-menu" id="client">
+                    <a href="javascript:;" class="">
+                        <i class="icon-building"></i>
+                        <span>Clients</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <li><a class="" href="#{request.contextPath}/client/client.html">Client</a></li>                                                
+                    </ul>
+                </li>
+
+                <!--Caisse-->
+                <li class="sub-menu" id="caisse">
+                    <a href="javascript:;" class="">
+                        <i class="icon-money"></i>
+                        <span>Caisse</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <li><a class="" href="#{request.contextPath}/fraiscarnet/fraiscarnet.html">Frais carnet</a></li>
+                        <li><a class="" href="#{request.contextPath}/versement/versement.html">Versement</a></li>
+                        <li><a class="" href="#{request.contextPath}/retrait/retrait.html">Retrait CA</a></li>
+                        <li><a class="" href="#{request.contextPath}/retrait2/retrait.html">Retrait CN</a></li>
+                    </ul>
+                </li>
+
+                <!--Analyse-->
+                <li class="sub-menu" id="analyse">
+                    <a href="javascript:;" class="">
+                        <i class="icon-building"></i>
+                        <span>Rapport</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <li><a class="" href="#{request.contextPath}/rapportjournalier/rapportjournalier.html">Journalier</a></li>
+                        <li><a class="" href="#{request.contextPath}/rapportperiodique/rapportperiodique.html">Périodique</a></li>
+                        <li><a class="" href="#{request.contextPath}/rapporthebdomadaire/rapporthebdomadaire.html">Mensuel</a></li>                        
+                        <li><a class="" href="#{request.contextPath}/mouchard/mouchard.html">Journal des opération</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+            <!-- END SIDEBAR MENU -->
+        </div>
+    </div>
+    <!-- END SIDEBAR -->
+
+</ui:composition>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="actionsForm">
+        <p:fieldset legend="#{langue['Conv.Actions']}" toggleable="true" toggleSpeed="300">
+            <div class="footer-section">
+
+                <p:commandButton id="creer"  icon="ui-icon-plus"   
+                                 value="#{langue['Conv.Creer']}" 
+                                 actionListener="#{privilegeController.prepareCreate()}"
+                                 update=":AccesCreerForm,:AccesCreerForm:access,:AccesListerForm:growl,:AccesCreerDlg" 
+                                 />
+
+                <p:commandButton id="modifier"   
+                                 icon="ui-icon-trash" 
+                                 value="Soustraire" 
+                                 update=":AccesModifierForm,:AccesListerForm:growl,:AccesCreerDlg,:AccesModifierDlg"
+                                 actionListener="#{privilegeController.prepareDelete()}"
+                                 />
+
+                <p:commandButton id="imprimer" icon="ui-icon-print"  
+                                 value="#{langue['Conv.Imprimer']}" actionListener="#{privilegeController.print()}"
+                                 update=":AccesListerForm:growl,:AccesImprimerForm" disabled="#{privilegeController.imprimer}" 
+                                 />              
+
+            </div>
+        </p:fieldset>
+    </h:form>
+</ui:composition>

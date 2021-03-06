@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="actionsForm">
+        <p:fieldset legend="#{langue['Conv.Actions']}" toggleable="true" toggleSpeed="300">
+            <div class="footer-section">
+
+                <p:commandButton id="creer"  icon="ui-icon-plus"   
+                                 value="#{langue['Conv.Creer']}" 
+                                 actionListener="#{utilisateurController.prepareCreate()}"
+                                 update=":TypeMatiereCreerForm,:TypeMatiereListerForm:growl,:TypeMatierelCreerDlg" 
+
+                                 />
+                <p:commandButton id="detail"   
+                                 icon="ui-icon-search" 
+                                 value="#{langue['Conv.Detail']}" 
+                                 update=":TypeMatiereDetailForm" 
+                                 oncomplete="PF('typeMatiereDetailDialog').show()" 
+                                 disabled="#{utilisateurController.detail}"/>
+
+                <p:commandButton id="modifier"   
+                                 icon="ui-icon-pencil" 
+                                 value="#{langue['Conv.Modifier']}" 
+                                 actionListener="#{utilisateurController.prepareEdit()}"
+                                 update=":TypeMatiereCreerForm,:TypeMatierelCreerDlg,:TypeMatiereListerForm:growl" 
+                                 disabled="#{utilisateurController.modifier}"/>
+
+                <p:commandButton id="supprimer" 
+                                 icon="ui-icon-trash"  
+                                 value="#{langue['Conv.Supprimer']}" 
+                                 update=":TypeMatiereListerForm:growl,:TypeMatiereListerForm:datalist,:actionsForm"
+                                 disabled="#{utilisateurController.supprimer}"
+                                 actionListener="#{utilisateurController.delete()}">
+                    <p:confirm rendered="#{utilisateurController.showUserDeleteDialog}" header="#{langue['Titre.Dlg.Confirm']}"
+                               message="#{langue['Message.Confirm.Supprimer']}?"
+                               icon="ui-icon-alert"/>
+                </p:commandButton>
+
+
+                <p:commandButton id="imprimer" icon="ui-icon-print"  
+                                 value="#{langue['Conv.Imprimer']}" actionListener="#{utilisateurController.print()}"
+                                 update=":TypeMatiereListerForm:growl,:TypeMatiereImprimerForm,:TypeMatiereImprimerDlg" disabled="#{utilisateurController.imprimer}" 
+                                 oncomplete="PF('TypeMatiereImprimerDialog').show()"/>              
+
+            </div>
+        </p:fieldset>
+    </h:form>
+</ui:composition>

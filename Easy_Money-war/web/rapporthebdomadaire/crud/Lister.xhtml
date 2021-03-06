@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="TypeMatiereListerForm">
+
+        <p:messages id="growl" closable="true">
+            <p:effect type="pulsate" event="load" delay="50" />
+        </p:messages>
+
+        <p:panelGrid columns="6">
+
+            <p:outputLabel value="Année" for="annee" />
+            <p:selectOneMenu required="true" id="annee" value="#{rapportHebdomadaireController.annee.idannee}">
+                <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
+                <f:selectItems value="#{rapportHebdomadaireController.annees}" var="annee" itemLabel="#{annee.nom}" itemValue="#{annee.idannee}"/>                                                                             
+                <p:ajax listener="#{rapportHebdomadaireController.filterMois()}" update="mois"/>
+            </p:selectOneMenu>
+
+            <p:outputLabel value="Mois" for="mois" />
+            <p:selectOneMenu required="true" id="mois" value="#{rapportHebdomadaireController.anneeMois.idAnneeMois}">
+                <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
+                <f:selectItems value="#{rapportHebdomadaireController.anneeMoises}" var="mois" itemLabel="#{mois.idmois.nom}" itemValue="#{mois.idAnneeMois}"/>                                                                             
+                <p:ajax update="datalist,print" listener="#{rapportHebdomadaireController.find()}"/>
+            </p:selectOneMenu>
+
+            <p:commandButton  icon="ui-icon-search"   
+                              value="#{langue.rechercher}" 
+                              actionListener="#{rapportHebdomadaireController.find()}"
+                              update="datalist,datalist" 
+                              />
+
+            <p:commandButton id="print"  icon="ui-icon-print"   
+                             value="Imprimer" 
+                             disabled="#{rapportHebdomadaireController.showPrintButton}"
+                             actionListener="#{rapportHebdomadaireController.printReport()}"
+                             update=":TypeMatiereImprimerDlg,growl" 
+                             />
+
+        </p:panelGrid>
+
+        <p:panel header="RAPPORT PERIODIQUE DES VERSEMENTS / RETRAITS">
+
+            <p:dataTable id="datalist"
+                         value="#{rapportHebdomadaireController.soldes}"
+                         var="item"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50">
+
+                <p:ajax event="rowSelect"   update="datalist"/>
+
+                <p:column sortBy="#{item.client.nom} #{item.client.prenom}" width="40%">
+                    <f:facet name="header">
+                        <h:outputText value="Client"/>
+                    </f:facet>
+                    <h:outputText value="#{item.client.nom} #{item.client.prenom}"/>
+                </p:column>
+
+
+                <p:column style="text-align: center" filterBy="#{item.montantVerse}">
+                    <f:facet name="header">
+                        <h:outputText value="Montant versé"/>
+                    </f:facet>
+                    <h:outputText value="#{item.montantVerse}">
+                        <f:convertNumber/>
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column style="text-align: center" filterBy="#{item.montantRetire}">
+                    <f:facet name="header">
+                        <h:outputText value="Montant Retiré"/>
+                    </f:facet>
+                    <h:outputText value="#{item.montantRetire}">
+                        <f:convertNumber/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column style="text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="F. Carnet"/>
+                    </f:facet>
+                    <h:outputText value="#{item.carnet}">
+                        <f:convertNumber/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column style="text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="Solde"/>
+                    </f:facet>
+                    <h:outputText value="#{item.client.solde}">
+                        <f:convertNumber/>
+                    </h:outputText>
+                </p:column>
+
+                <p:columnGroup type="footer">
+                    <p:row>
+                        <p:column  style="text-align:right" footerText="Totaux" />
+                        <p:column  style="text-align: center" footerText="#{rapportHebdomadaireController.calculMontantVerse()}" />
+                        <p:column style="text-align: center" footerText="#{rapportHebdomadaireController.calculMontantRetire()}" />
+                        <p:column style="text-align: center" footerText="--" />
+                        <p:column style="text-align: center" footerText="#{rapportHebdomadaireController.calculSolde()}" />
+                    </p:row>
+                </p:columnGroup>
+
+
+            </p:dataTable>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

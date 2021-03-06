@@ -1,0 +1,31 @@
+/build
+/dist
+/Easy_Money-war/lib
+/Easy_Money-war/build
+/Easy_Money-war/dist
+/Easy_Money-ejb/build
+/Easy_Money-ejb/dist
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+#*.ctxt
+
+# Mobile Tools for Java (J2ME)
+#.mtj.tmp/
+
+# Package Files #
+#*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*

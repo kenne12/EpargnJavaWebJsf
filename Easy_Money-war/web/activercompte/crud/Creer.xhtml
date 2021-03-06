@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TypeMatierelCreerDlg" 
+                  widgetVar="TypeMatiereCreerDialog" 
+                  modal="true" resizable="false" 
+                  appendTo="@(body)" 
+                  header="#{langue['Titre.Dlg.Creation']}: CLIENTS" 
+                  closeOnEscape="true"
+                  visible="#{utilisateurController.showUserCreateDialog}">
+
+            <h:form id="TypeMatiereCreerForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses ="column">
+
+                        <p:outputLabel value="#{langue.nom}" for="nom" />
+                        <p:inputText id="nom" value="#{utilisateurController.utilisateur.nom}" required="true" 
+                                     requiredMessage="#{langue['Conv.Nom']}: #{langue['Conv.ValeurRequise']}"/>
+
+
+                        <p:outputLabel value="#{langue.prenom}" for="prenom" />
+                        <p:inputText id="prenom" value="#{utilisateurController.utilisateur.prenom}" required="true" 
+                                     requiredMessage="#{langue.prenom}: #{langue['Conv.ValeurRequise']}"/>
+
+
+                        <p:outputLabel value="#{langue.login}" for="login" />
+                        <p:inputText id="login" value="#{utilisateurController.utilisateur.login}" required="true" 
+                                     requiredMessage="CNI: #{langue.login}"/>
+
+
+                        <p:outputLabel value="#{langue.password}" for="password" />
+                        <p:inputText id="password" value="#{utilisateurController.utilisateur.password}" required="true" 
+                                     requiredMessage="CNI: #{langue.password}"/>
+
+
+                    </p:panelGrid>
+
+                    <p:commandButton actionListener="#{utilisateurController.create()}" value="#{langue['Conv.Enregistrer']}" 
+                                     update="display,:TypeMatiereListerForm:datalist,:TypeMatiereListerForm:growl, TypeMatiereCreerForm" 
+                                     oncomplete="PF('TypeMatiereCreerDialog').hide()"/>
+                    <p:commandButton value="#{langue.annuler}" onclick="PF('TypeMatiereCreerDialog').hide()"/>
+                </h:panelGroup>  
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+
+        <p:dialog id="TypeMatierelCreerDlg" 
+                  widgetVar="TypeMatiereCreerDialog" 
+                  modal="true" resizable="false" 
+                  appendTo="@(body)" 
+                  header="#{langue['Titre.Dlg.Creation']} : CLIENT" 
+                  closeOnEscape="true"
+                  visible="#{clientController.showClientCreateDialog}">
+
+            <h:form id="TypeMatiereCreerForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses ="column">
+
+                        <p:outputLabel value="N° du Carnet" for="nocarnet" />
+                        <p:inputText id="nocarnet" value="#{clientController.client.numerocarnet}" required="true" 
+                                     requiredMessage="N° du carnet : #{langue['Conv.ValeurRequise']}">
+                            <p:ajax/>   
+                        </p:inputText>
+
+                        <p:outputLabel value="#{langue.nom}" for="nom" />
+                        <p:inputText id="nom" value="#{clientController.client.nom}" required="true" 
+                                     requiredMessage="#{langue['Conv.Nom']}: #{langue['Conv.ValeurRequise']}">
+                            <p:ajax/>   
+                        </p:inputText>
+
+                        <p:outputLabel value="#{langue.prenom}" for="prenom" />
+                        <p:inputText id="prenom" value="#{clientController.client.prenom}"  >
+                            <p:ajax/>   
+                        </p:inputText>
+
+                        <p:outputLabel value="N° CNI" for="cni" />
+                        <p:inputText id="cni" value="#{clientController.client.cni}" required="true" 
+                                     requiredMessage="CNI: #{langue['Conv.ValeurRequise']}">
+                            <p:ajax/>   
+                        </p:inputText>
+
+                        <p:outputLabel value="Profession" for="prof"/>
+                        <p:selectOneMenu id="prof" editable="true" value="#{clientController.client.profession}">
+                            <f:selectItem itemLabel="#{langue.choisir}"/>
+                            <f:selectItems value="#{clientController.professions}" var="prof" itemLabel="#{prof.nom}" itemValue="#{prof.nom}" />
+                            <p:ajax/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="CONTACT" for="contact" />
+                        <p:inputText id="contact" value="#{clientController.client.contact}" >
+                            <p:ajax/>   
+                        </p:inputText>
+
+                        <p:outputLabel rendered="#{clientController.showEditSolde}" value="SOLDE" for="solde" />
+                        <p:inputText rendered="#{clientController.showEditSolde}" id="solde" value="#{clientController.client.solde}">
+                            <p:ajax/>   
+                        </p:inputText>
+
+                        <p:outputLabel rendered="#{clientController.showMontantCarnetCompnent}" value="A-T-IL VERSE LES FRAIS DE CARNET?"/>
+                        <p:selectBooleanCheckbox rendered="#{clientController.showMontantCarnetCompnent}" value="#{clientController.showMontantCarnet}">
+                            <p:ajax update="display,carnet"/> 
+                        </p:selectBooleanCheckbox>
+
+                        <p:outputLabel rendered="#{clientController.showMontantCarnet}" value="Montant carnet" for="carnet" />
+                        <p:inputText style="color: red" disabled="true" rendered="#{clientController.showMontantCarnet}" id="carnet" value="#{clientController.carnet}"/>
+             
+                        <p:outputLabel value="Etat" for="etat" />
+                        <p:selectBooleanCheckbox style="color: red" id="etat" value="#{clientController.client.etat}"/>         
+                        
+                    </p:panelGrid>
+
+                    <p:separator/>
+                    <center>
+                        <p:commandButton value="#{langue.annuler}" onclick="PF('TypeMatiereCreerDialog').hide()"/>
+                        <p:commandButton actionListener="#{clientController.create()}" value="#{langue['Conv.Enregistrer']}" 
+                                         update="display,:TypeMatiereListerForm:datalist,:TypeMatiereListerForm:growl, TypeMatiereCreerForm" 
+                                         oncomplete="PF('TypeMatiereCreerDialog').hide()"/>
+                    </center>
+
+                </h:panelGroup>  
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

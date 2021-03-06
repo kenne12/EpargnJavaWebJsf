@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <meta charset="utf-8"/>
+        <title>login</title>
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+        <link href="templates/ressources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="templates/ressources/css/styles.css" rel="stylesheet"/>
+    </h:head>
+    <body background="templates/ressources/img/log.jpg">
+        <div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 class="text-center">#{langue.loginform}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h:form class="form col-md-12 center-block">
+                            <p:messages id="growl" closable="true">
+                                <p:effect type="pulsate" event="load" delay="50" />
+                            </p:messages>
+                            <p:notificationBar position="top" effect="slide" styleClass="top" widgetVar="bar" effectSpeed="10">
+                                <h:outputText value="#{langue.verification}" style="font-size:36px;font-weight: 500" />
+                            </p:notificationBar>
+                            <div class="form-group">
+                                <p:inputText class="form-control input-lg" id="login" value="#{loginBean.utilisateur.login}" size="30" maxlength="25" style="width: 98%"/>
+                                <p:watermark for="login" value="identifiant" id="loginwatermark" />
+                            </div>
+                            <div class="form-group">
+                                <p:password id="pass" class="form-control input-lg" value="#{loginBean.utilisateur.password}" size="30" maxlength="25" style="width: 98%"/>
+                                <p:watermark for="pass" value="#{langue.password}" id="passwatermark" />
+                            </div>
+                            <div class="form-group">
+                                <p:commandLink  onclick="PF('bar').show()" id="conec" class="btn btn-primary btn-lg btn-block"  actionListener="#{loginBean.login()}" update="growl" ajax="false">
+                                    <h:outputText value="#{langue.connecter}" />
+                                </p:commandLink>
+                            </div>
+                        </h:form>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-md-12">
+                            <button class="btn" data-dismiss="modal" aria-hidden="true">#{langue.annuler}</button>
+                        </div>	
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+        <script src="templates/ressources/assets/js/bootstrap.min.js"></script>
+    </body>
+</html>

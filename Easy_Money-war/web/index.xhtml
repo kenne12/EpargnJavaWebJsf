@@ -1,0 +1,64 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    template="NoteTemplate/indexTemplate.xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+    <ui:define name="contenu">
+        <h:form>
+            <h:selectOneMenu value="#{localeManagedBean.language}" onchange="submit()"> 
+                <f:selectItems value="#{localeManagedBean.locales}" />
+            </h:selectOneMenu> 
+        </h:form>
+
+        <p:dialog id="SessionCreerDlg" 
+                  widgetVar="MenuCreerDialog" 
+                  modal="true" resizable="false" 
+                  appendTo="@(body)"
+                  closable="false"
+                  visible="#{loginBean.showSessionPanel}"
+                  header="DONNEES DE SESSION">
+
+            <h:form id="SessionCreerForm">
+
+                <p:messages id="growl" closable="true">
+                    <p:effect type="pulsate" event="load" delay="50" />
+                </p:messages>
+
+                <h:panelGrid columns="2" columnClasses="column">
+
+                    <p:outputLabel value="#{langue.annee}" />
+                    <p:selectOneMenu   filter="true" id="year" value="#{loginBean.annee.idannee}">
+                        <f:selectItem itemLabel="#{langue.choisir}" itemValue="#{0}"/>
+                        <f:selectItems value="#{loginBean.annees}" var="item" itemLabel="#{item.nom}" itemValue="#{item.idannee}"/>
+                        <p:ajax update="mois" listener="#{loginBean.updateMois()}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="mois" value="Mois" />
+                    <p:selectOneMenu  id="mois" filter="true" value="#{loginBean.anneeMois.idAnneeMois}">
+                        <f:selectItem itemLabel="#{langue.choisir}" itemValue="#{0}"/>
+                        <f:selectItems value="#{loginBean.anneeMoises}" var="item" itemLabel="#{item.idmois.nom}" itemValue="#{item.idAnneeMois}"/>
+                        <p:ajax update="date" listener="#{loginBean.updateCalendar()}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputLabel for="date" value="#{langue.date}"/>                    
+                    <p:calendar id="date" value="#{loginBean.date}" mindate="#{loginBean.anneeMois.dateDebut}" maxdate="#{loginBean.anneeMois.dateFin}">
+                        <p:ajax event="dateSelect"/>
+                    </p:calendar>
+
+                </h:panelGrid>
+
+                <p:separator/>
+
+                <center>
+                    <p:commandButton partialSubmit="true" actionListener="#{loginBean.initSession()}" value="#{langue.valider}" 
+                                     update="SessionCreerForm,:SessionCreerDlg,growl" icon="ui-icon-check"/>
+                </center>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

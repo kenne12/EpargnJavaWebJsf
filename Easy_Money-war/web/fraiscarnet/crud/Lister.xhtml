@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="TypeMatiereListerForm">
+
+        <p:messages id="growl" closable="true">
+            <p:effect type="pulsate" event="load" delay="50" />
+        </p:messages>
+
+        <p:panel header="#{langue['Conv.ListeDes']} : FRAIS DE CARNET">
+            <p:contextMenu id="TypeMatiereDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{langue['Conv.Creer']}" onclick="document.getElementById('actionsForm:creer').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{langue['Conv.Detail']}" onclick="document.getElementById('actionsForm:detail').click();" icon="ui-icon-search"/>
+                <p:menuitem value="#{langue['Conv.Modifier']}" onclick="document.getElementById('actionsForm:modifier').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{langue['Conv.Supprimer']}" onclick="document.getElementById('actionsForm:supprimer').click();" icon="ui-icon-trash"/>
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{carnetClientController.fraisCarnets}"
+                         var="item"
+                         rowKey="#{item.id}"
+                         paginator="true"
+                         rows="10"
+                         style="text-align: center;"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{carnetClientController.fraisCarnet}">
+
+                <p:ajax event="rowSelect"   update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowUnselect" update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('TypeMatiereListerForm:viewButton').click();"/>
+
+                <p:column style="width: 15%" filterBy="#{item.idclient.numerocarnet}">
+                    <f:facet name="header">
+                        <h:outputText value="Numero carnet"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idclient.numerocarnet}"/>
+                </p:column>
+
+                <p:column style="width: 30%" filterBy="#{item.idclient.nom}">
+                    <f:facet name="header">
+                        <h:outputText value="Nom et prenom"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idclient.nom} #{item.idclient.prenom}"/>
+                </p:column>
+
+                <p:column style="width: 15%" sortBy="#{item.idclient.solde}">
+                    <f:facet name="header">
+                        <h:outputText value="Solde"/>
+                    </f:facet>
+                    <h:outputText value="#{item.idclient.solde}"/>
+                </p:column>
+
+                <p:column style="width: 20%" sortBy="#{item.dateOperation}">
+                    <f:facet name="header">
+                        <h:outputText value="Date"/>
+                    </f:facet>
+                    <h:outputText value="#{item.dateOperation}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column style="width: 20%">
+                    <f:facet name="header">
+                        <h:outputText value="Montant"/>
+                    </f:facet>
+                    <h:outputText value="#{item.montant}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>
