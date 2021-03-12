@@ -8,13 +8,13 @@
 
     <ui:composition>
 
-        <p:dialog id="TypeMatiereDetailDlg" 
+        <p:dialog id="VersementDetailDlg" 
                   widgetVar="typeMatiereDetailDialog" 
                   modal="true" resizable="false"  
                   appendTo="@(body)" 
                   header="#{langue['Titre.Dlg.Detail']}: VERSEMENT" closeOnEscape="true">
 
-            <h:form id="TypeMatiereDetailForm">
+            <h:form id="VersementDetailForm">
 
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" style="width: 100%;" >
@@ -33,7 +33,7 @@
                         </h:outputText>
 
                     </p:panelGrid>
-                    <p:commandButton value="#{langue['Conv.Fermer']}" onclick="PF('TypeMatiereDetailDialog').hide()"/>
+                    <p:commandButton value="#{langue['Conv.Fermer']}" onclick="PF('VersementDetailDialog').hide()"/>
                 </h:panelGroup>
 
             </h:form>

@@ -13,13 +13,13 @@
                                  icon="ui-icon-plus"   
                                  value="#{langue['Conv.Creer']}" 
                                  actionListener="#{versementController.prepareCreate()}"
-                                 update=":TypeMatiereCreerForm,:TypeMatiereListerForm:growl,:TypeMatierelCreerDlg" />
+                                 update=":VersementCreerForm,:VersementListerForm:growl,:VersementCreerDlg" />
                 
                 <p:commandButton id="detail"   
                                  icon="ui-icon-search" 
                                  value="#{langue['Conv.Detail']}" 
-                                 update=":TypeMatiereDetailForm" 
-                                 oncomplete="PF('typeMatiereDetailDialog').show()" 
+                                 update=":VersementDetailForm" 
+                                 oncomplete="PF('VersementCreerDialog').show()" 
                                  disabled="#{versementController.detail}"/>
 
                 <p:commandButton id="modifier"   
@@ -27,12 +27,12 @@
                                  value="#{langue['Conv.Modifier']}"
                                  disabled="#{versementController.modifier}"
                                  actionListener="#{versementController.prepareEdit()}"
-                                 update=":TypeMatiereCreerForm,:TypeMatiereListerForm:growl,:TypeMatierelCreerDlg" />
+                                 update=":VersementCreerForm,:VersementListerForm:growl,:VersementCreerDlg" />
                                   
                 <p:commandButton id="supprimer" 
                                  icon="ui-icon-trash"  
                                  value="#{langue['Conv.Supprimer']}" 
-                                 update=":TypeMatiereListerForm:growl,:TypeMatiereListerForm:datalist, :actionsForm"
+                                 update=":VersementListerForm:growl,:VersementListerForm:datalist,:actionsForm"
                                  disabled="#{versementController.supprimer}"
                                  actionListener="#{versementController.delete()}">
                     <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
@@ -42,8 +42,8 @@
 
                 <p:commandButton id="imprimer" icon="ui-icon-print"  
                                  value="#{langue['Conv.Imprimer']}" actionListener="#{versementController.print()}"
-                                 update=":TypeMatiereListerForm:growl,:TypeMatiereImprimerForm,:TypeMatiereImprimerDlg" disabled="#{versementController.imprimer}" 
-                                 oncomplete="PF('TypeMatiereImprimerDialog').show()"/>              
+                                 update=":VersementListerForm:growl,:VersementImprimerForm,:VersementImprimerDlg" disabled="#{versementController.imprimer}" 
+                                 oncomplete="PF('VersementImprimerDialog').show()"/>              
 
             </div>
         </p:fieldset>

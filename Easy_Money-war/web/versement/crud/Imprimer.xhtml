@@ -6,13 +6,13 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <p:dialog id="TypeMatiereImprimerDlg"
-                  widgetVar="TypeMatiereImprimerDialog" modal="true" resizable="false"  
+        <p:dialog id="VersementImprimerDlg"
+                  widgetVar="VersementImprimerDialog" modal="true" resizable="false"  
                   visible="#{versementController.showVersementPrintDialog}"
                   appendTo="@(body)" 
                   header="#{langue['Titre.Dlg.Impression']}: #{langue['Conv.Batiment']}" closeOnEscape="true">
 
-            <h:form id="TypeMatiereImprimerForm">
+            <h:form id="VersementImprimerForm">
 
                 <!--<object data="#{request.contextPath}/pdf/pdf.pdf" type="application/pdf" title="cv" width="1200" height="600"></object>-->
 

@@ -61,7 +61,7 @@ public class RetraitFacade extends AbstractFacade<Retrait> implements RetraitFac
     }
 
     @Override
-    public List<Retrait> findAllRange(Boolean commission) throws Exception {
+    public List<Retrait> findAllRange(boolean commission) throws Exception {
         Query query = this.em.createQuery("SELECT r FROM Retrait r WHERE r.commissionAuto=:commission ORDER BY r.date DESC , r.heure DESC");
         query.setParameter("commission", commission);
         return query.getResultList();
@@ -72,6 +72,20 @@ public class RetraitFacade extends AbstractFacade<Retrait> implements RetraitFac
         Query query = this.em.createQuery("SELECT r FROM Retrait r WHERE r.idclient.idclient=:client AND r.idmois.idAnneeMois=:mois ORDER BY r.date");
         query.setParameter("mois", anneeMois.getIdAnneeMois());
         query.setParameter("client", client.getIdclient());
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Retrait> findByIdMois(int idMois) throws Exception {
+        Query query = this.em.createQuery("SELECT r FROM Retrait r WHERE r.idmois.idAnneeMois=:mois ORDER BY r.date");
+        query.setParameter("mois", idMois);
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<Retrait> findByDate(Date date) throws Exception {
+        Query query = this.em.createQuery("SELECT r FROM Retrait r WHERE r.date=:date ORDER BY r.idretrait DESC");
+        query.setParameter("date", date);
         return query.getResultList();
     }
 }

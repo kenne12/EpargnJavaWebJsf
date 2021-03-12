@@ -70,7 +70,21 @@ public class VersementFacade extends AbstractFacade<Versement> implements Versem
 
     @Override
     public List<Versement> findAllRange() {
-        Query query = this.em.createQuery("SELECT v FROM Versement v ORDER BY v.date DESC , v.heure");
+        Query query = this.em.createQuery("SELECT v FROM Versement v ORDER BY v.date DESC, v.heure");
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<Versement> findByIdMois(int idMois) throws Exception {
+        Query query = this.em.createQuery("SELECT v FROM Versement v WHERE v.idmois.idAnneeMois=:idMois ORDER BY v.date");
+        query.setParameter("idMois", idMois);
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<Versement> findByDate(Date date) throws Exception {
+        Query query = this.em.createQuery("SELECT v FROM Versement v WHERE v.date=:date ORDER BY v.idversement DESC");
+        query.setParameter("date", date);
         return query.getResultList();
     }
 }

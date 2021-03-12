@@ -1,233 +1,202 @@
-/*     */ package controllers.retraitcn;
-/*     */ 
-/*     */ import entities.AnneeMois;
-/*     */ import entities.Client;
-/*     */ import entities.Retrait;
-/*     */ import java.util.ArrayList;
-/*     */ import java.util.List;
-/*     */ import javax.ejb.EJB;
-/*     */ import sessions.AnneeMoisFacadeLocal;
-/*     */ import sessions.CaisseFacadeLocal;
-/*     */ import sessions.ClientFacadeLocal;
-/*     */ import sessions.MouchardFacadeLocal;
-/*     */ import sessions.PrivilegeFacadeLocal;
-/*     */ import sessions.RetraitFacadeLocal;
-/*     */ 
-/*     */ 
-/*     */ 
-/*     */ 
-/*     */ 
-/*     */ 
-/*     */ 
-/*     */ 
-/*     */ 
-/*     */ 
-/*     */ public class AbstractRetraitCnController
-/*     */ {
-/*     */   @EJB
-/*     */   protected RetraitFacadeLocal retraitFacadeLocal;
-/*     */   protected Retrait retrait;
-/*  30 */   protected List<Retrait> retraits = new ArrayList<>();
-/*     */   
-/*     */   @EJB
-/*     */   protected ClientFacadeLocal clientFacadeLocal;
-/*     */   protected Client client;
-/*  35 */   protected List<Client> clients = new ArrayList<>();
-/*     */   
-/*     */   @EJB
-/*     */   protected AnneeMoisFacadeLocal anneeMoisFacadeLocal;
-/*  39 */   protected AnneeMois anneeMois = new AnneeMois();
-/*  40 */   protected List<AnneeMois> anneeMoises = new ArrayList<>();
-/*     */   
-/*     */   @EJB
-/*     */   protected MouchardFacadeLocal mouchardFacadeLocal;
-/*     */   
-/*     */   @EJB
-/*     */   protected CaisseFacadeLocal caisseFacadeLocal;
-/*     */   
-/*     */   @EJB
-/*     */   protected PrivilegeFacadeLocal privilegeFacadeLocal;
-/*     */   
-/*  51 */   protected Integer retrait1 = Integer.valueOf(0);
-/*  52 */   protected Integer commission = Integer.valueOf(0);
-/*     */   
-/*  54 */   protected Boolean detail = Boolean.valueOf(true);
-/*  55 */   protected Boolean modifier = Boolean.valueOf(true);
-/*  56 */   protected Boolean consulter = Boolean.valueOf(true);
-/*  57 */   protected Boolean imprimer = Boolean.valueOf(true);
-/*  58 */   protected Boolean supprimer = Boolean.valueOf(true);
-/*     */   
-/*  60 */   protected Boolean showRetraitCreateDialog = Boolean.valueOf(false);
-/*  61 */   protected Boolean showRetraitDetailDialog = Boolean.valueOf(false);
-/*  62 */   protected Boolean showRetraitDeleteDialog = Boolean.valueOf(false);
-/*  63 */   protected Boolean showRetraitEditDialog = Boolean.valueOf(false);
-/*  64 */   protected Boolean showRetraitPrintDialog = Boolean.valueOf(false);
-/*     */   
-/*  66 */   protected Boolean showClient = Boolean.valueOf(true);
-/*     */   
-/*  68 */   protected String mode = "";
-/*     */   
-/*     */   public Client getClient() {
-/*  71 */     return this.client;
-/*     */   }
-/*     */   
-/*     */   public void setClient(Client client) {
-/*  75 */     this.client = client;
-/*     */   }
-/*     */   
-/*     */   public List<Client> getClients() {
-/*  79 */     this.clients = this.clientFacadeLocal.findAllRange(true);
-/*  80 */     return this.clients;
-/*     */   }
-/*     */   
-/*     */   public void setClients(List<Client> clients) {
-/*  84 */     this.clients = clients;
-/*     */   }
-/*     */   
-/*     */   public Boolean getDetail() {
-/*  88 */     return this.detail;
-/*     */   }
-/*     */   
-/*     */   public void setDetail(Boolean detail) {
-/*  92 */     this.detail = detail;
-/*     */   }
-/*     */   
-/*     */   public Boolean getModifier() {
-/*  96 */     return this.modifier;
-/*     */   }
-/*     */   
-/*     */   public void setModifier(Boolean modifier) {
-/* 100 */     this.modifier = modifier;
-/*     */   }
-/*     */   
-/*     */   public Boolean getImprimer() {
-/* 104 */     this.imprimer = Boolean.valueOf(this.retraitFacadeLocal.findAll().isEmpty());
-/* 105 */     return this.imprimer;
-/*     */   }
-/*     */   
-/*     */   public void setImprimer(Boolean imprimer) {
-/* 109 */     this.imprimer = imprimer;
-/*     */   }
-/*     */   
-/*     */   public Boolean getSupprimer() {
-/* 113 */     return this.supprimer;
-/*     */   }
-/*     */   
-/*     */   public void setSupprimer(Boolean supprimer) {
-/* 117 */     this.supprimer = supprimer;
-/*     */   }
-/*     */   
-/*     */   public Integer getRetrait1() {
-/* 121 */     return this.retrait1;
-/*     */   }
-/*     */   
-/*     */   public void setRetrait1(Integer retrait1) {
-/* 125 */     this.retrait1 = retrait1;
-/*     */   }
-/*     */   
-/*     */   public Boolean getShowClient() {
-/* 129 */     return this.showClient;
-/*     */   }
-/*     */ 
-/*     */   
-/*     */   public void setShowClient(Boolean showClient) {
-/* 134 */     this.showClient = showClient;
-/*     */   }
-/*     */   
-/*     */   public Retrait getRetrait() {
-/* 138 */     return this.retrait;
-/*     */   }
-/*     */   
-/*     */   public void setRetrait(Retrait retrait) {
-/* 142 */     this.modifier = this.supprimer = this.detail = Boolean.valueOf((retrait == null));
-/* 143 */     this.retrait = retrait;
-/*     */   }
-/*     */   
-/*     */   public List<Retrait> getRetraits() {
-/*     */     try {
-/* 148 */       this.retraits = this.retraitFacadeLocal.findAllRange(Boolean.valueOf(false));
-/* 149 */     } catch (Exception e) {
-/* 150 */       e.printStackTrace();
-/*     */     } 
-/* 152 */     return this.retraits;
-/*     */   }
-/*     */   
-/*     */   public void setRetraits(List<Retrait> retraits) {
-/* 156 */     this.retraits = retraits;
-/*     */   }
-/*     */   
-/*     */   public Boolean getShowRetraitCreateDialog() {
-/* 160 */     return this.showRetraitCreateDialog;
-/*     */   }
-/*     */   
-/*     */   public void setShowRetraitCreateDialog(Boolean showRetraitCreateDialog) {
-/* 164 */     this.showRetraitCreateDialog = showRetraitCreateDialog;
-/*     */   }
-/*     */   
-/*     */   public Boolean getShowRetraitDetailDialog() {
-/* 168 */     return this.showRetraitDetailDialog;
-/*     */   }
-/*     */   
-/*     */   public void setShowRetraitDetailDialog(Boolean showRetraitDetailDialog) {
-/* 172 */     this.showRetraitDetailDialog = showRetraitDetailDialog;
-/*     */   }
-/*     */   
-/*     */   public Boolean getShowRetraitDeleteDialog() {
-/* 176 */     return this.showRetraitDeleteDialog;
-/*     */   }
-/*     */   
-/*     */   public void setShowRetraitDeleteDialog(Boolean showRetraitDeleteDialog) {
-/* 180 */     this.showRetraitDeleteDialog = showRetraitDeleteDialog;
-/*     */   }
-/*     */   
-/*     */   public Boolean getShowRetraitEditDialog() {
-/* 184 */     return this.showRetraitEditDialog;
-/*     */   }
-/*     */   
-/*     */   public void setShowRetraitEditDialog(Boolean showRetraitEditDialog) {
-/* 188 */     this.showRetraitEditDialog = showRetraitEditDialog;
-/*     */   }
-/*     */   
-/*     */   public Boolean getShowRetraitPrintDialog() {
-/* 192 */     return this.showRetraitPrintDialog;
-/*     */   }
-/*     */   
-/*     */   public void setShowRetraitPrintDialog(Boolean showRetraitPrintDialog) {
-/* 196 */     this.showRetraitPrintDialog = showRetraitPrintDialog;
-/*     */   }
-/*     */   
-/*     */   public Integer getCommission() {
-/* 200 */     return this.commission;
-/*     */   }
-/*     */   
-/*     */   public void setCommission(Integer commission) {
-/* 204 */     this.commission = commission;
-/*     */   }
-/*     */   
-/*     */   public List<AnneeMois> getAnneeMoises() {
-/*     */     try {
-/* 209 */       this.anneeMoises = this.anneeMoisFacadeLocal.findByEtat(Boolean.valueOf(true));
-/* 210 */     } catch (Exception e) {
-/* 211 */       e.printStackTrace();
-/*     */     } 
-/* 213 */     return this.anneeMoises;
-/*     */   }
-/*     */   
-/*     */   public void setAnneeMoises(List<AnneeMois> anneeMoises) {
-/* 217 */     this.anneeMoises = anneeMoises;
-/*     */   }
-/*     */   
-/*     */   public AnneeMois getAnneeMois() {
-/* 221 */     return this.anneeMois;
-/*     */   }
-/*     */   
-/*     */   public void setAnneeMois(AnneeMois anneeMois) {
-/* 225 */     this.anneeMois = anneeMois;
-/*     */   }
-/*     */ }
+package controllers.retraitcn;
 
+import entities.Annee;
+import entities.AnneeMois;
+import entities.Client;
+import entities.Retrait;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.ejb.EJB;
+import sessions.AnneeMoisFacadeLocal;
+import sessions.CaisseFacadeLocal;
+import sessions.ClientFacadeLocal;
+import sessions.MouchardFacadeLocal;
+import sessions.PrivilegeFacadeLocal;
+import sessions.RetraitFacadeLocal;
+import utils.SessionMBean;
 
-/* Location:              G:\Easy_money\Easy_money-war.war!\WEB-INF\classes\controllers\retraitcn\AbstractRetraitCnController.class
- * Java compiler version: 8 (52.0)
- * JD-Core Version:       1.1.3
- */
+public class AbstractRetraitCnController {
+
+    @EJB
+    protected RetraitFacadeLocal retraitFacadeLocal;
+    protected Retrait retrait = new Retrait();
+    protected List<Retrait> retraits = new ArrayList<>();
+
+    @EJB
+    protected ClientFacadeLocal clientFacadeLocal;
+    protected Client client = new Client();
+    protected List<Client> clients = new ArrayList<>();
+
+    @EJB
+    protected AnneeMoisFacadeLocal anneeMoisFacadeLocal;
+    protected AnneeMois anneeMois = new AnneeMois();
+    protected List<AnneeMois> anneeMoises = new ArrayList<>();
+
+    protected Annee annee = SessionMBean.getAnnee();
+
+    protected String searchMode = "";
+    protected Date searchDate;
+    protected AnneeMois searchMois = SessionMBean.getMois();
+
+    @EJB
+    protected MouchardFacadeLocal mouchardFacadeLocal;
+
+    @EJB
+    protected CaisseFacadeLocal caisseFacadeLocal;
+
+    @EJB
+    protected PrivilegeFacadeLocal privilegeFacadeLocal;
+
+    protected Integer retrait1 = 0;
+    protected Integer commission = 0;
+
+    protected Boolean detail = true;
+    protected Boolean modifier = true;
+    protected Boolean consulter = true;
+    protected Boolean imprimer = true;
+    protected Boolean supprimer = true;
+
+    protected Boolean showRetraitCreateDialog = false;
+    protected Boolean showRetraitDetailDialog = false;
+    protected Boolean showRetraitDeleteDialog = false;
+    protected Boolean showRetraitEditDialog = false;
+    protected Boolean showRetraitPrintDialog = false;
+
+    protected Boolean showClient = true;
+
+    protected String mode = "";
+
+    public Client getClient() {
+        return this.client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public List<Client> getClients() {
+        this.clients = this.clientFacadeLocal.findAllRange(true);
+        return this.clients;
+    }
+
+    public Boolean getDetail() {
+        return this.detail;
+    }
+
+    public Boolean getModifier() {
+        return this.modifier;
+    }
+
+    public Boolean getImprimer() {
+        this.imprimer = retraits.isEmpty();
+        return this.imprimer;
+    }
+
+    public Boolean getSupprimer() {
+        return this.supprimer;
+    }
+
+    public Integer getRetrait1() {
+        return this.retrait1;
+    }
+
+    public void setRetrait1(Integer retrait1) {
+        this.retrait1 = retrait1;
+    }
+
+    public Boolean getShowClient() {
+        return this.showClient;
+    }
+
+    public Retrait getRetrait() {
+        return this.retrait;
+    }
+
+    public void setRetrait(Retrait retrait) {
+        this.modifier = this.supprimer = this.detail = (retrait == null);
+        this.retrait = retrait;
+    }
+
+    public List<Retrait> getRetraits() {
+        return this.retraits;
+    }
+
+    public Boolean getShowRetraitCreateDialog() {
+        return this.showRetraitCreateDialog;
+    }
+
+    public Boolean getShowRetraitDetailDialog() {
+        return this.showRetraitDetailDialog;
+    }
+
+    public Boolean getShowRetraitDeleteDialog() {
+        return this.showRetraitDeleteDialog;
+    }
+
+    public Boolean getShowRetraitEditDialog() {
+        return this.showRetraitEditDialog;
+    }
+
+    public Boolean getShowRetraitPrintDialog() {
+        return this.showRetraitPrintDialog;
+    }
+
+    public Integer getCommission() {
+        return this.commission;
+    }
+
+    public void setCommission(Integer commission) {
+        this.commission = commission;
+    }
+
+    public List<AnneeMois> getAnneeMoises() {
+        try {
+            this.anneeMoises = this.anneeMoisFacadeLocal.findByAnnee(SessionMBean.getAnnee().getIdannee());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this.anneeMoises;
+    }
+
+    public AnneeMois getAnneeMois() {
+        return this.anneeMois;
+    }
+
+    public void setAnneeMois(AnneeMois anneeMois) {
+        this.anneeMois = anneeMois;
+    }
+
+    public String getSearchMode() {
+        return searchMode;
+    }
+
+    public void setSearchMode(String searchMode) {
+        this.searchMode = searchMode;
+    }
+
+    public Date getSearchDate() {
+        return searchDate;
+    }
+
+    public void setSearchDate(Date searchDate) {
+        this.searchDate = searchDate;
+    }
+
+    public AnneeMois getSearchMois() {
+        return searchMois;
+    }
+
+    public void setSearchMois(AnneeMois searchMois) {
+        this.searchMois = searchMois;
+    }
+
+    public Annee getAnnee() {
+        return annee;
+    }
+
+    public void setAnnee(Annee annee) {
+        this.annee = annee;
+    }
+
+}

@@ -1,6 +1,5 @@
 package sessions;
 
-import entities.Annee;
 import entities.AnneeMois;
 import java.util.Date;
 import java.util.List;
@@ -23,11 +22,11 @@ public interface AnneeMoisFacadeLocal {
 
     int count();
 
-    List<AnneeMois> findByAnneeEtat(Annee paramAnnee, boolean paramBoolean) throws Exception;
+    List<AnneeMois> findByAnneeEtat(int idAnnee, boolean etat);
 
-    List<AnneeMois> findByEtat(Boolean paramBoolean) throws Exception;
+    List<AnneeMois> findByEtat(boolean etat);
 
-    AnneeMois findByDate(Date paramDate) throws Exception;
+    AnneeMois findByDate(Date date);
 
-    List<AnneeMois> findByAnnee(Annee paramAnnee) throws Exception;
+    List<AnneeMois> findByAnnee(int idAnnee);
 }

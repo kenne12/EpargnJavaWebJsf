@@ -13,13 +13,12 @@
                                  icon="ui-icon-plus"   
                                  value="#{langue['Conv.Creer']}" 
                                  actionListener="#{retraitCnController.prepareCreate()}"
-                                 update=":TypeMatiereCreerForm,:TypeMatiereListerForm:growl,:TypeMatierelCreerDlg"                                 
-                                 />
-                
+                                 update=":RetraitCreerForm,:RetraitListerForm:growl,:RetraitCreerDlg" />                                
+                                                 
                 <p:commandButton id="detail"   
                                  icon="ui-icon-search" 
                                  value="#{langue['Conv.Detail']}" 
-                                 update=":TypeMatiereDetailForm" 
+                                 update=":RetraitDetailForm" 
                                  oncomplete="PF('typeMatiereDetailDialog').show()" 
                                  disabled="true"/>
 
@@ -27,13 +26,13 @@
                                  icon="ui-icon-pencil" 
                                  value="#{langue['Conv.Modifier']}" 
                                  actionListener="#{retraitCnController.prepareEdit()}"
-                                 update=":TypeMatiereCreerForm,:TypeMatiereListerForm:growl,:TypeMatierelCreerDlg"                                   
+                                 update=":RetraitCreerForm,:RetraitListerForm:growl,:RetraitCreerDlg"                                   
                                  disabled="true"/>
 
                 <p:commandButton id="supprimer" 
                                  icon="ui-icon-trash"  
                                  value="#{langue['Conv.Supprimer']}" 
-                                 update=":TypeMatiereListerForm:growl,:TypeMatiereListerForm:datalist, :actionsForm"
+                                 update=":RetraitListerForm:growl,:RetraitListerForm:datalist, :actionsForm"
                                  disabled="#{retraitCnController.supprimer}"
                                  actionListener="#{retraitCnController.delete()}">
                     <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
@@ -41,11 +40,10 @@
                                icon="ui-icon-alert"/>
                 </p:commandButton>
 
-
                 <p:commandButton id="imprimer" icon="ui-icon-print"  
-                                 value="#{langue['Conv.Imprimer']}" actionListener="#{matiereCtrl.imprimerTypeMatiereHtml()}"
-                                 update=":TypeMatiereListerForm:growl,:TypeMatiereImprimerForm,:TypeMatiereImprimerDlg" disabled="#{retraitCnController.imprimer}" 
-                                 oncomplete="PF('TypeMatiereImprimerDialog').show()"/>              
+                                 value="#{langue['Conv.Imprimer']}" actionListener="#{matiereCtrl.imprimerRetraitHtml()}"
+                                 update=":RetraitListerForm:growl,:RetraitImprimerForm,:RetraitImprimerDlg" disabled="#{retraitCnController.imprimer}" 
+                                 oncomplete="PF('RetraitImprimerDialog').show()"/>              
 
             </div>
         </p:fieldset>

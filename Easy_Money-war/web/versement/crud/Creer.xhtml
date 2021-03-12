@@ -8,15 +8,15 @@
 
     <ui:composition>
 
-        <p:dialog id="TypeMatierelCreerDlg" 
-                  widgetVar="TypeMatiereCreerDialog" 
+        <p:dialog id="VersementCreerDlg" 
+                  widgetVar="VersementCreerDialog" 
                   modal="true" resizable="false" 
                   appendTo="@(body)" 
                   visible="#{versementController.showVersementCreateDialog}"
                   header="#{langue['Titre.Dlg.Creation']} : VERSEMENT" 
                   closeOnEscape="true">
 
-            <h:form id="TypeMatiereCreerForm">
+            <h:form id="VersementCreerForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses ="column">
 
@@ -24,14 +24,14 @@
                         <p:selectOneMenu filter="true" required="true" id="mois" value="#{versementController.anneeMois.idAnneeMois}" requiredMessage="Veuillez selectionner le mois de vente">
                             <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
                             <f:selectItems value="#{versementController.anneeMoises}" var="mois" itemLabel="#{mois.idmois.nom}" itemValue="#{mois.idAnneeMois}"/>                                                                             
-                            <p:ajax update="date" listener="#{versementController.updateMois()}"/>
+                            <p:ajax event="change" update="date" listener="#{versementController.updateMois()}"/>
                         </p:selectOneMenu>
 
                         <p:outputLabel value="#{langue.date}" for="date" />
                         <p:calendar id="date" mindate="#{versementController.anneeMois.dateDebut}" maxdate="#{versementController.anneeMois.dateFin}" navigator="true" value="#{versementController.versement.date}"/>
 
                         <p:outputLabel value="Clients" for="client"/>
-                        <p:selectOneMenu filter="true" id="client" disabled="#{versementController.showClient}" required="true" value="#{versementController.versement.idclient}" converter="clientConverter" >
+                        <p:selectOneMenu filter="true" id="client" disabled="#{versementController.showClient}" required="true" value="#{versementController.versement.idclient}" converter="clientConverter" filterMatchMode="contains" >
                             <f:selectItem itemLabel="#{langue.choisir}"/>
                             <f:selectItems value="#{versementController.clients}" var="client" itemLabel="#{client.numerocarnet} - #{client.nom} #{client.prenom}" itemValue="#{client}" />
                             <p:ajax update="solde" listener="#{versementController.updateSolde()}"/>
@@ -50,17 +50,16 @@
                     <p:separator />
 
                     <center>
-                        <p:commandButton value="#{langue.annuler}" onclick="PF('TypeMatiereCreerDialog').hide()"/>
+                        <p:commandButton value="#{langue.annuler}" onclick="PF('VersementCreerDialog').hide()"/>
 
                         <p:commandButton actionListener="#{versementController.create()}" value="#{langue['Conv.Enregistrer']}" 
-                                         update="display,:TypeMatiereListerForm:datalist,:TypeMatiereListerForm:growl, TypeMatiereCreerForm" 
-                                         oncomplete="PF('TypeMatiereCreerDialog').hide()">
+                                         update="display,:VersementListerForm:datalist,:VersementListerForm:growl, VersementCreerForm" 
+                                         oncomplete="PF('VersementCreerDialog').hide()">
                             <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
                                        message="Voulez vraiment enregistrer ?"
                                        icon="ui-icon-alert"/>
                         </p:commandButton>
                     </center>
-
 
                 </h:panelGroup>  
 

@@ -6,14 +6,36 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
-    <h:form id="TypeMatiereListerForm">
+    <h:form id="VersementListerForm">
 
         <p:messages id="growl" closable="true">
             <p:effect type="pulsate" event="load" delay="50" />
         </p:messages>
+                
+        <h:panelGrid columns="5">
+            <h:outputLabel value="Mode" />
+            <p:selectOneMenu value="#{versementController.searchMode}">
+                <f:selectItem itemLabel="Date" itemValue="date" />
+                <f:selectItem itemLabel="Mois" itemValue="mois" />
+                <p:ajax update="date_search_label,date_search,mois_search_label,mois_search,VersementListerForm" listener="#{versementController.updateMode()}" />
+            </p:selectOneMenu>
+            
+            <h:outputLabel rendered="#{versementController.searchMode eq 'date' ? true : false}" id="date_search_label" value="Date" />
+            <p:calendar rendered="#{versementController.searchMode eq 'date' ? true : false}" id="date_search" 
+                        navigator="true" value="#{versementController.searchDate}" 
+                        mindate="#{versementController.annee.dateDebut}" maxdate="#{versementController.annee.dateFin}"/>
+            
+            <h:outputLabel rendered="#{versementController.searchMode eq 'mois' ? true : false}" id="mois_search_label" value="Mois" />
+            <p:selectOneMenu rendered="#{versementController.searchMode eq 'mois' ? true : false}" id="mois_search" value="#{versementController.searchMois.idAnneeMois}">
+                <f:selectItem itemLabel="#{langue.choisir}" itemValue="0" />
+                <f:selectItems value="#{versementController.anneeMoises}" var="mois" itemLabel="#{mois.idmois.nom}" itemValue="#{mois.idAnneeMois}" />
+            </p:selectOneMenu>
+            
+            <p:commandButton value="Search" update="datalist" actionListener="#{versementController.searchData()}" />
+        </h:panelGrid>
 
         <p:panel header="#{langue['Conv.ListeDes']} : VERSEMENTS">
-            <p:contextMenu id="TypeMatiereDataTableContextMenu" for="datalist">  
+            <p:contextMenu id="VersementDataTableContextMenu" for="datalist">  
                 <p:menuitem value="#{langue['Conv.Creer']}" onclick="document.getElementById('actionsForm:creer').click();" icon="ui-icon-plus"/>
                 <p:menuitem value="#{langue['Conv.Detail']}" onclick="document.getElementById('actionsForm:detail').click();" icon="ui-icon-search"/>
                 <p:menuitem value="#{langue['Conv.Modifier']}" onclick="document.getElementById('actionsForm:modifier').click();" icon="ui-icon-pencil"/>
@@ -30,9 +52,9 @@
                          selectionMode="single"
                          selection="#{versementController.versement}">
 
-                <p:ajax event="rowSelect"   update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
-                <p:ajax event="rowUnselect" update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
-                <p:ajax event="rowDblselect" onsuccess="document.getElementById('TypeMatiereListerForm:viewButton').click();"/>
+                <p:ajax event="rowSelect" update=":VersementListerForm:VersementDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowUnselect" update=":VersementListerForm:VersementDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('VersementListerForm:viewButton').click();"/>
 
                 <p:column filterBy="#{item.idclient.numerocarnet}" style="width: 10%">
                     <f:facet name="header">
@@ -41,7 +63,7 @@
                     <h:outputText value="#{item.idclient.numerocarnet}"/>
                 </p:column>
 
-                <p:column filterBy="#{item.idclient.nom} #{item.idclient.prenom}" style="width: 35%">
+                <p:column filterBy="#{item.idclient.nom} #{item.idclient.prenom}" filterMatchMode="contains" style="width: 35%">
                     <f:facet name="header">
                         <h:outputText value="Client"/>
                     </f:facet>
@@ -66,7 +88,7 @@
                     </h:outputText>
                 </p:column>
 
-                <p:column>
+                <p:column style="text-align: center">
                     <f:facet name="header">
                         <h:outputText value="Date"/>
                     </f:facet>
@@ -75,7 +97,7 @@
                     </h:outputText>
                 </p:column>
 
-                <p:column>
+                <p:column style="text-align: center">
                     <f:facet name="header">
                         <h:outputText value="Heure"/>
                     </f:facet>

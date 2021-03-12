@@ -1,6 +1,5 @@
 package controllers.retraitcn;
 
-import entities.AnneeMois;
 import entities.Caisse;
 import entities.Client;
 import entities.Privilege;
@@ -20,9 +19,8 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
 
     @PostConstruct
     private void init() {
-        /*  37 */ this.client = new Client();
-        /*  38 */ this.retrait = new Retrait();
-        /*  39 */ this.anneeMois = new AnneeMois();
+        this.searchMode = "date";
+        this.searchDate = SessionMBean.getDate();
     }
 
     public void updateMois() {
@@ -34,18 +32,15 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
     }
 
     public void prepareCreate() {
-        /*  51 */ this.commission = 0;
-        /*  52 */ this.retrait1 = 0;
-        /*  53 */ this.client = new Client();
-        /*  54 */ this.retrait = new Retrait();
-        /*  55 */ this.retrait.setDate(SessionMBean.getDate());
-        /*  56 */ this.mode = "Create";
-        /*  57 */ this.showClient = false;
-        /*  58 */ this.anneeMois = new AnneeMois();
-        /*  59 */ this.anneeMois = SessionMBean.getMois();
-
+        this.mode = "Create";
+        this.commission = 0;
+        this.retrait1 = 0;
+        this.client = new Client();
+        this.retrait = new Retrait();
+        this.retrait.setDate(SessionMBean.getDate());
+        this.showClient = false;
+        this.anneeMois = SessionMBean.getMois();
         try {
-            filterDate(new Date());
             Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
             if (p != null) {
                 this.showRetraitCreateDialog = true;
@@ -65,36 +60,36 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
     }
 
     public void prepareEdit() {
-        /*  82 */ this.mode = "Edit";
-        /*  83 */ this.showClient = true;
+        this.mode = "Edit";
+        this.showClient = true;
 
-        /*  85 */ if (this.retrait != null) {
-            /*  86 */ this.retrait1 = this.retrait.getMontant();
-            /*  87 */ this.commission = this.retrait.getCommission();
-            /*  88 */ this.anneeMois = this.retrait.getIdmois();
+        if (this.retrait != null) {
+            this.retrait1 = this.retrait.getMontant();
+            this.commission = this.retrait.getCommission();
+            this.anneeMois = this.retrait.getIdmois();
         }
 
         try {
-            /*  92 */ Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-            /*  93 */ if (p != null) {
-                /*  94 */ this.showRetraitCreateDialog = true;
+            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+            if (p != null) {
+                this.showRetraitCreateDialog = true;
             } else {
-                /*  96 */ p = new Privilege();
-                /*  97 */ p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 14);
-                /*  98 */ if (p != null) {
-                    /*  99 */ this.showRetraitCreateDialog = true;
+                p = new Privilege();
+                p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 14);
+                if (p != null) {
+                    this.showRetraitCreateDialog = true;
                 } else {
-                    /* 101 */ this.showRetraitCreateDialog = false;
-                    /* 102 */ JsfUtil.addErrorMessage("Vous n'avez pas le privilège de modifier un rétrait");
+                    this.showRetraitCreateDialog = false;
+                    JsfUtil.addErrorMessage("Vous n'avez pas le privilège de modifier un rétrait");
                 }
             }
-            /* 105 */        } catch (Exception e) {
-            /* 106 */ e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void updateSolde1() {
-        if (this.mode == "Create") {
+        if (this.mode.equals("Create")) {
             if (this.retrait.getIdclient() != null) {
                 if (this.retrait1 != null) {
                     Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
@@ -111,19 +106,43 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
         } else if (this.retrait.getIdclient() != null) {
             if (this.retrait1 != null) {
                 if (this.commission != null) {
-                    /* 129 */ Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
-                    /* 130 */ int solde = c.getSolde().intValue() + this.retrait.getMontant().intValue() + this.retrait.getCommission().intValue() - this.retrait1.intValue() - this.commission.intValue();
-                    /* 131 */ this.retrait.getIdclient().setSolde(Integer.valueOf(solde));
+                    Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
+                    int solde = c.getSolde() + this.retrait.getMontant() + this.retrait.getCommission() - this.retrait1 - this.commission;
+                    this.retrait.getIdclient().setSolde((solde));
                 }
             } else {
-                /* 134 */ Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
-                /* 135 */ this.retrait.getIdclient().setSolde(c.getSolde());
+                Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
+                this.retrait.getIdclient().setSolde(c.getSolde());
             }
         }
     }
 
     public void updateSolde() {
         this.retrait1 = (0);
+    }
+    
+    public void updateMode() {
+
+    }
+
+    public void searchData() {
+        try {
+            retraits.clear();
+            if (searchMode.equals("date")) {
+                if (!searchDate.equals(null)) {
+                    this.retraits = retraitFacadeLocal.findByDate(searchDate);
+                    return;
+                }
+            }
+            if (searchMode.equals("mois")) {
+                if (searchMois.getIdAnneeMois() != 0) {
+                    this.retraits = retraitFacadeLocal.findByIdMois(searchMois.getIdAnneeMois());
+                    return;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void create() {
@@ -134,77 +153,76 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
                     this.commission = 0;
                 }
 
-                /* 153 */ Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
-                /* 154 */ c.setSolde((c.getSolde() - this.retrait1 - this.commission));
+                Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
+                c.setSolde((c.getSolde() - this.retrait1 - this.commission));
 
-                /* 156 */ this.retrait.setIdretrait(this.retraitFacadeLocal.nextLongVal());
-                /* 157 */ this.retrait.setMontant(this.retrait1);
-                /* 158 */ this.retrait.setCommission(this.commission);
-                /* 159 */ this.retrait.setSolde(Double.valueOf(c.getSolde()));
-                /* 160 */ this.retrait.setHeure(new Date());
-                /* 161 */ this.retrait.setIdmois(this.anneeMois);
-                /* 162 */ this.retrait.setCommissionAuto((false));
-                /* 163 */ this.retraitFacadeLocal.create(this.retrait);
+                this.retrait.setIdretrait(this.retraitFacadeLocal.nextLongVal());
+                this.retrait.setMontant(this.retrait1);
+                this.retrait.setCommission(this.commission);
+                this.retrait.setSolde(Double.valueOf(c.getSolde()));
+                this.retrait.setHeure(new Date());
+                this.retrait.setIdmois(this.anneeMois);
+                this.retrait.setCommissionAuto((false));
+                this.retraitFacadeLocal.create(this.retrait);
 
-                /* 165 */ this.clientFacadeLocal.edit(c);
+                this.clientFacadeLocal.edit(c);
 
-                /* 167 */ Caisse caisse = this.caisseFacadeLocal.findAll().get(0);
-                /* 168 */ caisse.setMontant((caisse.getMontant() - this.retrait1));
-                /* 169 */ this.caisseFacadeLocal.edit(caisse);
+                Caisse caisse = this.caisseFacadeLocal.findAll().get(0);
+                caisse.setMontant((caisse.getMontant() - this.retrait1));
+                this.caisseFacadeLocal.edit(caisse);
 
-                /* 171 */ Utilitaires.saveOperation(this.mouchardFacadeLocal, "Enregistrement du retrait -> client : " + this.retrait.getIdclient().getPrenom() + " " + this.retrait.getIdclient().getNom() + " ; Montant : " + this.retrait1, SessionMBean.getUserAccount());
+                Utilitaires.saveOperation(this.mouchardFacadeLocal, "Enregistrement du retrait -> client : " + this.retrait.getIdclient().getPrenom() + " " + this.retrait.getIdclient().getNom() + " ; Montant : " + this.retrait1, SessionMBean.getUserAccount());
 
-                /* 173 */ this.retrait = new Retrait();
-                /* 174 */ JsfUtil.addSuccessMessage("Transaction réussie");
+                this.retrait = new Retrait();
+                JsfUtil.addSuccessMessage("Transaction réussie");
 
-            } /* 177 */ else if (this.retrait != null && this.retrait1 != 0) {
+            } else if (this.retrait != null && this.retrait1 != 0) {
 
-                /* 179 */ Retrait r = this.retraitFacadeLocal.find(this.retrait.getIdretrait());
+                Retrait r = this.retraitFacadeLocal.find(this.retrait.getIdretrait());
 
-                /* 181 */ Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
-                /* 182 */ c.setSolde((c.getSolde() + r.getMontant() + r.getCommission()));
-                /* 183 */ if (c.getSolde() < 0) {
-                    /* 184 */ c.setSolde(0);
+                Client c = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
+                c.setSolde((c.getSolde() + r.getMontant() + r.getCommission()));
+                if (c.getSolde() < 0) {
+                    c.setSolde(0);
                 }
-                /* 186 */ this.clientFacadeLocal.edit(c);
+                this.clientFacadeLocal.edit(c);
 
-                /* 188 */ Caisse caisse = this.caisseFacadeLocal.findAll().get(0);
-                /* 189 */ caisse.setMontant((caisse.getMontant() + r.getMontant() + r.getCommission()));
+                Caisse caisse = this.caisseFacadeLocal.findAll().get(0);
+                caisse.setMontant((caisse.getMontant() + r.getMontant() + r.getCommission()));
 
-                /* 191 */ if (caisse.getMontant() < 0) {
-                    /* 192 */ caisse.setMontant((0));
+                if (caisse.getMontant() < 0) {
+                    caisse.setMontant(0);
                 }
-                /* 194 */ this.caisseFacadeLocal.edit(caisse);
+                this.caisseFacadeLocal.edit(caisse);
 
-                /* 196 */ if (this.commission == null) {
-                    /* 197 */ this.commission = (0);
+                if (this.commission == null) {
+                    this.commission = 0;
                 }
 
-                /* 200 */ this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
+                this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
 
-                /* 202 */ this.retrait.setMontant(this.retrait1);
-                /* 203 */ this.retrait.setCommission(this.commission);
-                /* 204 */ this.retrait.setIdmois(this.anneeMois);
-                /* 205 */ this.retraitFacadeLocal.edit(this.retrait);
+                this.retrait.setMontant(this.retrait1);
+                this.retrait.setCommission(this.commission);
+                this.retrait.setIdmois(this.anneeMois);
+                this.retraitFacadeLocal.edit(this.retrait);
 
-                /* 207 */ Client c1 = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
-                /* 208 */ c1.setSolde((c1.getSolde() - this.retrait1 - this.commission));
-                /* 209 */ this.clientFacadeLocal.edit(c1);
+                Client c1 = this.clientFacadeLocal.find(this.retrait.getIdclient().getIdclient());
+                c1.setSolde((c1.getSolde() - this.retrait1 - this.commission));
+                this.clientFacadeLocal.edit(c1);
 
-                /* 211 */ Caisse caisse1 = this.caisseFacadeLocal.findAll().get(0);
-                /* 212 */ caisse1.setMontant((caisse1.getMontant() - this.retrait1));
-                /* 213 */ this.caisseFacadeLocal.edit(caisse1);
+                Caisse caisse1 = this.caisseFacadeLocal.findAll().get(0);
+                caisse1.setMontant((caisse1.getMontant() - this.retrait1));
+                this.caisseFacadeLocal.edit(caisse1);
 
-                /* 215 */ Utilitaires.saveOperation(this.mouchardFacadeLocal, "Modification du retrait -> client : " + this.retrait.getIdclient().getPrenom() + " " + this.retrait.getIdclient().getNom() + " Ancien montant : " + r.getMontant() + " ; Nouveau Montant : " + this.retrait1, SessionMBean.getUserAccount());
+                Utilitaires.saveOperation(this.mouchardFacadeLocal, "Modification du retrait -> client : " + this.retrait.getIdclient().getPrenom() + " " + this.retrait.getIdclient().getNom() + " Ancien montant : " + r.getMontant() + " ; Nouveau Montant : " + this.retrait1, SessionMBean.getUserAccount());
 
-                /* 217 */ JsfUtil.addSuccessMessage("Opération réussie");
+                JsfUtil.addSuccessMessage("Opération réussie");
             } else {
-
-                /* 220 */ JsfUtil.addErrorMessage("Aucun retrait selectionné");
+                JsfUtil.addErrorMessage("Aucun retrait selectionné");
             }
 
-            /* 223 */        } catch (Exception e) {
-            /* 224 */ e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -264,19 +282,6 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
                 this.showRetraitPrintDialog = (false);
                 JsfUtil.addErrorMessage("Vous n'avez pas le privilege d'imprimer le rapport des retrait");
                 return;
-            }
-        }
-    }
-
-    private void filterDate(Date date) {
-        for (AnneeMois a : this.anneeMoises) {
-            try {
-                if ((a.getDateDebut().equals(date) || a.getDateDebut().before(date)) && (a.getDateFin().equals(date) || a.getDateFin().after(date))) {
-                    this.anneeMois = a;
-                    System.err.println("retouvé");
-                    break;
-                }
-            } catch (Exception exception) {
             }
         }
     }

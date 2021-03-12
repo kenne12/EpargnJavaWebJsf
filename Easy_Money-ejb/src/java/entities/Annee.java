@@ -6,14 +6,18 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,16 +35,25 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Annee.findByNom", query = "SELECT a FROM Annee a WHERE a.nom = :nom"),
     @NamedQuery(name = "Annee.findByEtat", query = "SELECT a FROM Annee a WHERE a.etat = :etat")})
 public class Annee implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
     private Integer idannee;
-    @Size(max = 2147483647)
+    @Size(max = 20)
     private String nom;
     private Boolean etat;
     @OneToMany(mappedBy = "idannee", fetch = FetchType.LAZY)
     private List<AnneeMois> anneeMoisList;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_debut")
+    private Date dateDebut;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_fin")
+    private Date dateFin;
 
     public Annee() {
     }
@@ -82,6 +95,22 @@ public class Annee implements Serializable {
         this.anneeMoisList = anneeMoisList;
     }
 
+    public Date getDateDebut() {
+        return dateDebut;
+    }
+
+    public void setDateDebut(Date dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+
+    public Date getDateFin() {
+        return dateFin;
+    }
+
+    public void setDateFin(Date dateFin) {
+        this.dateFin = dateFin;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -106,5 +135,5 @@ public class Annee implements Serializable {
     public String toString() {
         return "entities.Annee[ idannee=" + idannee + " ]";
     }
-    
+
 }

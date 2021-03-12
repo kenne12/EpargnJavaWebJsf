@@ -6,14 +6,36 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
-    <h:form id="TypeMatiereListerForm">
+    <h:form id="RetraitListerForm">
 
         <p:messages id="growl" closable="true">
             <p:effect type="pulsate" event="load" delay="50" />
         </p:messages>
 
+        <h:panelGrid columns="5">
+            <h:outputLabel value="Mode" />
+            <p:selectOneMenu value="#{retraitCnController.searchMode}">
+                <f:selectItem itemLabel="Date" itemValue="date" />
+                <f:selectItem itemLabel="Mois" itemValue="mois" />
+                <p:ajax update="date_search_label,date_search,mois_search_label,mois_search,RetraitListerForm" listener="#{retraitCnController.updateMode()}" />
+            </p:selectOneMenu>
+
+            <h:outputLabel rendered="#{retraitCnController.searchMode eq 'date' ? true : false}" id="date_search_label" value="Date" />
+            <p:calendar rendered="#{retraitCnController.searchMode eq 'date' ? true : false}" id="date_search" 
+                        navigator="true" value="#{retraitCnController.searchDate}"
+                        mindate="#{retraitCnController.annee.dateDebut}" maxdate="#{retraitCnController.annee.dateFin}"/>
+
+            <h:outputLabel rendered="#{retraitCnController.searchMode eq 'mois' ? true : false}" id="mois_search_label" value="Mois" />
+            <p:selectOneMenu rendered="#{retraitCnController.searchMode eq 'mois' ? true : false}" id="mois_search" value="#{retraitCnController.searchMois.idAnneeMois}">
+                <f:selectItem itemLabel="#{langue.choisir}" itemValue="0" />
+                <f:selectItems value="#{retraitCnController.anneeMoises}" var="mois" itemLabel="#{mois.idmois.nom}" itemValue="#{mois.idAnneeMois}" />
+            </p:selectOneMenu>
+
+            <p:commandButton value="Search" update="datalist" actionListener="#{retraitCnController.searchData()}" />
+        </h:panelGrid>
+
         <p:panel header="#{langue['Conv.ListeDes']} : RETRAITS">
-            <p:contextMenu id="TypeMatiereDataTableContextMenu" for="datalist">  
+            <p:contextMenu id="RetraitDataTableContextMenu" for="datalist">  
                 <p:menuitem value="#{langue['Conv.Creer']}" onclick="document.getElementById('actionsForm:creer').click();" icon="ui-icon-plus"/>
                 <p:menuitem value="#{langue['Conv.Detail']}" onclick="document.getElementById('actionsForm:detail').click();" icon="ui-icon-search"/>
                 <p:menuitem value="#{langue['Conv.Modifier']}" onclick="document.getElementById('actionsForm:modifier').click();" icon="ui-icon-pencil"/>
@@ -30,11 +52,11 @@
                          selectionMode="single"
                          selection="#{retraitCnController.retrait}">
 
-                <p:ajax event="rowSelect"   update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
-                <p:ajax event="rowUnselect" update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
-                <p:ajax event="rowDblselect" onsuccess="document.getElementById('TypeMatiereListerForm:viewButton').click();"/>
+                <p:ajax event="rowSelect" update=":RetraitListerForm:RetraitDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowUnselect" update=":RetraitListerForm:RetraitDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('RetraitListerForm:viewButton').click();"/>
 
-                <p:column style="width: 15%" filterBy="#{item.idmois.idmois.nom}">
+                <p:column style="width: 15%" filterBy="#{item.idmois.idmois.nom}" filterMatchMode="contains">
                     <f:facet name="header">
                         <h:outputText value="Mois"/>
                     </f:facet>
@@ -48,7 +70,7 @@
                     <h:outputText value="#{item.idclient.numerocarnet}"/>
                 </p:column>
 
-                <p:column style="width: 25%" filterBy="#{item.idclient.nom} #{item.idclient.prenom}">
+                <p:column style="width: 25%" filterBy="#{item.idclient.nom} #{item.idclient.prenom}" filterMatchMode="contains">
                     <f:facet name="header">
                         <h:outputText value="Client"/>
                     </f:facet>
@@ -82,7 +104,7 @@
                     </h:outputText>
                 </p:column>
 
-                <p:column style="width: 13%">
+                <p:column style="width: 13%;text-align: center">
                     <f:facet name="header">
                         <h:outputText value="Date"/>
                     </f:facet>
@@ -91,7 +113,7 @@
                     </h:outputText>
                 </p:column>
 
-                <p:column style="width: 7%">
+                <p:column style="width: 7%;text-align: center">
                     <f:facet name="header">
                         <h:outputText value="Heure"/>
                     </f:facet>
@@ -104,5 +126,4 @@
 
         </p:panel>
     </h:form>
-
 </ui:composition>

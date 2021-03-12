@@ -8,20 +8,20 @@
 
     <ui:composition>
 
-        <p:dialog id="TypeMatierelCreerDlg" 
-                  widgetVar="TypeMatiereCreerDialog" 
+        <p:dialog id="RetraitCreerDlg" 
+                  widgetVar="RetraitCreerDialog" 
                   modal="true" resizable="false" 
                   appendTo="@(body)" 
                   visible="#{retraitCnController.showRetraitCreateDialog}"
                   header="#{langue['Titre.Dlg.Creation']}: RETRAIT EN COMMISSION NEGOCIABLE" 
                   closeOnEscape="true">
 
-            <h:form id="TypeMatiereCreerForm">
+            <h:form id="RetraitCreerForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses ="column">
 
                         <p:outputLabel value="Clients" for="client"/>
-                        <p:selectOneMenu filter="true" id="client" disabled="#{retraitCnController.showClient}" required="true" value="#{retraitCnController.retrait.idclient}" converter="clientConverter" >
+                        <p:selectOneMenu filter="true" filterMatchMode="contains" id="client" disabled="#{retraitCnController.showClient}" required="true" value="#{retraitCnController.retrait.idclient}" converter="clientConverter" >
                             <f:selectItem itemLabel="#{langue.choisir}"/>
                             <f:selectItems value="#{retraitCnController.clients}" var="client" itemLabel="#{client.numerocarnet} - #{client.nom} #{client.prenom}" itemValue="#{client}" />
                             <p:ajax update="solde" listener="#{retraitCnController.updateSolde()}"/>
@@ -57,18 +57,15 @@
                     <p:separator/>
 
                     <center>
-
-                        <p:commandButton value="#{langue.annuler}" onclick="PF('TypeMatiereCreerDialog').hide()"/>
+                        <p:commandButton value="#{langue.annuler}" onclick="PF('RetraitCreerDialog').hide()"/>
                         <p:commandButton actionListener="#{retraitCnController.create()}" value="#{langue['Conv.Enregistrer']}" 
-                                         update="display,:TypeMatiereListerForm:datalist,:TypeMatiereListerForm:growl, TypeMatiereCreerForm" 
-                                         oncomplete="PF('TypeMatiereCreerDialog').hide()">
+                                         update="display,:RetraitListerForm:datalist,:RetraitListerForm:growl, RetraitCreerForm" 
+                                         oncomplete="PF('RetraitCreerDialog').hide()">
                             <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
                                        message="#{langue['Message.Confirm.Ajouter']}?"
                                        icon="ui-icon-alert"/>
                         </p:commandButton>
-
                     </center>
-
 
                 </h:panelGroup>  
 

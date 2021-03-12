@@ -1,7 +1,5 @@
 package controllers.privilege;
 
-import controllers.privilege.AbstractPrivilegeController;
-import controllers.privilege.PrivilegeInterfaceController;
 import entities.Menu;
 import entities.Privilege;
 import entities.Utilisateur;
@@ -133,11 +131,12 @@ public class PrivilegeController extends AbstractPrivilegeController implements 
                     /* 144 */ this.dualMenu.getSource().addAll(menus1);
                 }
             }
-            /* 147 */        } catch (Exception e) {
-            /* 148 */ e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    @Override
     public void save() {
         try {
             /* 155 */ if (this.utilisateur.getIdutilisateur() != null) {
@@ -193,6 +192,7 @@ public class PrivilegeController extends AbstractPrivilegeController implements 
         }
     }
 
+    @Override
     public void delete() {
         try {
             /* 211 */ if (this.utilisateur.getIdutilisateur() != null) {

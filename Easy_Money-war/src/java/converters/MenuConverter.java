@@ -12,8 +12,7 @@ import sessions.MenuFacadeLocal;
 import utils.JsfUtil;
 
 @FacesConverter("menuConverter")
-public class MenuConverter
-        implements Converter {
+public class MenuConverter implements Converter {
 
     @EJB
     private MenuFacadeLocal ejbFacade;
@@ -21,31 +20,30 @@ public class MenuConverter
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
         if (value == null || value.length() == 0 || JsfUtil.isDummySelectItem(component, value)) {
-             return null;
+            return null;
         }
-         return this.ejbFacade.find(getKey(value));
+        return this.ejbFacade.find(getKey(value));
     }
 
     Integer getKey(String value) {
-         Integer key = Integer.valueOf(value);
-         return key;
+        Integer key = Integer.valueOf(value);
+        return key;
     }
 
     String getStringKey(Integer value) {
-         return "" + value;
+        return "" + value;
     }
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
-        /* 40 */ if (object == null || (object instanceof String && ((String) object)
-                /* 41 */.length() == 0)) {
-            /* 42 */ return null;
+        if (object == null || (object instanceof String && ((String) object).length() == 0)) {
+            return null;
         }
-        /* 44 */ if (object instanceof Menu) {
-            /* 45 */ Menu o = (Menu) object;
-            /* 46 */ return getStringKey(o.getIdmenu());
+        if (object instanceof Menu) {
+            Menu m = (Menu) object;
+            return getStringKey(m.getIdmenu());
         }
-        /* 48 */ Logger.getLogger(getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Menu.class.getName()});
-        /* 49 */ return null;
+        Logger.getLogger(getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Menu.class.getName()});
+        return null;
     }
 }

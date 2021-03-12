@@ -28,11 +28,16 @@ public interface VersementFacadeLocal {
 
     List<Versement> find(Client client);
 
-    List<Versement> find(Client client, Date paramDate1, Date paramDate2);
+    List<Versement> find(Client client, Date dateDebut, Date dateFin);
 
-    List<Versement> find(Client client, Date paramDate);
+    List<Versement> find(Client client, Date date);
 
-    List<Versement> find(Client paramClient, AnneeMois paramAnneeMois) throws Exception;
+    List<Versement> find(Client client, AnneeMois anneeMois) throws Exception;
 
     List<Versement> findAllRange();
+
+    List<Versement> findByIdMois(int idMois) throws Exception;
+
+    List<Versement> findByDate(Date date) throws Exception;
+
 }

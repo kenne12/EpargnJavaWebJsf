@@ -16,7 +16,7 @@ public interface RetraitFacadeLocal {
 
     void remove(Retrait retrait);
 
-    Retrait find(Object retrait);
+    Retrait find(Object id);
 
     List<Retrait> findAll();
 
@@ -26,13 +26,17 @@ public interface RetraitFacadeLocal {
 
     Long nextLongVal();
 
-    List<Retrait> find(Client paramClient);
+    List<Retrait> find(Client client);
 
-    List<Retrait> find(Client paramClient, Date paramDate1, Date paramDate2);
+    List<Retrait> find(Client client, Date dateDebut, Date dateFin);
 
-    List<Retrait> find(Client paramClient, Date paramDate);
+    List<Retrait> find(Client client, Date date);
 
-    List<Retrait> findAllRange(Boolean paramBoolean) throws Exception;
+    List<Retrait> findAllRange(boolean etat) throws Exception;
 
-    List<Retrait> find(Client paramClient, AnneeMois paramAnneeMois) throws Exception;
+    List<Retrait> find(Client client, AnneeMois anneeMois) throws Exception;
+
+    List<Retrait> findByIdMois(int idMois) throws Exception;
+
+    List<Retrait> findByDate(Date date) throws Exception;
 }
