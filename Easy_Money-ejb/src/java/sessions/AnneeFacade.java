@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 @Stateless
 public class AnneeFacade extends AbstractFacade<Annee> implements AnneeFacadeLocal {
@@ -23,9 +22,16 @@ public class AnneeFacade extends AbstractFacade<Annee> implements AnneeFacadeLoc
     }
 
     @Override
-    public List<Annee> findByEtat(boolean etat) throws Exception {
-        Query query = this.em.createQuery("SELECT a FROM Annee a WHERE a.etat=:etat ORDER BY a.nom");
-        query.setParameter("etat", etat);
-        return query.getResultList();
+    public List<Annee> findByEtat(boolean etat) {
+        return this.em.createQuery("SELECT a FROM Annee a WHERE a.etat=:etat ORDER BY a.nom")
+                .setParameter("etat", etat)
+                .getResultList();
+
+    }
+
+    @Override
+    public List<Annee> findAllRangeByNom() {
+        return this.em.createQuery("SELECT a FROM Annee a ORDER BY a.nom")
+                .getResultList();
     }
 }

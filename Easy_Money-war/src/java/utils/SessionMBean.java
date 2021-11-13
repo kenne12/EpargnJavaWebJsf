@@ -3,7 +3,9 @@ package utils;
 import entities.Annee;
 import entities.AnneeMois;
 import entities.Utilisateur;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -63,5 +65,13 @@ public class SessionMBean {
             return (Annee) session.getAttribute("annee");
         }
         return null;
+    }
+
+    public static List<Long> getAccess() {
+        HttpSession session = getSession();
+        if (session != null) {
+            return (List<Long>) session.getAttribute("accesses");
+        }
+        return new ArrayList<>();
     }
 }

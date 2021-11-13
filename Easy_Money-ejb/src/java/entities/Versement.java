@@ -8,6 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -30,10 +31,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Versement.findAll", query = "SELECT v FROM Versement v"),
     @NamedQuery(name = "Versement.findByIdversement", query = "SELECT v FROM Versement v WHERE v.idversement = :idversement"),
     @NamedQuery(name = "Versement.findByMontant", query = "SELECT v FROM Versement v WHERE v.montant = :montant"),
-    @NamedQuery(name = "Versement.findByDate", query = "SELECT v FROM Versement v WHERE v.date = :date"),
+    @NamedQuery(name = "Versement.findByDate", query = "SELECT v FROM Versement v WHERE v.dateOperation = :date"),
     @NamedQuery(name = "Versement.findByHeure", query = "SELECT v FROM Versement v WHERE v.heure = :heure"),
     @NamedQuery(name = "Versement.findBySolde", query = "SELECT v FROM Versement v WHERE v.solde = :solde")})
 public class Versement implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -41,7 +43,8 @@ public class Versement implements Serializable {
     private Long idversement;
     private Integer montant;
     @Temporal(TemporalType.DATE)
-    private Date date;
+    @Column(name = "date")
+    private Date dateOperation;
     @Temporal(TemporalType.TIME)
     private Date heure;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -52,6 +55,9 @@ public class Versement implements Serializable {
     @JoinColumn(name = "idclient", referencedColumnName = "idclient")
     @ManyToOne(fetch = FetchType.LAZY)
     private Client idclient;
+
+    @Column(name = "idoperation")
+    private Long idOperation;
 
     public Versement() {
     }
@@ -76,12 +82,12 @@ public class Versement implements Serializable {
         this.montant = montant;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getDateOperation() {
+        return dateOperation;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDateOperation(Date dateOperation) {
+        this.dateOperation = dateOperation;
     }
 
     public Date getHeure() {
@@ -116,6 +122,14 @@ public class Versement implements Serializable {
         this.idclient = idclient;
     }
 
+    public Long getIdOperation() {
+        return idOperation;
+    }
+
+    public void setIdOperation(Long idOperation) {
+        this.idOperation = idOperation;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -140,5 +154,5 @@ public class Versement implements Serializable {
     public String toString() {
         return "entities.Versement[ idversement=" + idversement + " ]";
     }
-    
+
 }

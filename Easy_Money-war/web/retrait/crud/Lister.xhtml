@@ -30,32 +30,32 @@
                          selectionMode="single"
                          selection="#{retraitController.retrait}">
 
-                <p:ajax event="rowSelect"   update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowSelect" update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
                 <p:ajax event="rowUnselect" update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
                 <p:ajax event="rowDblselect" onsuccess="document.getElementById('TypeMatiereListerForm:viewButton').click();"/>
 
-                <p:column style="width: 15%" filterBy="#{item.idmois.idmois.nom}">
+                <p:column style="width: 15%" filterBy="#{item.idmois.idmois.nom}" filterMatchMode="contains">
                     <f:facet name="header">
                         <h:outputText value="Mois"/>
                     </f:facet>
                     <h:outputText value="#{item.idmois.idmois.nom}"/>
                 </p:column>
 
-                <p:column style="width: 10%" filterBy="#{item.idclient.numerocarnet}">
-                          <f:facet name="header">
-                          <h:outputText value="N° Carnet"/>
+                <p:column style="width: 10%" filterBy="#{item.idclient.numerocarnet}" filterMatchMode="contains">
+                    <f:facet name="header">
+                        <h:outputText value="N° Carnet"/>
                     </f:facet>
                     <h:outputText value="#{item.idclient.numerocarnet}"/>
                 </p:column>
 
-                <p:column style="width: 25%" filterBy="#{item.idclient.nom} #{item.idclient.prenom}">
+                <p:column style="width: 25%" filterBy="#{item.idclient.nom} #{item.idclient.prenom}" filterMatchMode="contains">
                     <f:facet name="header">
                         <h:outputText value="Client"/>
                     </f:facet>
                     <h:outputText value="#{item.idclient.nom} #{item.idclient.prenom}"/>
                 </p:column>
 
-                <p:column style="width: 10%" filterBy="#{item.montant}">
+                <p:column style="width: 10%" filterBy="#{item.montant}" filterMatchMode="contains">
                     <f:facet name="header">
                         <h:outputText value="#{langue.montant}"/>
                     </f:facet>

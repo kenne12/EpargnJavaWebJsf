@@ -1,8 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
-     <f:metadata>
+
+    <f:metadata>
         <f:event type="preRenderView" listener="#{loginBean.watcher()}" />
     </f:metadata> 
 
@@ -63,10 +63,10 @@
                         <span class="arrow"></span>
                     </a>
                     <ul class="sub">
-                        <li><a class="" href="#{request.contextPath}/fraiscarnet/fraiscarnet.html">Frais carnet</a></li>
+                        <!--<li><a class="" href="#{request.contextPath}/fraiscarnet/fraiscarnet.html">Frais carnet</a></li>-->
                         <li><a class="" href="#{request.contextPath}/versement/versement.html">Versement</a></li>
-                        <li><a class="" href="#{request.contextPath}/retrait/retrait.html">Retrait CA</a></li>
-                        <li><a class="" href="#{request.contextPath}/retrait2/retrait.html">Retrait CN</a></li>
+                        <!--<li><a class="" href="#{request.contextPath}/retrait/retrait.html">Retrait CA</a></li>-->
+                        <li><a class="" href="#{request.contextPath}/retrait2/retrait.html">Retrait</a></li>
                     </ul>
                 </li>
 
@@ -81,7 +81,8 @@
                         <li><a class="" href="#{request.contextPath}/rapportjournalier/rapportjournalier.html">Journalier</a></li>
                         <li><a class="" href="#{request.contextPath}/rapportperiodique/rapportperiodique.html">Périodique</a></li>
                         <li><a class="" href="#{request.contextPath}/rapporthebdomadaire/rapporthebdomadaire.html">Mensuel</a></li>                        
-                        <li><a class="" href="#{request.contextPath}/mouchard/mouchard.html">Journal des opération</a></li>
+                        <li><a class="" href="#{request.contextPath}/releve_compte/index.html">Relevé de compte</a></li>                        
+                        <li><a class="" href="#{request.contextPath}/mouchard/mouchard.html">Journal des opération</a></li>                          
                     </ul>
                 </li>
 

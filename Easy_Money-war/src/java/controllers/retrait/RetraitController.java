@@ -20,46 +20,46 @@ public class RetraitController extends AbstractRetraitController implements Seri
 
     @PostConstruct
     private void init() {
-        /*  37 */ this.client = new Client();
-        /*  38 */ this.retrait = new Retrait();
-        /*  39 */ this.anneeMois = new AnneeMois();
+        this.client = new Client();
+        this.retrait = new Retrait();
+        this.anneeMois = new AnneeMois();
     }
 
     public void updateMois() {
         try {
-            /*  44 */ this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
-            /*  45 */        } catch (Exception e) {
-            /*  46 */ e.printStackTrace();
+            this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void prepareCreate() {
-        /*  51 */ this.commission = Integer.valueOf(0);
-        /*  52 */ this.retrait1 = Integer.valueOf(0);
-        /*  53 */ this.client = new Client();
-        /*  54 */ this.retrait = new Retrait();
-        /*  55 */ this.retrait.setDate(SessionMBean.getDate());
-        /*  56 */ this.anneeMois = SessionMBean.getMois();
+        this.commission = 0;
+        this.retrait1 = 0;
+        this.client = new Client();
+        this.retrait = new Retrait();
+        this.retrait.setDateOperation(SessionMBean.getDate());
+        this.anneeMois = SessionMBean.getMois();
 
-        /*  58 */ this.mode = "Create";
-        /*  59 */ this.showClient = Boolean.valueOf(false);
+        this.mode = "Create";
+        this.showClient = false;
 
         try {
-            /*  62 */ Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-            /*  63 */ if (p != null) {
-                /*  64 */ this.showRetraitCreateDialog = Boolean.valueOf(true);
+            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+            if (p != null) {
+                this.showRetraitCreateDialog = true;
             } else {
-                /*  66 */ p = new Privilege();
-                /*  67 */ p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 13);
-                /*  68 */ if (p != null) {
-                    /*  69 */ this.showRetraitCreateDialog = Boolean.valueOf(true);
+                p = new Privilege();
+                p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 13);
+                if (p != null) {
+                    this.showRetraitCreateDialog = true;
                 } else {
-                    /*  71 */ this.showRetraitCreateDialog = Boolean.valueOf(false);
-                    /*  72 */ JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'enregistrer un retrait");
+                    this.showRetraitCreateDialog = false;
+                    JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'enregistrer un retrait");
                 }
             }
-            /*  75 */        } catch (Exception e) {
-            /*  76 */ e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

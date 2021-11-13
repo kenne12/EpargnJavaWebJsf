@@ -30,6 +30,8 @@ public interface RetraitFacadeLocal {
 
     List<Retrait> find(Client client, Date dateDebut, Date dateFin);
 
+    List<Retrait> findByToDates(Date datedebut, Date datefin);
+
     List<Retrait> find(Client client, Date date);
 
     List<Retrait> findAllRange(boolean etat) throws Exception;

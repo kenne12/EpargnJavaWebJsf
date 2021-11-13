@@ -8,6 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -31,18 +32,20 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Mouchard.findAll", query = "SELECT m FROM Mouchard m"),
     @NamedQuery(name = "Mouchard.findByIdmouchard", query = "SELECT m FROM Mouchard m WHERE m.idmouchard = :idmouchard"),
     @NamedQuery(name = "Mouchard.findByAction", query = "SELECT m FROM Mouchard m WHERE m.action = :action"),
-    @NamedQuery(name = "Mouchard.findByDate", query = "SELECT m FROM Mouchard m WHERE m.date = :date"),
+    @NamedQuery(name = "Mouchard.findByDate", query = "SELECT m FROM Mouchard m WHERE m.dateOperation = :date"),
     @NamedQuery(name = "Mouchard.findByHeure", query = "SELECT m FROM Mouchard m WHERE m.heure = :heure")})
 public class Mouchard implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
     private Long idmouchard;
-    @Size(max = 2147483647)
+    @Size(max = 300)
     private String action;
     @Temporal(TemporalType.DATE)
-    private Date date;
+    @Column(name = "date")
+    private Date dateOperation;
     @Temporal(TemporalType.TIME)
     private Date heure;
     @JoinColumn(name = "idutilisateur", referencedColumnName = "idutilisateur")
@@ -72,12 +75,12 @@ public class Mouchard implements Serializable {
         this.action = action;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getDateOperation() {
+        return dateOperation;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDateOperation(Date dateOperation) {
+        this.dateOperation = dateOperation;
     }
 
     public Date getHeure() {
@@ -120,5 +123,5 @@ public class Mouchard implements Serializable {
     public String toString() {
         return "entities.Mouchard[ idmouchard=" + idmouchard + " ]";
     }
-    
+
 }

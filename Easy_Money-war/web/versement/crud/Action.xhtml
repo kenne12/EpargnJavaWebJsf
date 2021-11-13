@@ -14,7 +14,7 @@
                                  value="#{langue['Conv.Creer']}" 
                                  actionListener="#{versementController.prepareCreate()}"
                                  update=":VersementCreerForm,:VersementListerForm:growl,:VersementCreerDlg" />
-                
+
                 <p:commandButton id="detail"   
                                  icon="ui-icon-search" 
                                  value="#{langue['Conv.Detail']}" 
@@ -28,7 +28,7 @@
                                  disabled="#{versementController.modifier}"
                                  actionListener="#{versementController.prepareEdit()}"
                                  update=":VersementCreerForm,:VersementListerForm:growl,:VersementCreerDlg" />
-                                  
+
                 <p:commandButton id="supprimer" 
                                  icon="ui-icon-trash"  
                                  value="#{langue['Conv.Supprimer']}" 
@@ -40,9 +40,19 @@
                                icon="ui-icon-alert"/>
                 </p:commandButton>
 
+                <!--<p:commandButton id="synch"  
+                                 value="Synchro" 
+                                 update=":VersementListerForm:growl,:VersementListerForm:datalist,:actionsForm"
+                                 actionListener="#{versementController.synchData()}"
+                                 onclick="PF('AjaxNotifyDialog').show()">
+                    <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
+                               message="Voulez-vous synchroniser ces données ?"
+                               icon="ui-icon-alert"/>
+                </p:commandButton>-->
+
                 <p:commandButton id="imprimer" icon="ui-icon-print"  
                                  value="#{langue['Conv.Imprimer']}" actionListener="#{versementController.print()}"
-                                 update=":VersementListerForm:growl,:VersementImprimerForm,:VersementImprimerDlg" disabled="#{versementController.imprimer}" 
+                                 update=":VersementListerForm:growl,:VersementImprimerForm,:VersementImprimerDlg" disabled="true" 
                                  oncomplete="PF('VersementImprimerDialog').show()"/>              
 
             </div>

@@ -133,7 +133,11 @@ public class AbstractClientController {
     }
 
     public boolean isShowMontantCarnet() {
-        return this.showMontantCarnet;
+        return showMontantCarnet;
+    }
+
+    public void setShowMontantCarnet(boolean showMontantCarnet) {
+        this.showMontantCarnet = showMontantCarnet;
     }
 
     public boolean isShowMontantCarnetCompnent() {

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="ReleveCompteListerForm">
+
+        <p:messages id="growl" closable="true">
+            <p:effect type="pulsate" event="load" delay="50" />
+        </p:messages>
+
+        <p:panelGrid columns="8">
+
+            <p:outputLabel value="Client" for="client" />
+            <p:selectOneMenu required="true" id="client" value="#{releveCompteController.client.idclient}" filter="true" filterMatchMode="contains">
+                <f:selectItem itemLabel="#{langue.choisir}" itemValue="0"/>
+                <f:selectItems value="#{releveCompteController.clients}" var="cl" itemLabel="#{cl.numerocarnet} - #{cl.nom} #{cl.prenom}" itemValue="#{cl.idclient}" />                                                                             
+                <p:ajax />
+            </p:selectOneMenu>
+
+            <p:outputLabel value="Date début" for="date_debut"/>
+            <p:calendar id="date_debut" value="#{releveCompteController.dateDebut}" navigator="true">
+                <p:ajax event="dateSelect" />
+            </p:calendar>
+
+            <p:outputLabel value="Date de fin" for="date_fin"/>
+            <p:calendar id="date_fin" value="#{releveCompteController.dateFin}" navigator="true">
+                <p:ajax event="dateSelect" />
+            </p:calendar>
+
+            <p:commandButton  icon="ui-icon-search"   
+                              value="#{langue.rechercher}" 
+                              actionListener="#{releveCompteController.find()}"
+                              update="datalist,datalist2,print,growl"/>
+
+            <p:commandButton id="print" icon="ui-icon-print"   
+                             value="Imprimer" 
+                             disabled="#{releveCompteController.showPrintButton}"
+                             actionListener="#{releveCompteController.printReport()}"
+                             update=":ReleveCompteImprimerDlg,growl"/>
+
+        </p:panelGrid>
+        <br />
+
+        <p:panel header="RELEVE DE COMPTE DU CLIENT">
+
+            <h:panelGrid columns="2">
+
+                <p:dataTable id="datalist"
+                             value="#{releveCompteController.versements}"
+                             var="item"
+                             paginator="true"
+                             rows="10"
+                             rowsPerPageTemplate="10,20,30,40,50">
+                    
+                    <f:facet name="header">
+                        <h:outputText value="LISTE DES VERSEMENTS" />
+                    </f:facet>
+
+                    <p:column style="text-align: center;width: 40%">
+                        <f:facet name="header">
+                            <h:outputText value="Date"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dateOperation}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center; width: 20%" filterBy="#{item.montant}">
+                        <f:facet name="header">
+                            <h:outputText value="Montant versé"/>
+                        </f:facet>
+                        <h:outputText value="#{item.montant}" >
+                            <f:convertNumber />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center; width: 40%">
+                        <f:facet name="header">
+                            <h:outputText value="Solde"/>
+                        </f:facet>
+                        <h:outputText value="#{item.solde}" >
+                            <f:convertNumber />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column style="text-align:right" footerText="Totaux" />
+                            <p:column style="text-align: center" footerText="#{releveCompteController.calculMontantVerse()}" />
+                            <p:column style="text-align: center" footerText=" / " />
+                        </p:row>
+                    </p:columnGroup>
+
+                </p:dataTable>
+
+                <p:dataTable id="datalist2"
+                             value="#{releveCompteController.retraits}"
+                             var="item"
+                             paginator="true"
+                             rows="10"
+                             rowsPerPageTemplate="10,20,30,40,50">
+                    
+                    <f:facet name="header">
+                        <h:outputText value="LISTE DES RETRAITS ESPECES" />
+                    </f:facet>
+
+                    <p:column style="text-align: center; width: 25%">
+                        <f:facet name="header">
+                            <h:outputText value="Date"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dateOperation}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center; width: 25%" filterBy="#{item.montant}">
+                        <f:facet name="header">
+                            <h:outputText value="Montant retiré"/>
+                        </f:facet>
+                        <h:outputText value="#{item.montant}" >
+                            <f:convertNumber />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center; width: 25%" filterBy="#{item.montant}">
+                        <f:facet name="header">
+                            <h:outputText value="Commission"/>
+                        </f:facet>
+                        <h:outputText value="#{item.commission}">
+                            <f:convertNumber />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column style="text-align: center; width: 25%">
+                        <f:facet name="header">
+                            <h:outputText value="Solde"/>
+                        </f:facet>
+                        <h:outputText value="#{item.solde}" >
+                            <f:convertNumber />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column style="text-align:right" footerText="Totaux" />
+                            <p:column style="text-align: center" footerText="#{releveCompteController.calculMontantRetire()}" />
+                            <p:column style="text-align: center" footerText="#{releveCompteController.calculMontantCommission()}" />
+                            <p:column style="text-align: center" footerText=" / " />
+                        </p:row>
+                    </p:columnGroup>
+
+                </p:dataTable>
+
+            </h:panelGrid>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

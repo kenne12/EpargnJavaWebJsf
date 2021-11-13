@@ -12,7 +12,6 @@
                   widgetVar="RetraitCreerDialog" 
                   modal="true" resizable="false" 
                   appendTo="@(body)" 
-                  visible="#{retraitCnController.showRetraitCreateDialog}"
                   header="#{langue['Titre.Dlg.Creation']}: RETRAIT EN COMMISSION NEGOCIABLE" 
                   closeOnEscape="true">
 
@@ -35,7 +34,7 @@
                         </p:selectOneMenu>
 
                         <p:outputLabel value="#{langue.date}" for="date" />
-                        <p:calendar id="date" navigator="true" mindate="#{retraitCnController.anneeMois.dateDebut}" maxdate="#{retraitCnController.anneeMois.dateFin}" value="#{retraitCnController.retrait.date}"/>
+                        <p:calendar id="date" navigator="true" mindate="#{retraitCnController.anneeMois.dateDebut}" maxdate="#{retraitCnController.anneeMois.dateFin}" value="#{retraitCnController.retrait.dateOperation}"/>
 
                         <p:outputLabel value="SOLDE" for="solde" />
                         <p:inputText id="solde" style="color: blue" disabled="true" value="#{retraitCnController.retrait.idclient.solde}"/> 
@@ -59,8 +58,8 @@
                     <center>
                         <p:commandButton value="#{langue.annuler}" onclick="PF('RetraitCreerDialog').hide()"/>
                         <p:commandButton actionListener="#{retraitCnController.create()}" value="#{langue['Conv.Enregistrer']}" 
-                                         update="display,:RetraitListerForm:datalist,:RetraitListerForm:growl, RetraitCreerForm" 
-                                         oncomplete="PF('RetraitCreerDialog').hide()">
+                                         update="display,:RetraitListerForm:datalist,:RetraitListerForm:growl, RetraitCreerForm, :notify1" 
+                                         onclick="PF('AjaxNotifyDialog').show()">
                             <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
                                        message="#{langue['Message.Confirm.Ajouter']}?"
                                        icon="ui-icon-alert"/>

@@ -11,48 +11,47 @@ import javax.faces.model.SelectItem;
 
 @ManagedBean(name = "localeManagedBean")
 @SessionScoped
-public class LocaleManagedBean
-        implements Serializable {
-    /* 29 */ private Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+public class LocaleManagedBean implements Serializable {
+
+    private Locale locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
 
     public String getLanguage() {
-        /* 37 */ return this.locale.getLanguage();
+        return this.locale.getLanguage();
     }
 
     public void setLanguage(String language) {
-        /* 46 */ this.locale = new Locale(language);
-        /* 47 */ FacesContext.getCurrentInstance().getViewRoot().setLocale(this.locale);
+        this.locale = new Locale(language);
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(this.locale);
     }
 
     public Locale getLocale() {
-        /* 56 */ return this.locale;
+        return this.locale;
     }
 
     public SelectItem[] getLocales() {
-        /* 65 */ ArrayList<SelectItem> items = new ArrayList();
+        ArrayList<SelectItem> items = new ArrayList();
 
-        /* 67 */ Application application = FacesContext.getCurrentInstance().getApplication();
-        /* 68 */ Iterator<Locale> supportedLocales = application.getSupportedLocales();
+        Application application = FacesContext.getCurrentInstance().getApplication();
+        Iterator<Locale> supportedLocales = application.getSupportedLocales();
 
-        /* 70 */ while (supportedLocales.hasNext()) {
-            /* 71 */ Locale loc = supportedLocales.next();
-            /* 72 */ items.add(new SelectItem(loc.getLanguage(), loc
-                    /* 73 */.getDisplayName(this.locale)));
+        while (supportedLocales.hasNext()) {
+            Locale loc = supportedLocales.next();
+            items.add(new SelectItem(loc.getLanguage(), loc
+                    .getDisplayName(this.locale)));
         }
-        /* 75 */ SelectItem[] locales = new SelectItem[items.size()];
-        /* 76 */ items.toArray(locales);
-        /* 77 */ return locales;
+        SelectItem[] locales = new SelectItem[items.size()];
+        items.toArray(locales);
+        return locales;
     }
 
     public void activerFR() {
-        /* 81 */ FacesContext context = FacesContext.getCurrentInstance();
-        /* 82 */ context.getViewRoot().setLocale(Locale.FRENCH);
-        /* 83 */ System.out.println("FRENCH");
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getViewRoot().setLocale(Locale.FRENCH);
+
     }
 
     public void activerEN() {
-        /* 88 */ FacesContext context = FacesContext.getCurrentInstance();
-        /* 89 */ context.getViewRoot().setLocale(Locale.ENGLISH);
-        /* 90 */ System.out.println("ENGLISH");
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getViewRoot().setLocale(Locale.ENGLISH);
     }
 }

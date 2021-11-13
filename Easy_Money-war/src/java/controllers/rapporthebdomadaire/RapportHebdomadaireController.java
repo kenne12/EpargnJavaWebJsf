@@ -5,6 +5,7 @@ import entities.FraisCarnet;
 import entities.Privilege;
 import entities.Retrait;
 import entities.Versement;
+import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -16,7 +17,7 @@ import utils.Solde;
 
 @ManagedBean
 @ViewScoped
-public class RapportHebdomadaireController extends AbstractRapportHebdomaireController {
+public class RapportHebdomadaireController extends AbstractRapportHebdomaireController implements Serializable{
 
     @PostConstruct
     private void init() {
@@ -37,120 +38,115 @@ public class RapportHebdomadaireController extends AbstractRapportHebdomaireCont
         this.soldes.clear();
 
         try {
-            /*  55 */ this.clients = this.clientFacadeLocal.findAllRange(true);
+            this.clients = this.clientFacadeLocal.findAllRange(true);
 
-            /*  57 */ this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
+            this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
 
-            /*  59 */ for (Client c : this.clients) {
-                /*  60 */ Solde solde = new Solde();
-                /*  61 */ solde.setClient(c);
+            for (Client c : this.clients) {
+                Solde solde = new Solde();
+                solde.setClient(c);
 
-                /*  63 */ List<Versement> versements = this.versementFacadeLocal.find(c, this.anneeMois);
-                /*  64 */ if (versements.isEmpty()) {
-
-                    /*  66 */ solde.setMontantVerse(Integer.valueOf(0));
+                List<Versement> versements = this.versementFacadeLocal.find(c, this.anneeMois);
+                if (versements.isEmpty()) {
+                    solde.setMontantVerse(0);
                 } else {
-                    /*  68 */ int montantverse = 0;
-                    /*  69 */ for (Versement v : versements) {
-                        /*  70 */ montantverse += v.getMontant().intValue();
+                    int montantverse = 0;
+                    for (Versement v : versements) {
+                        montantverse += v.getMontant();
                     }
-                    /*  72 */ solde.setMontantVerse(Integer.valueOf(montantverse));
+                    solde.setMontantVerse(montantverse);
                 }
 
-                /*  75 */ List<Retrait> retraits = this.retraitFacadeLocal.find(c, this.anneeMois);
-                /*  76 */ if (retraits.isEmpty()) {
-                    /*  77 */ solde.setMontantRetire(Integer.valueOf(0));
-                    /*  78 */ solde.setCommission(Integer.valueOf(0));
+                List<Retrait> retraits = this.retraitFacadeLocal.find(c, this.anneeMois);
+                if (retraits.isEmpty()) {
+                    solde.setMontantRetire(0);
+                    solde.setCommission(0);
                 } else {
-                    /*  80 */ int montantRetire = 0;
-                    /*  81 */ int commission = 0;
-                    /*  82 */ for (Retrait r : retraits) {
-                        /*  83 */ montantRetire += r.getMontant().intValue();
-                        /*  84 */ commission += r.getCommission().intValue();
+                    int montantRetire = 0;
+                    int commission = 0;
+                    for (Retrait r : retraits) {
+                        montantRetire += r.getMontant();
+                        commission += r.getCommission();
                     }
-                    /*  86 */ solde.setMontantRetire(Integer.valueOf(montantRetire));
-                    /*  87 */ solde.setCommission(Integer.valueOf(commission));
+                    solde.setMontantRetire(montantRetire);
+                    solde.setCommission(commission);
                 }
 
-                /*  90 */ List<FraisCarnet> fraisCarnets = this.fraisCarnetFacadeLocal.find(c, this.anneeMois);
-                /*  91 */ if (fraisCarnets.isEmpty()) {
-                    /*  92 */ solde.setCarnet(Integer.valueOf(0));
+                List<FraisCarnet> fraisCarnets = this.fraisCarnetFacadeLocal.find(c, this.anneeMois);
+                if (fraisCarnets.isEmpty()) {
+                    solde.setCarnet(0);
                 } else {
-                    /*  94 */ int montantF = 0;
-                    /*  95 */ for (FraisCarnet f : fraisCarnets) {
-                        /*  96 */ montantF = (int) (montantF + f.getMontant().doubleValue());
+                    int montantF = 0;
+                    for (FraisCarnet f : fraisCarnets) {
+                        montantF = (int) (montantF + f.getMontant());
                     }
-
-                    /*  99 */ solde.setCarnet(Integer.valueOf(montantF));
+                    solde.setCarnet(montantF);
                 }
-
-                /* 102 */ this.soldes.add(solde);
+                this.soldes.add(solde);
             }
 
-            /* 105 */ if (this.soldes.isEmpty()) {
-                /* 106 */ this.showPrintButton = true;
+            if (this.soldes.isEmpty()) {
+                this.showPrintButton = true;
             } else {
-                /* 108 */ this.showPrintButton = false;
+                this.showPrintButton = false;
             }
-
-            /* 111 */        } catch (Exception e) {
-            /* 112 */ e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void printReport() {
         try {
-            /* 118 */ Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-            /* 119 */ if (p != null) {
-                /* 120 */ this.showReportPrintDialog = true;
+            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+            if (p != null) {
+                this.showReportPrintDialog = true;
             } else {
-                /* 122 */ p = new Privilege();
-                /* 123 */ p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 17);
-                /* 124 */ if (p != null) {
-                    /* 125 */ this.showReportPrintDialog = true;
+                p = new Privilege();
+                p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 17);
+                if (p != null) {
+                    this.showReportPrintDialog = true;
                 } else {
-                    /* 127 */ this.showReportPrintDialog = false;
-                    /* 128 */ JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'éditer le rapport périodique d'activité");
-
+                    this.showReportPrintDialog = false;
+                    JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'éditer le rapport périodique d'activité");
                     return;
                 }
             }
-            /* 133 */ this.fileName = PrintUtils.printWeeklyReport(this.soldes, this.anneeMois);
-            /* 134 */        } catch (Exception e) {
-            /* 135 */ e.printStackTrace();
+            this.fileName = PrintUtils.printWeeklyReport(this.soldes, this.anneeMois);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public String calculMontantVerse() {
-        /* 140 */ if (this.soldes.isEmpty()) {
-            /* 141 */ return "";
+        if (this.soldes.isEmpty()) {
+            return "";
         }
-        /* 143 */ int resultat = 0;
-        /* 144 */ for (Solde s : this.soldes) {
-            /* 145 */ resultat += s.getMontantVerse().intValue();
+        int resultat = 0;
+        for (Solde s : this.soldes) {
+            resultat += s.getMontantVerse();
         }
-        /* 147 */ return JsfUtil.formaterStringMoney(Integer.valueOf(resultat));
+        return JsfUtil.formaterStringMoney(resultat);
     }
 
     public String calculMontantRetire() {
-        /* 151 */ if (this.soldes.isEmpty()) {
-            /* 152 */ return "";
+        if (this.soldes.isEmpty()) {
+            return "";
         }
-        /* 154 */ int resultat = 0;
-        /* 155 */ for (Solde s : this.soldes) {
-            /* 156 */ resultat += s.getMontantRetire().intValue();
+        int resultat = 0;
+        for (Solde s : this.soldes) {
+            resultat += s.getMontantRetire();
         }
-        /* 158 */ return JsfUtil.formaterStringMoney(Integer.valueOf(resultat));
+        return JsfUtil.formaterStringMoney(resultat);
     }
 
     public String calculSolde() {
-        /* 162 */ if (this.soldes.isEmpty()) {
-            /* 163 */ return "";
+        if (this.soldes.isEmpty()) {
+            return "";
         }
-        /* 165 */ int resultat = 0;
-        /* 166 */ for (Solde s : this.soldes) {
-            /* 167 */ resultat += s.getClient().getSolde().intValue();
+        int resultat = 0;
+        for (Solde s : this.soldes) {
+            resultat += s.getClient().getSolde();
         }
-        /* 169 */ return JsfUtil.formaterStringMoney(Integer.valueOf(resultat));
+        return JsfUtil.formaterStringMoney(resultat);
     }
 }

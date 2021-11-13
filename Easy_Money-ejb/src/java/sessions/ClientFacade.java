@@ -31,13 +31,11 @@ public class ClientFacade extends AbstractFacade<Client> implements ClientFacade
     @Override
     public Integer nextVal() {
         Query query = this.em.createQuery("SELECT MAX(c.idclient) FROM Client c");
-        Integer result = (Integer) query.getSingleResult();
-        if (result == null) {
-            result = 1;
-        } else {
-            result = (result + 1);
+        try {
+            return ((Integer) query.getSingleResult() + 1);
+        } catch (Exception e) {
+            return 1;
         }
-        return result;
     }
 
     @Override

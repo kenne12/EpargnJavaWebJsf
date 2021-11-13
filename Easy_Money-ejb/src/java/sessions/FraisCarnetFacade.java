@@ -28,13 +28,11 @@ public class FraisCarnetFacade extends AbstractFacade<FraisCarnet> implements Fr
     @Override
     public Long nextVal() {
         Query query = this.em.createQuery("SELECT MAX(f.id) FROM FraisCarnet f");
-        Long result = (Long) query.getSingleResult();
-        if (result == null) {
-            result = 1L;
-        } else {
-            result = (result + 1L);
+        try {
+            return ((Long) query.getSingleResult() + 1);
+        } catch (Exception e) {
+            return 1L;
         }
-        return result;
     }
 
     @Override

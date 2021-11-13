@@ -12,12 +12,14 @@
             <p:effect type="pulsate" event="load" delay="50" />
         </p:messages>
 
-        <h:panelGrid columns="5">
+        <p:panelGrid columns="9">
             <h:outputLabel value="Mode" />
             <p:selectOneMenu value="#{retraitCnController.searchMode}">
                 <f:selectItem itemLabel="Date" itemValue="date" />
                 <f:selectItem itemLabel="Mois" itemValue="mois" />
-                <p:ajax update="date_search_label,date_search,mois_search_label,mois_search,RetraitListerForm" listener="#{retraitCnController.updateMode()}" />
+                <f:selectItem itemLabel="Année" itemValue="annee" />
+                <p:ajax update="date_search_label,date_search,mois_search_label,mois_search,RetraitListerForm,annee_search,annee_search_label" 
+                        listener="#{retraitCnController.updateMode()}" />
             </p:selectOneMenu>
 
             <h:outputLabel rendered="#{retraitCnController.searchMode eq 'date' ? true : false}" id="date_search_label" value="Date" />
@@ -31,10 +33,16 @@
                 <f:selectItems value="#{retraitCnController.anneeMoises}" var="mois" itemLabel="#{mois.idmois.nom}" itemValue="#{mois.idAnneeMois}" />
             </p:selectOneMenu>
 
-            <p:commandButton value="Search" update="datalist" actionListener="#{retraitCnController.searchData()}" />
-        </h:panelGrid>
+            <h:outputLabel rendered="#{retraitCnController.searchMode eq 'annee' ? true : false}" id="annee_search_label" value="Année" />
+            <p:selectOneMenu rendered="#{retraitCnController.searchMode eq 'annee' ? true : false}" id="annee_search" value="#{retraitCnController.anneeSearch.idannee}">
+                <f:selectItem itemLabel="#{langue.choisir}" itemValue="0" />
+                <f:selectItems value="#{retraitCnController.annees}" var="annee" itemLabel="#{annee.nom}" itemValue="#{annee.idannee}" />
+            </p:selectOneMenu>
 
-        <p:panel header="#{langue['Conv.ListeDes']} : RETRAITS">
+            <p:commandButton value="Search" update="datalist,growl" actionListener="#{retraitCnController.searchData()}" />
+        </p:panelGrid>
+
+        <p:panel header="#{langue['Conv.ListeDes']} : RETRAITS" style="margin-top: 5px">
             <p:contextMenu id="RetraitDataTableContextMenu" for="datalist">  
                 <p:menuitem value="#{langue['Conv.Creer']}" onclick="document.getElementById('actionsForm:creer').click();" icon="ui-icon-plus"/>
                 <p:menuitem value="#{langue['Conv.Detail']}" onclick="document.getElementById('actionsForm:detail').click();" icon="ui-icon-search"/>
@@ -108,7 +116,7 @@
                     <f:facet name="header">
                         <h:outputText value="Date"/>
                     </f:facet>
-                    <h:outputText value="#{item.date}">
+                    <h:outputText value="#{item.dateOperation}">
                         <f:convertDateTime pattern="dd/MM/yyyy" />
                     </h:outputText>
                 </p:column>
@@ -126,4 +134,29 @@
 
         </p:panel>
     </h:form>
+
+
+    <!-- ****************************************Information************************************************************************************************************************************************************************************************************** -->
+
+    <p:dialog id="notify1" widgetVar="NotifyDialog1" height="400" width="600" resizable="true" modal="true" style="text-align: center; font-size: 14px; font-family: Cambria;">
+        <f:facet name="header">
+            <h:outputText style="font-family: Cambria; font-size: 14px;" value="#{retraitCnController.routine.titleNotify}" />
+        </f:facet>
+        <h:form id="NotifyForm1">
+            <h:graphicImage id="nt_img" url="#{retraitCnController.routine.iconMessage}" style="cursor:pointer" />
+
+            <hr size="3" style="background-color: cornflowerblue;"/>
+
+            <h:outputText id="nt_msg" value="#{retraitCnController.routine.message}"/>
+
+            <hr size="3" style="background-color: cornflowerblue; margin-top: 5%;"/>
+
+            <p:commandButton style="font-family: Cambria; font-size: 14px;" value="#{langue.fermer}" onclick="PF('NotifyDialog1').hide()" type="button" immediate="true"/>
+
+            <hr size="3" style="background-color: cornflowerblue;"/>
+        </h:form>
+    </p:dialog>
+
+    <!-- ****************************************Information************************************************************************************************************************************************************************************************************** -->
+
 </ui:composition>

@@ -11,37 +11,37 @@ public class ShaHash {
     private String hash;
 
     public synchronized String hash(String plaintext) {
-        /* 21 */ this.plaintext = plaintext;
-        /* 22 */ MessageDigest md = null;
+        this.plaintext = plaintext;
+        MessageDigest md = null;
         try {
-            /* 24 */ md = MessageDigest.getInstance("SHA");
-            /* 25 */        } catch (NoSuchAlgorithmException e) {
-            /* 26 */ e.printStackTrace();
+            md = MessageDigest.getInstance("SHA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
         try {
-            /* 29 */ md.update(this.plaintext.getBytes("UTF-8"));
-            /* 30 */        } catch (UnsupportedEncodingException e) {
-            /* 31 */ e.printStackTrace();
+            md.update(this.plaintext.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        /* 33 */ byte[] raw = md.digest();
+        byte[] raw = md.digest();
 
-        /* 36 */ this.hash = Base64.getMimeEncoder().encodeToString(raw);
-        /* 37 */ return this.hash;
+        this.hash = Base64.getMimeEncoder().encodeToString(raw);
+        return this.hash;
     }
 
     public String getPlaintext() {
-        /* 41 */ return this.plaintext;
+        return this.plaintext;
     }
 
     public void setPlaintext(String plaintext) {
-        /* 45 */ this.plaintext = plaintext;
+        this.plaintext = plaintext;
     }
 
     public String getHash() {
-        /* 49 */ return this.hash;
+        return this.hash;
     }
 
     public void setHash(String hash) {
-        /* 53 */ this.hash = hash;
+        this.hash = hash;
     }
 }

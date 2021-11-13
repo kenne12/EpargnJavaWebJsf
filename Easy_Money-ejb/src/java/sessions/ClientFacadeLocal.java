@@ -25,11 +25,11 @@ public interface ClientFacadeLocal {
 
     Integer nextVal();
 
-    Client findByCni(String paramString);
+    Client findByCni(String cni);
 
-    Client findByNumeroCarnet(Integer paramInteger);
+    Client findByNumeroCarnet(Integer numeroCarnet);
 
     List<Client> findAllRange();
 
-    List<Client> findAllRange(boolean paramBoolean);
+    List<Client> findAllRange(boolean etat);
 }

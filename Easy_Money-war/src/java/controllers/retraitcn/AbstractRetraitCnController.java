@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
+import sessions.AnneeFacadeLocal;
 import sessions.AnneeMoisFacadeLocal;
-import sessions.CaisseFacadeLocal;
 import sessions.ClientFacadeLocal;
 import sessions.MouchardFacadeLocal;
-import sessions.PrivilegeFacadeLocal;
 import sessions.RetraitFacadeLocal;
 import utils.SessionMBean;
 
@@ -33,7 +32,11 @@ public class AbstractRetraitCnController {
     protected AnneeMois anneeMois = new AnneeMois();
     protected List<AnneeMois> anneeMoises = new ArrayList<>();
 
+    @EJB
+    protected AnneeFacadeLocal anneeFacadeLocal;
     protected Annee annee = SessionMBean.getAnnee();
+    protected Annee anneeSearch = SessionMBean.getAnnee();
+    protected List<Annee> annees = new ArrayList<>();
 
     protected String searchMode = "";
     protected Date searchDate;
@@ -41,12 +44,6 @@ public class AbstractRetraitCnController {
 
     @EJB
     protected MouchardFacadeLocal mouchardFacadeLocal;
-
-    @EJB
-    protected CaisseFacadeLocal caisseFacadeLocal;
-
-    @EJB
-    protected PrivilegeFacadeLocal privilegeFacadeLocal;
 
     protected Integer retrait1 = 0;
     protected Integer commission = 0;
@@ -56,12 +53,6 @@ public class AbstractRetraitCnController {
     protected Boolean consulter = true;
     protected Boolean imprimer = true;
     protected Boolean supprimer = true;
-
-    protected Boolean showRetraitCreateDialog = false;
-    protected Boolean showRetraitDetailDialog = false;
-    protected Boolean showRetraitDeleteDialog = false;
-    protected Boolean showRetraitEditDialog = false;
-    protected Boolean showRetraitPrintDialog = false;
 
     protected Boolean showClient = true;
 
@@ -122,26 +113,6 @@ public class AbstractRetraitCnController {
         return this.retraits;
     }
 
-    public Boolean getShowRetraitCreateDialog() {
-        return this.showRetraitCreateDialog;
-    }
-
-    public Boolean getShowRetraitDetailDialog() {
-        return this.showRetraitDetailDialog;
-    }
-
-    public Boolean getShowRetraitDeleteDialog() {
-        return this.showRetraitDeleteDialog;
-    }
-
-    public Boolean getShowRetraitEditDialog() {
-        return this.showRetraitEditDialog;
-    }
-
-    public Boolean getShowRetraitPrintDialog() {
-        return this.showRetraitPrintDialog;
-    }
-
     public Integer getCommission() {
         return this.commission;
     }
@@ -197,6 +168,19 @@ public class AbstractRetraitCnController {
 
     public void setAnnee(Annee annee) {
         this.annee = annee;
+    }
+
+    public Annee getAnneeSearch() {
+        return anneeSearch;
+    }
+
+    public void setAnneeSearch(Annee anneeSearch) {
+        this.anneeSearch = anneeSearch;
+    }
+
+    public List<Annee> getAnnees() {
+        annees = anneeFacadeLocal.findAllRangeByNom();
+        return annees;
     }
 
 }

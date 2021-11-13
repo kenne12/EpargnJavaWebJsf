@@ -1,21 +1,45 @@
 package controllers.versement;
 
+import controllers.service.OperationService;
+import controllers.service.UtilService;
 import entities.Caisse;
 import entities.Client;
-import entities.Privilege;
+import entities.Operation;
+import entities.OperationType;
 import entities.Versement;
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.transaction.UserTransaction;
+import org.primefaces.context.RequestContext;
+import sessions.OperationFacadeLocal;
 import utils.JsfUtil;
+import utils.Routine;
 import utils.SessionMBean;
 import utils.Utilitaires;
 
 @ManagedBean
 @ViewScoped
 public class VersementController extends AbstractVersementController implements Serializable {
+
+    private final Routine routine = new Routine();
+
+    @EJB
+    private OperationService operationService;
+
+    @EJB
+    private OperationFacadeLocal operationFacadeLocal;
+
+    @EJB
+    private UtilService utilService;
+
+    @Resource
+    private UserTransaction userTransaction;
 
     @PostConstruct
     private void init() {
@@ -32,34 +56,28 @@ public class VersementController extends AbstractVersementController implements 
     }
 
     public void prepareCreate() {
-        this.mode = "Create";
-        this.client = new Client();
-        this.versement = new Versement();
-        this.versement.setDate(SessionMBean.getDate());
-        this.versement.setSolde(0.0);
-        this.showClient = false;
-        this.anneeMois = SessionMBean.getMois();
-
-        try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1);
-            if (p != null) {
-                this.showVersementCreateDialog = true;
-            } else {
-                p = new Privilege();
-                p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 10);
-                if (p != null) {
-                    this.showVersementCreateDialog = true;
-                } else {
-                    this.showVersementCreateDialog = false;
-                    JsfUtil.addErrorMessage("Vous n 'avez pas le privilege d'enregistrer un versement");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!Utilitaires.isAccess(10l)) {
+            JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'enregistrer un versement");
+            return;
         }
+        mode = "Create";
+        client = new Client();
+        versement = new Versement();
+        versement.setDateOperation(SessionMBean.getDate());
+        versement.setSolde(0d);
+        showClient = false;
+        anneeMois = SessionMBean.getMois();
+        versement1 = 0;
+        RequestContext.getCurrentInstance().execute("PF('VersementCreerDialog').show()");
     }
 
     public void prepareEdit() {
+
+        if (!Utilitaires.isAccess(11L)) {
+            JsfUtil.addErrorMessage("Vous n'avez pas le privilège de modifier un versement");
+            return;
+        }
+
         this.mode = "Edit";
         this.showClient = true;
 
@@ -68,45 +86,28 @@ public class VersementController extends AbstractVersementController implements 
             this.anneeMois = this.versement.getIdmois();
         }
 
-        try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-            if (p != null) {
-                this.showVersementCreateDialog = true;
-            } else {
-                p = new Privilege();
-                p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 11);
-                if (p != null) {
-                    this.showVersementCreateDialog = true;
-                } else {
-                    this.showVersementCreateDialog = false;
-                    JsfUtil.addErrorMessage("Vous n 'avez pas le privilege de modifier ce versement");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        RequestContext.getCurrentInstance().execute("PF('VersementCreerDialog').show()");
     }
 
     public void updateSolde1() {
-        if (this.mode.equals("Create")) {
-            if (this.versement.getIdclient() != null) {
-                if (this.versement1 != null) {
-                    Client c = this.clientFacadeLocal.find(this.versement.getIdclient().getIdclient());
-                    int solde = c.getSolde() + this.versement1;
-                    this.versement.getIdclient().setSolde(solde);
+        if (mode.equals("Create")) {
+            if (versement.getIdclient() != null) {
+                if (versement1 != null) {
+                    Client c = clientFacadeLocal.find(versement.getIdclient().getIdclient());
+                    int solde = c.getSolde() + versement1;
+                    versement.getIdclient().setSolde(solde);
                 } else {
-                    Client c = this.clientFacadeLocal.find(this.versement.getIdclient().getIdclient());
-                    this.versement.getIdclient().setSolde(c.getSolde());
+                    Client c = clientFacadeLocal.find(versement.getIdclient().getIdclient());
+                    versement.getIdclient().setSolde(c.getSolde());
                 }
-
             }
-        } else if (this.versement.getIdclient() != null) {
-            if (this.versement1 != null) {
-                Client c = this.clientFacadeLocal.find(this.versement.getIdclient().getIdclient());
-                int solde = c.getSolde() - this.versement1;
-                this.versement.getIdclient().setSolde((solde));
+        } else if (versement.getIdclient() != null) {
+            if (versement1 != null) {
+                Client c = clientFacadeLocal.find(versement.getIdclient().getIdclient());
+                int solde = c.getSolde() - versement1;
+                versement.getIdclient().setSolde((solde));
             } else {
-                Client c = this.clientFacadeLocal.find(this.versement.getIdclient().getIdclient());
+                Client c = clientFacadeLocal.find(versement.getIdclient().getIdclient());
                 this.versement.getIdclient().setSolde(c.getSolde());
             }
         }
@@ -120,84 +121,123 @@ public class VersementController extends AbstractVersementController implements 
 
     }
 
+    private void notifyEmpty(List<Versement> versements) {
+        if (versements.isEmpty()) {
+            JsfUtil.addWarningMessage("Aucune donnée retrouvée correspondant aux critères de recherches");
+        }
+    }
+
     public void searchData() {
         try {
             versements.clear();
-            if (searchMode.equals("date")) {
-                if (!searchDate.equals(null)) {
-                    this.versements = versementFacadeLocal.findByDate(searchDate);
-                    return;
+            switch (searchMode) {
+                case "date": {
+                    if (!Objects.equals(searchDate, null)) {
+                        versements.addAll(versementFacadeLocal.findByDate(searchDate));
+                        notifyEmpty(versements);
+                        return;
+                    }
+                    JsfUtil.addErrorMessage("Veuillez sélectionner la date");
                 }
-            }
-            if (searchMode.equals("mois")) {
-                if (searchMois.getIdAnneeMois() != 0) {
-                    this.versements = versementFacadeLocal.findByIdMois(searchMois.getIdAnneeMois());
-                    return;
+
+                case "mois": {
+                    if (searchMois.getIdAnneeMois() != 0) {
+                        searchMois = anneeMoisFacadeLocal.find(searchMois.getIdAnneeMois());
+                        versements = versementFacadeLocal.findByTwoDates(searchMois.getDateDebut(), searchMois.getDateFin());
+                        notifyEmpty(versements);
+                        return;
+                    }
+                    JsfUtil.addErrorMessage("Veuillez sélectionner le mois");
                 }
+
+                case "annee": {
+                    if (!Objects.equals(anneeSearch.getIdannee(), 0)) {
+                        anneeSearch = anneeFacadeLocal.find(anneeSearch.getIdannee());
+                        versements = versementFacadeLocal.findByTwoDates(anneeSearch.getDateDebut(), anneeSearch.getDateFin());
+                        notifyEmpty(versements);
+                        return;
+                    }
+                    JsfUtil.addWarningMessage("Veuillez sélectionner une année");
+                }
+                default:
+                    JsfUtil.addWarningMessage("Veuillez selectionner un critère de recherche");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
+            JsfUtil.addErrorMessage("Erreur survenue en cours d'exécution");
         }
     }
 
     public void create() {
         try {
-            if (this.mode.equals("Create")) {
+            if (mode.equals("Create")) {
 
-                Client c = this.clientFacadeLocal.find(this.versement.getIdclient().getIdclient());
-                c.setSolde(c.getSolde() + this.versement1);
+                userTransaction.begin();
 
-                this.versement.setIdversement(this.versementFacadeLocal.nextVal());
-                this.versement.setMontant(this.versement1);
-                this.versement.setSolde(Double.valueOf(c.getSolde()));
-                this.versement.setHeure(new Date());
-                this.versement.setIdmois(this.anneeMois);
-                this.versementFacadeLocal.create(this.versement);
+                Operation operation = new Operation();
+                operation.setClient(versement.getIdclient());
+                operation.setCommission(null);
+                operation.setOperationType(OperationType.CREDIT);
+                operation.setLibelle("Versement espèce : " + versement.getIdclient().getPrenom());
+                operation.setMontant(versement1.doubleValue());
+                operation.setDateOperation(versement.getDateOperation());
+                Operation newOperation = operationService.saveOperation(operation);
 
-                this.clientFacadeLocal.edit(c);
+                versement.setIdversement(versementFacadeLocal.nextVal());
+                versement.setSolde(newOperation.getSolde());
+                versement.setHeure(newOperation.getHeure());
+                versement.setIdmois(anneeMois);
+                versement.setIdOperation(newOperation.getIdOperation());
+                versement.setMontant(versement1);
+                versementFacadeLocal.create(versement);
 
-                Caisse caisse = this.caisseFacadeLocal.findAll().get(0);
-                caisse.setMontant((caisse.getMontant() + this.versement1));
-                this.caisseFacadeLocal.edit(caisse);
+                utilService.updateCaisse(versement.getMontant().doubleValue(), OperationType.CREDIT);
+                userTransaction.commit();
 
-                Utilitaires.saveOperation(this.mouchardFacadeLocal, "Enregistrement du versement -> client : " + this.versement.getIdclient().getPrenom() + " " + this.versement.getIdclient().getNom() + " ; Montant : " + this.versement1, SessionMBean.getUserAccount());
-
-                this.versement = new Versement();
                 JsfUtil.addSuccessMessage("Transaction réussie");
-            } else if (this.versement != null) {
+                Utilitaires.saveOperation(mouchardFacadeLocal, "Enregistrement du versement -> client : " + versement.getIdclient().getPrenom() + " " + this.versement.getIdclient().getNom() + " ; Montant : " + this.versement1, SessionMBean.getUserAccount());
 
-                Versement v = this.versementFacadeLocal.find(this.versement.getIdversement());
+                versement = new Versement();
 
-                Client c = this.clientFacadeLocal.find(this.versement.getIdclient().getIdclient());
-                c.setSolde((c.getSolde() - v.getMontant()));
-                if (c.getSolde() < 0) {
-                    c.setSolde(0);
+                RequestContext.getCurrentInstance().execute("PF('VersementCreerDialog').hide()");
+                RequestContext.getCurrentInstance().execute("PF('AjaxNotifyDialog').hide()");
+            } else if (versement != null && versement.getIdversement() != null) {
+
+                Versement versementOld = versementFacadeLocal.find(versement.getIdversement());
+                Integer diff = versement1 - versementOld.getMontant();
+
+                versement.setIdmois(anneeMois);
+                versement.setMontant(versement1);
+                userTransaction.begin();
+                if (diff == 0) {
+                    versement.setMontant(versement1);
+                    versement.setSolde(versement.getSolde());
+                    versementFacadeLocal.edit(versement);
+                } else {
+                    if (diff > 1) {
+                        utilService.updateCaisse(diff.doubleValue(), OperationType.CREDIT);
+
+                        versement.setSolde(versementOld.getSolde() + diff);
+                        versementFacadeLocal.edit(versement);
+
+                        operationService.editOperation(versement.getIdOperation(), diff.doubleValue(), OperationType.CREDIT);
+                        utilService.updateClient(versement.getIdclient().getIdclient(), diff.doubleValue(), OperationType.CREDIT);
+                    } else {
+                        utilService.updateCaisse(Math.abs(diff.doubleValue()), OperationType.DEBIT);
+                        versement.setSolde(versementOld.getSolde() - Math.abs(diff.doubleValue()));
+                        versementFacadeLocal.edit(versement);
+
+                        operationService.editOperation(versement.getIdOperation(), (double) Math.abs(diff), OperationType.DEBIT);
+                        utilService.updateClient(versement.getIdclient().getIdclient(), Math.abs(diff.doubleValue()), OperationType.DEBIT);
+                    }
                 }
-                this.clientFacadeLocal.edit(c);
+                userTransaction.commit();
 
-                Caisse caisse = this.caisseFacadeLocal.findAll().get(0);
-                caisse.setMontant((caisse.getMontant() - v.getMontant()));
-
-                if (caisse.getMontant() < 0) {
-                    caisse.setMontant(0);
-                }
-                this.caisseFacadeLocal.edit(caisse);
-
-                this.versement.setMontant(this.versement1);
-                this.versement.setIdmois(this.anneeMois);
-                this.versementFacadeLocal.edit(this.versement);
-
-                Client c1 = this.clientFacadeLocal.find(this.versement.getIdclient().getIdclient());
-                c1.setSolde(c1.getSolde() + this.versement1);
-                this.clientFacadeLocal.edit(c1);
-
-                Caisse caisse1 = this.caisseFacadeLocal.findAll().get(0);
-                caisse1.setMontant(caisse1.getMontant() + this.versement1);
-                this.caisseFacadeLocal.edit(caisse1);
-
-                Utilitaires.saveOperation(this.mouchardFacadeLocal, "Modification du versement -> client : " + this.versement.getIdclient().getPrenom() + " " + this.versement.getIdclient().getNom() + " Ancien montant : " + v.getMontant() + " ; Nouveau Montant : " + this.versement1, SessionMBean.getUserAccount());
-
+                RequestContext.getCurrentInstance().execute("PF('VersementCreerDialog').hide()");
+                RequestContext.getCurrentInstance().execute("PF('AjaxNotifyDialog').hide()");
                 JsfUtil.addSuccessMessage("Opération réussie");
+                Utilitaires.saveOperation(mouchardFacadeLocal, "Modification du versement -> client : " + versement.getIdclient().getPrenom() + " " + versement.getIdclient().getNom() + " Ancien montant : " + versementOld.getMontant() + " ; Nouveau Montant : " + this.versement1, SessionMBean.getUserAccount());
             } else {
                 JsfUtil.addErrorMessage("Aucun versement selectionné");
             }
@@ -211,62 +251,92 @@ public class VersementController extends AbstractVersementController implements 
 
     public void delete() {
         try {
-            if (this.versement != null) {
-                try {
-                    Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-                    if (p != null) {
-                        this.showVersementDeleteDialog = true;
-                    } else {
-                        p = new Privilege();
-                        p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 12);
-                        if (p != null) {
-                            this.showVersementDeleteDialog = true;
-                        } else {
-                            this.showVersementDeleteDialog = (false);
-                            JsfUtil.addErrorMessage("Vous n 'avez pas le privilege de supprimer ce versement");
-                            return;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (versement != null) {
+
+                if (!Utilitaires.isAccess(12L)) {
+                    JsfUtil.addErrorMessage("Vous n 'avez pas le privilège de supprimer un versement");
+                    return;
                 }
 
-                this.versementFacadeLocal.remove(this.versement);
+                userTransaction.begin();
+                operationService.deleteOperationById(versement.getIdOperation());
+                versementFacadeLocal.remove(versement);
+                utilService.updateCaisse(versement.getMontant().doubleValue(), OperationType.DEBIT);
+                userTransaction.commit();
 
-                Client c = this.versement.getIdclient();
-                c.setSolde((c.getSolde() - this.versement.getMontant()));
-                this.clientFacadeLocal.edit(c);
-
-                Caisse caisse = this.caisseFacadeLocal.findAll().get(0);
-                caisse.setMontant((caisse.getMontant() - this.versement.getMontant()));
-                this.caisseFacadeLocal.edit(caisse);
-
-                Utilitaires.saveOperation(this.mouchardFacadeLocal, "Suppression du versement -> client : " + this.versement.getIdclient().getPrenom() + " " + this.versement.getIdclient().getNom() + " ; Montant : " + this.versement.getMontant(), SessionMBean.getUserAccount());
+                Utilitaires.saveOperation(mouchardFacadeLocal, "Suppression du versement -> client : " + versement.getIdclient().getPrenom() + " " + this.versement.getIdclient().getNom() + " ; Montant : " + this.versement.getMontant(), SessionMBean.getUserAccount());
 
                 JsfUtil.addSuccessMessage("Operation réussie");
             } else {
-                JsfUtil.addErrorMessage("Aucun client selectionnée");
+                JsfUtil.addErrorMessage("Aucun versement selectionnée");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void print() {
-        Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-        if (p != null) {
-            this.showVersementPrintDialog = (true);
-        } else {
-            p = new Privilege();
-            p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 12);
-            if (p != null) {
-                this.showVersementPrintDialog = (true);
-            } else {
-                this.showVersementPrintDialog = (false);
-                JsfUtil.addErrorMessage("Vous n 'avez pas le privilege d'imprimer le rapport des versement");
-                return;
+    public void synchData() {
+        try {
+
+            List<Versement> listVersements = versementFacadeLocal.findAll();
+            if (!listVersements.isEmpty()) {
+
+                userTransaction.begin();
+
+                listVersements.stream().filter((v) -> (v.getIdOperation() == null)).map((v) -> {
+                    Operation op = new Operation();
+                    op.setIdOperation(operationFacadeLocal.nextVal());
+                    op.setClient(v.getIdclient());
+                    op.setMontant(v.getMontant().doubleValue());
+                    op.setSolde(v.getSolde());
+                    op.setCommission(null);
+                    op.setLibelle("Versement espèce : " + v.getIdclient().getNom());
+                    op.setDateOperation(v.getDateOperation());
+                    op.setHeure(v.getHeure());
+                    op.setOperationType(OperationType.CREDIT);
+                    operationFacadeLocal.create(op);
+                    v.setIdOperation(op.getIdOperation());
+                    return v;
+                }).forEach((v) -> {
+                    versementFacadeLocal.edit(v);
+                });
+
+                userTransaction.commit();
             }
+            RequestContext.getCurrentInstance().execute("PF('AjaxNotifyDialog').hide()");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public void print() {
+
+        if (!Utilitaires.isAccess(12L)) {
+            JsfUtil.addErrorMessage("Vous n 'avez pas le privilège de supprimer un versement");
+            return;
+        }
+    }
+
+    public void signalError(String chaine) {
+        RequestContext.getCurrentInstance().execute("PF('AjaxNotifyDialog').hide()");
+        this.routine.feedBack("information", "/resources/tool_images/warning.jpeg", this.routine.localizeMessage(chaine));
+        RequestContext.getCurrentInstance().execute("PF('NotifyDialog1').show()");
+    }
+
+    public void signalSuccess() {
+        RequestContext.getCurrentInstance().execute("PF('AjaxNotifyDialog').hide()");
+        this.routine.feedBack("information", "/resources/tool_images/success.png", this.routine.localizeMessage("operation_reussie"));
+        RequestContext.getCurrentInstance().execute("PF('NotifyDialog1').show()");
+    }
+
+    public void signalException(Exception e) {
+        RequestContext.getCurrentInstance().execute("PF('AjaxNotifyDialog').hide()");
+        this.routine.catchException(e, this.routine.localizeMessage("erreur_execution"));
+        RequestContext.getCurrentInstance().execute("PF('NotifyDialog1').show()");
+    }
+
+    public Routine getRoutine() {
+        return routine;
     }
 
 }

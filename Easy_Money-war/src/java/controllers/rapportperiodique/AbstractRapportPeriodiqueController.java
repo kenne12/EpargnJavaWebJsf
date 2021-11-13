@@ -92,30 +92,30 @@ public class AbstractRapportPeriodiqueController {
     }
 
     public AnneeMois getAnneeMois() {
-        /* 120 */ return this.anneeMois;
+        return this.anneeMois;
     }
 
     public void setAnneeMois(AnneeMois anneeMois) {
-        /* 124 */ this.anneeMois = anneeMois;
+        this.anneeMois = anneeMois;
     }
 
     public List<AnneeMois> getAnneeMoises() {
-        /* 128 */ return this.anneeMoises;
+        return this.anneeMoises;
     }
 
     public Annee getAnnee() {
-        /* 136 */ return this.annee;
+        return this.annee;
     }
 
     public void setAnnee(Annee annee) {
-        /* 140 */ this.annee = annee;
+        this.annee = annee;
     }
 
     public Date getDate1() {
-        /* 144 */ return this.date1;
+        return this.date1;
     }
 
     public void setDate1(Date date1) {
-        /* 148 */ this.date1 = date1;
+        this.date1 = date1;
     }
 }

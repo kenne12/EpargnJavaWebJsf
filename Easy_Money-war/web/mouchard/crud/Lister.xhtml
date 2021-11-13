@@ -21,17 +21,15 @@
                          paginator="true"
                          rows="10"
                          style="text-align: center;"
-                         rowsPerPageTemplate="10,20,30,40,50"
+                         rowsPerPageTemplate="10,20,30,40,50"  >
 
-                         >
-
+                        
                 <p:column sortBy="#{item.idmouchard}" width="10%">
                     <f:facet name="header">
                         <h:outputText value="#{langue.identifiant}"/>
                     </f:facet>
                     <h:outputText value="#{item.idmouchard}"/>
                 </p:column>
-
 
                 <p:column filterBy="#{item.idutilisateur.nom} #{item.idutilisateur.prenom}">
                     <f:facet name="header">
@@ -40,7 +38,6 @@
                     <h:outputText value="#{item.idutilisateur.nom} #{item.idutilisateur.prenom}"/>
                 </p:column>
 
-
                 <p:column filterBy="#{item.action}">
                     <f:facet name="header">
                         <h:outputText value="Action"/>
@@ -48,11 +45,11 @@
                     <h:outputText value="#{item.action}"/>
                 </p:column>
 
-                <p:column filterBy="#{item.date}">
+                <p:column filterBy="#{item.dateOperation}">
                     <f:facet name="header">
                         <h:outputText value="Date"/>
                     </f:facet>
-                    <h:outputText value="#{item.date}">
+                    <h:outputText value="#{item.dateOperation}">
                         <f:convertDateTime pattern="MM/dd/yyyy" />
                     </h:outputText>
                 </p:column>
@@ -65,7 +62,6 @@
                         <f:convertDateTime pattern="HH:mm:ss" />
                     </h:outputText>
                 </p:column>
-
 
             </p:dataTable>
 

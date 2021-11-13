@@ -14,7 +14,7 @@
                                  value="#{langue['Conv.Creer']}" 
                                  actionListener="#{retraitCnController.prepareCreate()}"
                                  update=":RetraitCreerForm,:RetraitListerForm:growl,:RetraitCreerDlg" />                                
-                                                 
+
                 <p:commandButton id="detail"   
                                  icon="ui-icon-search" 
                                  value="#{langue['Conv.Detail']}" 
@@ -27,7 +27,7 @@
                                  value="#{langue['Conv.Modifier']}" 
                                  actionListener="#{retraitCnController.prepareEdit()}"
                                  update=":RetraitCreerForm,:RetraitListerForm:growl,:RetraitCreerDlg"                                   
-                                 disabled="true"/>
+                                 disabled="false"/>
 
                 <p:commandButton id="supprimer" 
                                  icon="ui-icon-trash"  
@@ -39,6 +39,16 @@
                                message="#{langue['Message.Confirm.Ajouter']}?"
                                icon="ui-icon-alert"/>
                 </p:commandButton>
+
+                <!--<p:commandButton id="synch"  
+                                 value="Synchro" 
+                                 update=":RetraitListerForm:growl,:RetraitListerForm:datalist,:actionsForm, :notify1"
+                                 actionListener="#{retraitCnController.synchData()}"
+                                 onclick="PF('AjaxNotifyDialog').show()">
+                    <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
+                               message="Voulez-vous synchroniser ces données ?"
+                               icon="ui-icon-alert"/>
+                </p:commandButton>-->
 
                 <p:commandButton id="imprimer" icon="ui-icon-print"  
                                  value="#{langue['Conv.Imprimer']}" actionListener="#{matiereCtrl.imprimerRetraitHtml()}"

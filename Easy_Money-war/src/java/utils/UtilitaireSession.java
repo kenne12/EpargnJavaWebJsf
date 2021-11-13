@@ -9,49 +9,50 @@ import javax.servlet.http.HttpSession;
 @ManagedBean
 @SessionScoped
 public class UtilitaireSession {
-    /*  27 */ private static final utils.UtilitaireSession instance = new utils.UtilitaireSession();
 
-    /*  31 */    private final String user = "user";
+    private static final utils.UtilitaireSession instance = new utils.UtilitaireSession();
+
+    private final String user = "user";
 
     public static utils.UtilitaireSession getInstance() {
-        /*  48 */ return instance;
+        return instance;
     }
 
     public void destroy() {
-        /*  59 */ FacesContext fc = FacesContext.getCurrentInstance();
-        /*  60 */ getSession(fc).invalidate();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        getSession(fc).invalidate();
     }
 
     private boolean isContextOk(FacesContext fc) {
-        /*  71 */ boolean res = (fc != null && fc.getExternalContext() != null && fc.getExternalContext().getSession(false) != null);
-        /*  72 */ return res;
+        boolean res = (fc != null && fc.getExternalContext() != null && fc.getExternalContext().getSession(false) != null);
+        return res;
     }
 
     private HttpSession getSession(FacesContext fc) {
-        /*  79 */ return (HttpSession) fc.getExternalContext().getSession(false);
+        return (HttpSession) fc.getExternalContext().getSession(false);
     }
 
     public Object get(String cle) {
-        /*  89 */ FacesContext fc = FacesContext.getCurrentInstance();
-        /*  90 */ Object res = null;
-        /*  91 */ if (isContextOk(fc)) {
-            /*  92 */ res = getSession(fc).getAttribute(cle);
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Object res = null;
+        if (isContextOk(fc)) {
+            res = getSession(fc).getAttribute(cle);
         }
-        /*  94 */ return res;
+        return res;
     }
 
     public void set(String cle, Object valeur) {
-        /* 104 */ FacesContext fc = FacesContext.getCurrentInstance();
-        /* 105 */ if (fc != null && fc.getExternalContext() != null) {
-            /* 106 */ getSession(fc).setAttribute(cle, valeur);
+        FacesContext fc = FacesContext.getCurrentInstance();
+        if (fc != null && fc.getExternalContext() != null) {
+            getSession(fc).setAttribute(cle, valeur);
         }
     }
 
     public void setuser(Utilisateur utilisateur) {
-        /* 116 */ set("user", utilisateur);
+        set("user", utilisateur);
     }
 
     public Utilisateur getuser() {
-        /* 125 */ return (Utilisateur) get("user");
+        return (Utilisateur) get("user");
     }
 }

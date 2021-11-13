@@ -12,7 +12,6 @@
                   widgetVar="VersementCreerDialog" 
                   modal="true" resizable="false" 
                   appendTo="@(body)" 
-                  visible="#{versementController.showVersementCreateDialog}"
                   header="#{langue['Titre.Dlg.Creation']} : VERSEMENT" 
                   closeOnEscape="true">
 
@@ -28,10 +27,10 @@
                         </p:selectOneMenu>
 
                         <p:outputLabel value="#{langue.date}" for="date" />
-                        <p:calendar id="date" mindate="#{versementController.anneeMois.dateDebut}" maxdate="#{versementController.anneeMois.dateFin}" navigator="true" value="#{versementController.versement.date}"/>
+                        <p:calendar id="date" mindate="#{versementController.anneeMois.dateDebut}" maxdate="#{versementController.anneeMois.dateFin}" navigator="true" value="#{versementController.versement.dateOperation}"/>
 
                         <p:outputLabel value="Clients" for="client"/>
-                        <p:selectOneMenu filter="true" id="client" disabled="#{versementController.showClient}" required="true" value="#{versementController.versement.idclient}" converter="clientConverter" filterMatchMode="contains" >
+                        <p:selectOneMenu filter="true" filterMatchMode="contains" id="client" disabled="#{versementController.showClient}" required="true" value="#{versementController.versement.idclient}" converter="clientConverter" >
                             <f:selectItem itemLabel="#{langue.choisir}"/>
                             <f:selectItems value="#{versementController.clients}" var="client" itemLabel="#{client.numerocarnet} - #{client.nom} #{client.prenom}" itemValue="#{client}" />
                             <p:ajax update="solde" listener="#{versementController.updateSolde()}"/>
@@ -52,9 +51,9 @@
                     <center>
                         <p:commandButton value="#{langue.annuler}" onclick="PF('VersementCreerDialog').hide()"/>
 
-                        <p:commandButton actionListener="#{versementController.create()}" value="#{langue['Conv.Enregistrer']}" 
-                                         update="display,:VersementListerForm:datalist,:VersementListerForm:growl, VersementCreerForm" 
-                                         oncomplete="PF('VersementCreerDialog').hide()">
+                        <p:commandButton actionListener="#{versementController.create()}" value="#{langue['Conv.Enregistrer']}"
+                                         update="display,:VersementListerForm:datalist,:VersementListerForm:growl, VersementCreerForm, :notify1" 
+                                         onclick="PF('AjaxNotifyDialog').show()">
                             <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
                                        message="Voulez vraiment enregistrer ?"
                                        icon="ui-icon-alert"/>

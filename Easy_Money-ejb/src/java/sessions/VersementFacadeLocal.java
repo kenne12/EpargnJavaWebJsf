@@ -30,6 +30,8 @@ public interface VersementFacadeLocal {
 
     List<Versement> find(Client client, Date dateDebut, Date dateFin);
 
+    List<Versement> findByTwoDates(Date datedebut, Date datefin);
+
     List<Versement> find(Client client, Date date);
 
     List<Versement> find(Client client, AnneeMois anneeMois) throws Exception;

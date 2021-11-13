@@ -14,48 +14,48 @@ public class Solde {
     }
 
     public Solde(Client client, Integer montantVerse, Integer montantRetire) {
-        /* 27 */ this.client = client;
-        /* 28 */ this.montantVerse = montantVerse;
-        /* 29 */ this.montantRetire = montantRetire;
+        this.client = client;
+        this.montantVerse = montantVerse;
+        this.montantRetire = montantRetire;
     }
 
     public Client getClient() {
-        /* 33 */ return this.client;
+        return this.client;
     }
 
     public void setClient(Client client) {
-        /* 37 */ this.client = client;
+        this.client = client;
     }
 
     public Integer getMontantVerse() {
-        /* 41 */ return this.montantVerse;
+        return this.montantVerse;
     }
 
     public void setMontantVerse(Integer montantVerse) {
-        /* 45 */ this.montantVerse = montantVerse;
+        this.montantVerse = montantVerse;
     }
 
     public Integer getMontantRetire() {
-        /* 49 */ return this.montantRetire;
+        return this.montantRetire;
     }
 
     public void setMontantRetire(Integer montantRetire) {
-        /* 53 */ this.montantRetire = montantRetire;
+        this.montantRetire = montantRetire;
     }
 
     public Integer getCarnet() {
-        /* 57 */ return this.carnet;
+        return this.carnet;
     }
 
     public void setCarnet(Integer carnet) {
-        /* 61 */ this.carnet = carnet;
+        this.carnet = carnet;
     }
 
     public Integer getCommission() {
-        /* 65 */ return this.commission;
+        return this.commission;
     }
 
     public void setCommission(Integer commission) {
-        /* 69 */ this.commission = commission;
+        this.commission = commission;
     }
 }

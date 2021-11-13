@@ -2,10 +2,13 @@ package utils;
 
 import entities.AnneeMois;
 import entities.Mouchard;
+import entities.Privilege;
 import entities.Utilisateur;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -59,6 +62,23 @@ public class LoginBean extends AbstractLoginBean implements Serializable {
                 this.anneeMoises = this.anneeMoisFacadeLocal.findByEtat(true);
                 this.annees = this.anneeFacadeLocal.findByEtat(true);
                 filterDate(new Date());
+
+                List<Privilege> privilegesTemp = this.privilegeFacadeLocal.findByUser(this.utilisateur.getIdutilisateur());
+                List<Long> accesses = new ArrayList<>();
+                List<String> access = new ArrayList<>();
+
+                for (Privilege p : privilegesTemp) {
+                    accesses.add(Long.valueOf(p.getIdmenu().getIdmenu()));
+                    String[] menus = p.getIdmenu().getRessource().split(";");
+                    for (String temp : menus) {
+                        if (!access.contains(temp)) {
+                            access.add(temp);
+                        }
+                    }
+                }
+
+                session.setAttribute("accesses", accesses);
+                session.setAttribute("access", access);
 
                 Utilitaires.saveOperation(this.mouchardFacadeLocal, "Connexion", this.utilisateur);
 
@@ -167,19 +187,19 @@ public class LoginBean extends AbstractLoginBean implements Serializable {
     }
 
     public Utilisateur getUtilisateur() {
-        /* 188 */ return this.utilisateur;
+        return this.utilisateur;
     }
 
     public void setUtilisateur(Utilisateur utilisateur) {
-        /* 192 */ this.utilisateur = utilisateur;
+        this.utilisateur = utilisateur;
     }
 
     public Object getUser() {
-        /* 196 */ return this.utilisateur;
+        return this.utilisateur;
     }
 
     public void setUser(Object user) {
-        /* 200 */ this.utilisateur = (Utilisateur) user;
+        this.utilisateur = (Utilisateur) user;
     }
 
     public void initSession() {
@@ -190,14 +210,14 @@ public class LoginBean extends AbstractLoginBean implements Serializable {
 
                     if (this.date.equals(this.anneeMois.getDateDebut()) || (this.date.after(this.anneeMois.getDateDebut()) && this.date.equals(this.anneeMois.getDateFin())) || this.date.before(this.anneeMois.getDateFin())) {
 
-                        /* 212 */ HttpSession session = SessionMBean.getSession();
+                        HttpSession session = SessionMBean.getSession();
 
-                        /* 214 */ this.annee = this.anneeFacadeLocal.find(this.annee.getIdannee());
-                        /* 215 */ session.setAttribute("mois", this.anneeMois);
-                        /* 216 */ session.setAttribute("date", this.date);
-                        /* 217 */ session.setAttribute("annee", this.annee);
+                        this.annee = this.anneeFacadeLocal.find(this.annee.getIdannee());
+                        session.setAttribute("mois", this.anneeMois);
+                        session.setAttribute("date", this.date);
+                        session.setAttribute("annee", this.annee);
 
-                        /* 219 */ this.showSessionPanel = false;
+                        this.showSessionPanel = false;
                     } else {
                         JsfUtil.addErrorMessage("Choisir une date valable dans le mois choisi");
                     }

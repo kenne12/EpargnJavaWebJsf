@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
+import sessions.AnneeFacadeLocal;
 import sessions.AnneeMoisFacadeLocal;
-import sessions.CaisseFacadeLocal;
 import sessions.ClientFacadeLocal;
 import sessions.MouchardFacadeLocal;
-import sessions.PrivilegeFacadeLocal;
 import sessions.VersementFacadeLocal;
 import utils.SessionMBean;
 
@@ -28,7 +27,11 @@ public class AbstractVersementController {
     protected Client client = new Client();
     protected List<Client> clients = new ArrayList<>();
 
+    @EJB
+    protected AnneeFacadeLocal anneeFacadeLocal;
     protected Annee annee = SessionMBean.getAnnee();
+    protected Annee anneeSearch = SessionMBean.getAnnee();
+    protected List<Annee> annees = new ArrayList<>();
 
     @EJB
     protected AnneeMoisFacadeLocal anneeMoisFacadeLocal;
@@ -37,12 +40,6 @@ public class AbstractVersementController {
 
     @EJB
     protected MouchardFacadeLocal mouchardFacadeLocal;
-
-    @EJB
-    protected CaisseFacadeLocal caisseFacadeLocal;
-
-    @EJB
-    protected PrivilegeFacadeLocal privilegeFacadeLocal;
 
     protected String searchMode = "";
     protected Date searchDate;
@@ -55,12 +52,6 @@ public class AbstractVersementController {
     protected Boolean consulter = true;
     protected Boolean imprimer = true;
     protected Boolean supprimer = true;
-
-    protected Boolean showVersementCreateDialog = false;
-    protected Boolean showVersementDetailDialog = false;
-    protected Boolean showVersementDeleteDialog = false;
-    protected Boolean showVersementEditDialog = false;
-    protected Boolean showVersementPrintDialog = false;
 
     protected Boolean showClient = true;
 
@@ -125,26 +116,6 @@ public class AbstractVersementController {
         return this.showClient;
     }
 
-    public Boolean getShowVersementCreateDialog() {
-        return this.showVersementCreateDialog;
-    }
-
-    public Boolean getShowVersementDetailDialog() {
-        return this.showVersementDetailDialog;
-    }
-
-    public Boolean getShowVersementDeleteDialog() {
-        return this.showVersementDeleteDialog;
-    }
-
-    public Boolean getShowVersementEditDialog() {
-        return this.showVersementEditDialog;
-    }
-
-    public Boolean getShowVersementPrintDialog() {
-        return this.showVersementPrintDialog;
-    }
-
     public List<AnneeMois> getAnneeMoises() {
         this.anneeMoises = this.anneeMoisFacadeLocal.findByAnnee(SessionMBean.getAnnee().getIdannee());
         return this.anneeMoises;
@@ -188,6 +159,19 @@ public class AbstractVersementController {
 
     public void setAnnee(Annee annee) {
         this.annee = annee;
+    }
+
+    public List<Annee> getAnnees() {
+        annees = anneeFacadeLocal.findAllRangeByNom();
+        return annees;
+    }
+
+    public Annee getAnneeSearch() {
+        return anneeSearch;
+    }
+
+    public void setAnneeSearch(Annee anneeSearch) {
+        this.anneeSearch = anneeSearch;
     }
 
 }

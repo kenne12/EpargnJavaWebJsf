@@ -21,5 +21,7 @@ public interface AnneeFacadeLocal {
 
     int count();
 
-    List<Annee> findByEtat(boolean etat) throws Exception;
+    List<Annee> findByEtat(boolean etat);
+
+    List<Annee> findAllRangeByNom();
 }

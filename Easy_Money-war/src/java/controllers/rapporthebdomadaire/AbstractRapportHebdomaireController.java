@@ -20,13 +20,13 @@ public class AbstractRapportHebdomaireController {
 
     @EJB
     protected AnneeFacadeLocal anneeFacadeLocal;
-    /*  32 */    protected Annee annee = new Annee();
-    /*  33 */    protected List<Annee> annees = new ArrayList<>();
+    protected Annee annee = new Annee();
+    protected List<Annee> annees = new ArrayList<>();
 
     @EJB
     protected AnneeMoisFacadeLocal anneeMoisFacadeLocal;
-    /*  37 */    protected AnneeMois anneeMois = new AnneeMois();
-    /*  38 */    protected List<AnneeMois> anneeMoises = new ArrayList<>();
+    protected AnneeMois anneeMois = new AnneeMois();
+    protected List<AnneeMois> anneeMoises = new ArrayList<>();
 
     @EJB
     protected VersementFacadeLocal versementFacadeLocal;
@@ -42,100 +42,100 @@ public class AbstractRapportHebdomaireController {
 
     @EJB
     protected ClientFacadeLocal clientFacadeLocal;
-    /*  54 */    List<Client> clients = new ArrayList<>();
+    List<Client> clients = new ArrayList<>();
 
-    /*  56 */    protected List<Solde> soldes = new ArrayList<>();
+    protected List<Solde> soldes = new ArrayList<>();
 
-    /*  58 */    Date dateDebut = new Date();
-    /*  59 */    Date dateFin = new Date();
+    Date dateDebut = new Date();
+    Date dateFin = new Date();
 
-    /*  61 */    protected String fileName = "";
+    protected String fileName = "";
 
     protected boolean showPrintButton = true;
     protected boolean showReportPrintDialog = false;
 
     public List<Solde> getSoldes() {
-        /*  67 */ return this.soldes;
+        return this.soldes;
     }
 
     public void setSoldes(List<Solde> soldes) {
-        /*  71 */ this.soldes = soldes;
+        this.soldes = soldes;
     }
 
     public Date getDateDebut() {
-        /*  75 */ return this.dateDebut;
+        return this.dateDebut;
     }
 
     public void setDateDebut(Date dateDebut) {
-        /*  79 */ this.dateDebut = dateDebut;
+        this.dateDebut = dateDebut;
     }
 
     public Date getDateFin() {
-        /*  83 */ return this.dateFin;
+        return this.dateFin;
     }
 
     public void setDateFin(Date dateFin) {
-        /*  87 */ this.dateFin = dateFin;
+        this.dateFin = dateFin;
     }
 
     public boolean isShowPrintButton() {
-        /*  91 */ return this.showPrintButton;
+        return this.showPrintButton;
     }
 
     public void setShowPrintButton(boolean showPrintButton) {
-        /*  95 */ this.showPrintButton = showPrintButton;
+        this.showPrintButton = showPrintButton;
     }
 
     public String getFileName() {
-        /*  99 */ return this.fileName;
+        return this.fileName;
     }
 
     public void setFileName(String fileName) {
-        /* 103 */ this.fileName = fileName;
+        this.fileName = fileName;
     }
 
     public boolean isShowReportPrintDialog() {
-        /* 107 */ return this.showReportPrintDialog;
+        return this.showReportPrintDialog;
     }
 
     public void setShowReportPrintDialog(boolean showReportPrintDialog) {
-        /* 111 */ this.showReportPrintDialog = showReportPrintDialog;
+        this.showReportPrintDialog = showReportPrintDialog;
     }
 
     public Annee getAnnee() {
-        /* 115 */ return this.annee;
+        return this.annee;
     }
 
     public void setAnnee(Annee annee) {
-        /* 119 */ this.annee = annee;
+        this.annee = annee;
     }
 
     public List<Annee> getAnnees() {
         try {
-            /* 124 */ this.annees = this.anneeFacadeLocal.findByEtat(true);
-            /* 125 */        } catch (Exception e) {
-            /* 126 */ e.printStackTrace();
+            this.annees = this.anneeFacadeLocal.findByEtat(true);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        /* 128 */ return this.annees;
+        return this.annees;
     }
 
     public void setAnnees(List<Annee> annees) {
-        /* 132 */ this.annees = annees;
+        this.annees = annees;
     }
 
     public AnneeMois getAnneeMois() {
-        /* 136 */ return this.anneeMois;
+        return this.anneeMois;
     }
 
     public void setAnneeMois(AnneeMois anneeMois) {
-        /* 140 */ this.anneeMois = anneeMois;
+        this.anneeMois = anneeMois;
     }
 
     public List<AnneeMois> getAnneeMoises() {
-        /* 144 */ return this.anneeMoises;
+        return this.anneeMoises;
     }
 
     public void setAnneeMoises(List<AnneeMois> anneeMoises) {
-        /* 148 */ this.anneeMoises = anneeMoises;
+        this.anneeMoises = anneeMoises;
     }
 }

@@ -31,12 +31,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Retrait.findAll", query = "SELECT r FROM Retrait r"),
     @NamedQuery(name = "Retrait.findByIdretrait", query = "SELECT r FROM Retrait r WHERE r.idretrait = :idretrait"),
     @NamedQuery(name = "Retrait.findByMontant", query = "SELECT r FROM Retrait r WHERE r.montant = :montant"),
-    @NamedQuery(name = "Retrait.findByDate", query = "SELECT r FROM Retrait r WHERE r.date = :date"),
+    @NamedQuery(name = "Retrait.findByDate", query = "SELECT r FROM Retrait r WHERE r.dateOperation = :date"),
     @NamedQuery(name = "Retrait.findByHeure", query = "SELECT r FROM Retrait r WHERE r.heure = :heure"),
     @NamedQuery(name = "Retrait.findByCommission", query = "SELECT r FROM Retrait r WHERE r.commission = :commission"),
     @NamedQuery(name = "Retrait.findByCommissionAuto", query = "SELECT r FROM Retrait r WHERE r.commissionAuto = :commissionAuto"),
     @NamedQuery(name = "Retrait.findBySolde", query = "SELECT r FROM Retrait r WHERE r.solde = :solde")})
 public class Retrait implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -44,7 +45,8 @@ public class Retrait implements Serializable {
     private Long idretrait;
     private Integer montant;
     @Temporal(TemporalType.DATE)
-    private Date date;
+    @Column(name = "date")
+    private Date dateOperation;
     @Temporal(TemporalType.TIME)
     private Date heure;
     private Integer commission;
@@ -58,6 +60,9 @@ public class Retrait implements Serializable {
     @JoinColumn(name = "idclient", referencedColumnName = "idclient")
     @ManyToOne(fetch = FetchType.LAZY)
     private Client idclient;
+
+    @Column(name = "idoperation")
+    private Long idOperation;
 
     public Retrait() {
     }
@@ -82,12 +87,20 @@ public class Retrait implements Serializable {
         this.montant = montant;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getDateOperation() {
+        return dateOperation;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDateOperation(Date dateOperation) {
+        this.dateOperation = dateOperation;
+    }
+
+    public Long getIdOperation() {
+        return idOperation;
+    }
+
+    public void setIdOperation(Long idOperation) {
+        this.idOperation = idOperation;
     }
 
     public Date getHeure() {
@@ -152,15 +165,12 @@ public class Retrait implements Serializable {
             return false;
         }
         Retrait other = (Retrait) object;
-        if ((this.idretrait == null && other.idretrait != null) || (this.idretrait != null && !this.idretrait.equals(other.idretrait))) {
-            return false;
-        }
-        return true;
+        return !((this.idretrait == null && other.idretrait != null) || (this.idretrait != null && !this.idretrait.equals(other.idretrait)));
     }
 
     @Override
     public String toString() {
         return "entities.Retrait[ idretrait=" + idretrait + " ]";
     }
-    
+
 }

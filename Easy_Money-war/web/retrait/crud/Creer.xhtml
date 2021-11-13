@@ -33,7 +33,7 @@
                         </p:calendar>
 
                         <p:outputLabel value="Clients" for="client"/>
-                        <p:selectOneMenu filter="true" id="client" disabled="#{retraitController.showClient}" required="true" value="#{retraitController.retrait.idclient}" converter="clientConverter" >
+                        <p:selectOneMenu filter="true" filterMatchMode="contains" id="client" disabled="#{retraitController.showClient}" required="true" value="#{retraitController.retrait.idclient}" converter="clientConverter" >
                             <f:selectItem itemLabel="#{langue.choisir}"/>
                             <f:selectItems value="#{retraitController.clients}" var="client" itemLabel="#{client.numerocarnet} - #{client.nom} #{client.prenom}" itemValue="#{client}" />
                             <p:ajax update="solde" listener="#{retraitController.updateSolde()}"/>

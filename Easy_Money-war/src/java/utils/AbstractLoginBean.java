@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import sessions.AnneeFacadeLocal;
 import sessions.AnneeMoisFacadeLocal;
+import sessions.PrivilegeFacadeLocal;
 
 public class AbstractLoginBean {
 
@@ -22,18 +23,16 @@ public class AbstractLoginBean {
     protected AnneeMois anneeMois = new AnneeMois();
     protected List<AnneeMois> anneeMoises = new ArrayList<>();
 
+    @EJB
+    protected PrivilegeFacadeLocal privilegeFacadeLocal;
+
     protected Date date = new Date();
 
     protected boolean gestionPersonnel;
 
     protected boolean gestionNote;
 
-    protected boolean gestionPrivilege;
-    protected boolean gestionDiscipline;
-    protected boolean gestionInscription;
-    protected boolean gestionEtat;
     protected boolean parametrage;
-    protected boolean bibliotheque;
 
     protected boolean showHibernatePanel = false;
     protected String hibernatePassword = "";
@@ -54,52 +53,32 @@ public class AbstractLoginBean {
         this.gestionNote = gestionNote;
     }
 
-    public boolean isGestionPrivilege() {
-        return this.gestionPrivilege;
-    }
-
-    public boolean isGestionDiscipline() {
-        return this.gestionDiscipline;
-    }
-
-    public boolean isGestionInscription() {
-        return this.gestionInscription;
-    }
-
-    public boolean isGestionEtat() {
-        return this.gestionEtat;
-    }
-
     public boolean isParametrage() {
-        /* 108 */ return this.parametrage;
-    }
-
-    public boolean isBibliotheque() {
-        /* 116 */ return this.bibliotheque;
+        return this.parametrage;
     }
 
     public boolean isShowHibernatePanel() {
-        /* 189 */ return this.showHibernatePanel;
+        return this.showHibernatePanel;
     }
 
     public String getHibernatePassword() {
-        /* 197 */ return this.hibernatePassword;
+        return this.hibernatePassword;
     }
 
     public void setHibernatePassword(String hibernatePassword) {
-        /* 201 */ this.hibernatePassword = hibernatePassword;
+        this.hibernatePassword = hibernatePassword;
     }
 
     public boolean isShowSessionPanel() {
-        /* 205 */ return this.showSessionPanel;
+        return this.showSessionPanel;
     }
 
     public AnneeMois getAnneeMois() {
-        /* 209 */ return this.anneeMois;
+        return this.anneeMois;
     }
 
     public void setAnneeMois(AnneeMois anneeMois) {
-        /* 213 */ this.anneeMois = anneeMois;
+        this.anneeMois = anneeMois;
     }
 
     public List<AnneeMois> getAnneeMoises() {
