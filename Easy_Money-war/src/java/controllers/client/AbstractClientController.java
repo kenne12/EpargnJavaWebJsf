@@ -8,7 +8,6 @@ import javax.ejb.EJB;
 import sessions.CaisseFacadeLocal;
 import sessions.ClientFacadeLocal;
 import sessions.MouchardFacadeLocal;
-import sessions.PrivilegeFacadeLocal;
 import sessions.ProfessionFacadeLocal;
 import sessions.RetraitFacadeLocal;
 import sessions.VersementFacadeLocal;
@@ -36,9 +35,6 @@ public class AbstractClientController {
     @EJB
     protected RetraitFacadeLocal retraitFacadeLocal;
 
-    @EJB
-    protected PrivilegeFacadeLocal privilegeFacadeLocal;
-
     protected String fileName = "";
 
     protected Boolean detail = true;
@@ -47,15 +43,12 @@ public class AbstractClientController {
     protected Boolean imprimer = true;
     protected Boolean supprimer = true;
 
-    protected Boolean showEditSolde = true;
+    protected boolean showMontantCarnetCompnent = false;
 
-    protected boolean showClientCreateDialog = false;
-    protected boolean showClientDeleteDialog = false;
-    protected Boolean showClientPrintDialog = false;
+    protected Boolean showEditSolde = true;
 
     protected boolean showMontantCarnet = true;
 
-    protected boolean showMontantCarnetCompnent = true;
     protected int carnet = 500;
 
     protected String mode = "";
@@ -104,26 +97,6 @@ public class AbstractClientController {
         return this.showEditSolde;
     }
 
-    public boolean isShowClientCreateDialog() {
-        return this.showClientCreateDialog;
-    }
-
-    public void setShowClientCreateDialog(boolean showClientCreateDialog) {
-        this.showClientCreateDialog = showClientCreateDialog;
-    }
-
-    public boolean isShowClientDeleteDialog() {
-        return this.showClientDeleteDialog;
-    }
-
-    public Boolean getShowClientPrintDialog() {
-        return this.showClientPrintDialog;
-    }
-
-    public void setShowClientPrintDialog(Boolean showClientPrintDialog) {
-        this.showClientPrintDialog = showClientPrintDialog;
-    }
-
     public String getFileName() {
         return this.fileName;
     }
@@ -141,7 +114,7 @@ public class AbstractClientController {
     }
 
     public boolean isShowMontantCarnetCompnent() {
-        return this.showMontantCarnetCompnent;
+        return showMontantCarnetCompnent;
     }
 
 }

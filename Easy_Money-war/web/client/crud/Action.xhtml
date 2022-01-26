@@ -9,29 +9,29 @@
         <p:fieldset legend="#{langue['Conv.Actions']}" toggleable="true" toggleSpeed="300">
             <div class="footer-section">
 
-                <p:commandButton id="creer"  icon="ui-icon-plus"   
+                <p:commandButton id="creer" icon="ui-icon-plus"   
                                  value="#{langue['Conv.Creer']}" 
                                  actionListener="#{clientController.prepareCreate()}"
-                                 update=":TypeMatiereCreerForm,:TypeMatiereListerForm:growl,:TypeMatierelCreerDlg"/>                                
+                                 update=":ClientCreerForm,:ClientListerForm:growl"/>                                
                                  
                 <p:commandButton id="detail"   
                                  icon="ui-icon-search" 
                                  value="#{langue['Conv.Detail']}" 
-                                 update=":TypeMatiereDetailForm" 
-                                 oncomplete="PF('typeMatiereDetailDialog').show()" 
+                                 update=":ClientDetailForm" 
+                                 oncomplete="PF('ClientDetailDialog').show()" 
                                  disabled="#{clientController.detail}"/>
 
                 <p:commandButton id="modifier"   
                                  icon="ui-icon-pencil" 
                                  value="#{langue['Conv.Modifier']}" 
                                  actionListener="#{clientController.prepareEdit()}"
-                                 update=":TypeMatiereCreerForm,:TypeMatiereListerForm:growl,:TypeMatierelCreerDlg" 
+                                 update=":ClientCreerForm,:ClientListerForm:growl" 
                                  disabled="#{clientController.modifier}"/>
 
                 <p:commandButton id="supprimer" 
                                  icon="ui-icon-trash"  
                                  value="#{langue['Conv.Supprimer']}" 
-                                 update=":TypeMatiereListerForm:growl,:TypeMatiereListerForm:datalist, :actionsForm"
+                                 update=":ClientListerForm:growl,:ClientListerForm:datalist, :actionsForm"
                                  disabled="#{clientController.supprimer}"
                                  actionListener="#{clientController.delete()}">
                     <p:confirm header="#{langue['Titre.Dlg.Confirm']}"
@@ -39,12 +39,10 @@
                                icon="ui-icon-alert"/>
                 </p:commandButton>
 
-
                 <p:commandButton id="imprimer" icon="ui-icon-print"  
                                  value="#{langue['Conv.Imprimer']}" actionListener="#{clientController.print()}"
-                                 update=":TypeMatiereListerForm:growl,:TypeMatiereImprimerForm,:TypeMatiereImprimerDlg" disabled="#{clientController.imprimer}" 
-                                 />              
-
+                                 update=":ClientListerForm:growl,:ClientImprimerForm" disabled="#{clientController.imprimer}" />
+                                               
             </div>
         </p:fieldset>
     </h:form>

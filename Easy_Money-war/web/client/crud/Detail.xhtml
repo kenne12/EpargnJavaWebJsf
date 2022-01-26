@@ -7,13 +7,13 @@
 
     <ui:composition>
 
-        <p:dialog id="TypeMatiereDetailDlg" 
-                  widgetVar="typeMatiereDetailDialog" 
+        <p:dialog id="ClientDetailDlg" 
+                  widgetVar="ClientDetailDialog" 
                   modal="true" resizable="false"  
                   appendTo="@(body)" 
                   header="#{langue['Titre.Dlg.Detail']}: CLIENT" closeOnEscape="true">
 
-            <h:form id="TypeMatiereDetailForm">
+            <h:form id="ClientDetailForm">
 
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses="column" style="width: 100%;" >
@@ -36,7 +36,7 @@
                         <h:outputText value="#{clientController.client.profession}"/>
 
                     </p:panelGrid>
-                    <p:commandButton value="#{langue['Conv.Fermer']}" onclick="PF('TypeMatiereDetailDialog').hide()"/>
+                    <p:commandButton value="#{langue['Conv.Fermer']}" onclick="PF('ClientDetailDialog').hide()"/>
                 </h:panelGroup>
 
             </h:form>

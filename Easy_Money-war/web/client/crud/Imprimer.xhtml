@@ -6,13 +6,12 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <p:dialog id="TypeMatiereImprimerDlg" 
-                  widgetVar="TypeMatiereImprimerDialog" modal="true" resizable="false"  
-                  visible="#{clientController.showClientPrintDialog}"
+        <p:dialog id="ClientImprimerDlg" 
+                  widgetVar="ClientImprimerDialog" modal="true" resizable="false"  
                   appendTo="@(body)" 
                   header="#{langue['Titre.Dlg.Impression']}: Clients" closeOnEscape="true">
 
-            <h:form id="TypeMatiereImprimerForm">
+            <h:form id="ClientImprimerForm">
 
                 <object data="#{request.contextPath}/reports/client/#{clientController.fileName}" type="application/pdf" title="cv" width="1200" height="600"></object>
 

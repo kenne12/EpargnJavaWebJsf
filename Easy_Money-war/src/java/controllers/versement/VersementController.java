@@ -2,7 +2,6 @@ package controllers.versement;
 
 import controllers.service.OperationService;
 import controllers.service.UtilService;
-import entities.Caisse;
 import entities.Client;
 import entities.Operation;
 import entities.OperationType;

@@ -6,14 +6,14 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
-    <h:form id="TypeMatiereListerForm">
+    <h:form id="ClientListerForm">
 
         <p:messages id="growl" closable="true">
             <p:effect type="pulsate" event="load" delay="50" />
         </p:messages>
 
         <p:panel header="#{langue['Conv.ListeDes']} : CLIENTS">
-            <p:contextMenu id="TypeMatiereDataTableContextMenu" for="datalist">  
+            <p:contextMenu id="ClientDataTableContextMenu" for="datalist">  
                 <p:menuitem value="#{langue['Conv.Creer']}" onclick="document.getElementById('actionsForm:creer').click();" icon="ui-icon-plus"/>
                 <p:menuitem value="#{langue['Conv.Detail']}" onclick="document.getElementById('actionsForm:detail').click();" icon="ui-icon-search"/>
                 <p:menuitem value="#{langue['Conv.Modifier']}" onclick="document.getElementById('actionsForm:modifier').click();" icon="ui-icon-pencil"/>
@@ -30,9 +30,9 @@
                          selectionMode="single"
                          selection="#{clientController.client}">
 
-                <p:ajax event="rowSelect"   update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
-                <p:ajax event="rowUnselect" update=":TypeMatiereListerForm:TypeMatiereDataTableContextMenu, :actionsForm"/>
-                <p:ajax event="rowDblselect" onsuccess="document.getElementById('TypeMatiereListerForm:viewButton').click();"/>
+                <p:ajax event="rowSelect" update=":ClientListerForm:ClientDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowUnselect" update=":ClientListerForm:ClientDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowDblselect" onsuccess="document.getElementById('ClientListerForm:viewButton').click();"/>
 
                 <p:column filterBy="#{item.numerocarnet}" width="10%">
                     <f:facet name="header">

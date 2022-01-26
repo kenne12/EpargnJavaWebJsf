@@ -49,7 +49,6 @@ public class RetraitController extends AbstractRetraitController implements Seri
             if (p != null) {
                 this.showRetraitCreateDialog = true;
             } else {
-                p = new Privilege();
                 p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 13);
                 if (p != null) {
                     this.showRetraitCreateDialog = true;
@@ -65,7 +64,7 @@ public class RetraitController extends AbstractRetraitController implements Seri
 
     public void prepareEdit() {
         /*  81 */ this.mode = "Edit";
-        /*  82 */ this.showClient = Boolean.valueOf(true);
+        /*  82 */ this.showClient = true;
 
         /*  84 */ if (this.retrait != null) {
             /*  85 */ this.retrait1 = this.retrait.getMontant();
@@ -76,7 +75,7 @@ public class RetraitController extends AbstractRetraitController implements Seri
         try {
             /*  91 */ Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
             /*  92 */ if (p != null) {
-                /*  93 */ this.showRetraitCreateDialog = Boolean.valueOf(true);
+                /*  93 */ this.showRetraitCreateDialog = true;
             } else {
                 /*  95 */ p = new Privilege();
                 /*  96 */ p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 14);

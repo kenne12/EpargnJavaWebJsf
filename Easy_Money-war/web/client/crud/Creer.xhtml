@@ -8,15 +8,14 @@
 
     <ui:composition>
 
-        <p:dialog id="TypeMatierelCreerDlg" 
-                  widgetVar="TypeMatiereCreerDialog" 
+        <p:dialog id="ClientCreerDlg" 
+                  widgetVar="ClientCreerDialog" 
                   modal="true" resizable="false" 
                   appendTo="@(body)" 
                   header="#{langue['Titre.Dlg.Creation']} : CLIENT" 
-                  closeOnEscape="true"
-                  visible="#{clientController.showClientCreateDialog}">
+                  closeOnEscape="true">
 
-            <h:form id="TypeMatiereCreerForm">
+            <h:form id="ClientCreerForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" columnClasses ="column">
 
@@ -75,10 +74,10 @@
 
                     <p:separator/>
                     <center>
-                        <p:commandButton value="#{langue.annuler}" onclick="PF('TypeMatiereCreerDialog').hide()"/>
+                        <p:commandButton value="#{langue.annuler}" onclick="PF('ClientCreerDialog').hide()"/>
                         <p:commandButton actionListener="#{clientController.create()}" value="#{langue['Conv.Enregistrer']}" 
-                                         update="display,:TypeMatiereListerForm:datalist,:TypeMatiereListerForm:growl, TypeMatiereCreerForm" 
-                                         oncomplete="PF('TypeMatiereCreerDialog').hide()"/>
+                                         update="display,:ClientListerForm:datalist,:ClientListerForm:growl, ClientCreerForm" 
+                                         oncomplete="PF('ClientCreerDialog').hide()"/>
                     </center>
 
                 </h:panelGroup>  

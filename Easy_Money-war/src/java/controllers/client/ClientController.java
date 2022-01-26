@@ -2,14 +2,13 @@ package controllers.client;
 
 import entities.Caisse;
 import entities.Client;
-import entities.Privilege;
-import entities.Retrait;
-import entities.Versement;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import org.primefaces.context.RequestContext;
 import utils.JsfUtil;
 import utils.PrintUtils;
 import utils.SessionMBean;
@@ -25,65 +24,40 @@ public class ClientController extends AbstractClientController implements Serial
     }
 
     public void prepareCreate() {
+        if (!Utilitaires.isAccess(7l)) {
+            JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'enregistrer un client");
+            return;
+        }
+
         this.client = new Client();
         this.client.setSolde(0);
         this.client.setEtat(true);
         this.mode = "Create";
         this.showEditSolde = true;
         this.showMontantCarnet = true;
-        this.showMontantCarnetCompnent = true;
-        try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-            if (p != null) {
-                this.showClientCreateDialog = true;
-            } else {
-                p = new Privilege();
-                p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 7);
-                if (p != null) {
-                    this.showClientCreateDialog = true;
-                } else {
-                    JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'enregistrer un client");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        RequestContext.getCurrentInstance().execute("PF('ClientCreerDialog').show()");
     }
 
     public void prepareEdit() {
-        this.mode = "Edit";
-        this.showMontantCarnet = false;
-        this.showMontantCarnetCompnent = false;
-        if (this.client != null) {
-            List<Versement> versementsTemp = this.versementFacadeLocal.find(this.client);
-            if (versementsTemp.isEmpty()) {
-                List<Retrait> retraitsTemp = this.retraitFacadeLocal.find(this.client);
-                if (retraitsTemp.isEmpty()) {
-                    this.showEditSolde = true;
-                } else {
-                    this.showEditSolde = false;
-                }
-            } else {
-                this.showEditSolde = false;
-            }
+
+        if (Objects.isNull(client) && Objects.isNull(client.getIdclient())) {
+            JsfUtil.addWarningMessage("Veuillez sélectionner un client");
+            return;
+        }
+        if (!Utilitaires.isAccess(8l)) {
+            JsfUtil.addErrorMessage("Vous n'avez pas le privilège de modifier un client");
+            return;
         }
 
-        try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-            if (p != null) {
-                this.showClientCreateDialog = true;
-                return;
-            }
-            p = new Privilege();
-            p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 8);
-            if (p != null) {
-                this.showClientCreateDialog = true;
-                return;
-            }
-            JsfUtil.addErrorMessage("Vous n'avez pas le privilège de modifier ce client");
-        } catch (Exception e) {
-            e.printStackTrace();
+        this.mode = "Edit";
+        this.showMontantCarnet = false;
+        this.showEditSolde = true;
+
+        if (!versementFacadeLocal.find(client).isEmpty() || !retraitFacadeLocal.find(this.client).isEmpty()) {
+            this.showEditSolde = false;
         }
+
+        RequestContext.getCurrentInstance().execute("PF('ClientCreerDialog').show()");
     }
 
     public void create() {
@@ -145,20 +119,11 @@ public class ClientController extends AbstractClientController implements Serial
         try {
             if (this.client != null) {
 
-                Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-                if (p != null) {
-                    this.showClientDeleteDialog = true;
-                } else {
-                    p = new Privilege();
-                    p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 9);
-                    if (p != null) {
-                        this.showClientDeleteDialog = true;
-                    } else {
-                        this.showClientDeleteDialog = false;
-                        JsfUtil.addErrorMessage("Vous n'avez pas le privilège de supprimer ce  client");
-                        return;
-                    }
+                if (!Utilitaires.isAccess(9l)) {
+                    JsfUtil.addErrorMessage("Vous n'avez pas le privilège de supprimer un client");
+                    return;
                 }
+
                 this.clientFacadeLocal.remove(this.client);
 
                 if (this.client.getSolde() != 0) {
@@ -179,21 +144,12 @@ public class ClientController extends AbstractClientController implements Serial
 
     public void print() {
         try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-            if (p != null) {
-                this.showClientPrintDialog = (true);
-            } else {
-                p = new Privilege();
-                p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 20);
-                if (p != null) {
-                    this.showClientPrintDialog = (true);
-                } else {
-                    this.showClientPrintDialog = (false);
-                    JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'éditer la liste des clients");
-                    return;
-                }
+            if (!Utilitaires.isAccess(7l)) {
+                JsfUtil.addErrorMessage("Vous n'avez pas le privilège d'éditer la liste des clients");
+                return;
             }
             this.fileName = PrintUtils.printCustomerList(this.clientFacadeLocal.findAllRange(true));
+            RequestContext.getCurrentInstance().execute("PF('ClientImprimerDialog').show()");
         } catch (Exception e) {
             e.printStackTrace();
         }
