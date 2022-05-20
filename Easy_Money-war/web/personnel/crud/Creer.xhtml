@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+
+        <p:dialog id="PersonnelCreerDlg" 
+                  widgetVar="PersonnelCreerDialog" 
+                  modal="true" resizable="false" 
+                  appendTo="@(body)" 
+                  header="#{langue['Titre.Dlg.Creation']} : PERSONNEL" 
+                  closeOnEscape="true">
+
+            <h:form id="PersonnelCreerForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="3" columnClasses ="column">
+                        
+                        <p:outputLabel value="Boutique" for="boutique" />
+                        <p:selectOneMenu filter="true" required="true" id="boutique" value="#{personnelController.personnel.boutique.idBoutique}" requiredMessage="Veuillez selectionner le mois de vente">
+                            <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
+                            <f:selectItems value="#{personnelController.boutiques}" var="btq" itemLabel="#{btq.nom}" itemValue="#{btq.idBoutique}"/>                                                                             
+                            <p:ajax />
+                        </p:selectOneMenu>
+                        <p:message for="boutique" />
+
+
+                        <p:outputLabel value="#{langue.nom}" for="nom" />
+                        <p:inputText id="nom" value="#{personnelController.personnel.nom}" required="true" 
+                                     requiredMessage="#{langue['Conv.Nom']}: #{langue['Conv.ValeurRequise']}">
+                            <p:ajax/>   
+                        </p:inputText>
+                        <p:message for="nom" />
+
+                        <p:outputLabel value="#{langue.prenom}" for="prenom" />
+                        <p:inputText id="prenom" value="#{personnelController.personnel.prenom}"  >
+                            <p:ajax/>   
+                        </p:inputText>
+                        <p:message for="prenom" />
+
+                    </p:panelGrid>
+
+                    <p:separator/>
+                    <center>
+                        <p:commandButton value="#{langue.annuler}" onclick="PF('PersonnelCreerDialog').hide()"/>
+                        <p:commandButton actionListener="#{personnelController.save()}" value="#{langue['Conv.Enregistrer']}" 
+                                         update="display,:PersonnelListerForm:datalist,:PersonnelListerForm:growl, PersonnelCreerForm" 
+                                         oncomplete="PF('PersonnelCreerDialog').hide()"/>
+                    </center>
+
+                </h:panelGroup>  
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>
