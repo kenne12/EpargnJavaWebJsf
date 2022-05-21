@@ -151,7 +151,7 @@ public class AbstractUtilisateurController {
     }
 
     public List<Utilisateur> getUtilisateurActifs() {
-        this.utilisateurActifs = this.utilisateurFacadeLocal.findByActif(Boolean.valueOf(true));
+        this.utilisateurActifs = this.utilisateurFacadeLocal.findByActif(true);
         return this.utilisateurActifs;
     }
 
@@ -160,7 +160,7 @@ public class AbstractUtilisateurController {
     }
 
     public List<Utilisateur> getUtilisateurInactifs() {
-        this.utilisateurInactifs = this.utilisateurFacadeLocal.findByActif(Boolean.valueOf(false));
+        this.utilisateurInactifs = this.utilisateurFacadeLocal.findByActif(false);
         return this.utilisateurInactifs;
     }
 

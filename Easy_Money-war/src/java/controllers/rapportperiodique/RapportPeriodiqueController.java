@@ -2,7 +2,6 @@ package controllers.rapportperiodique;
 
 import entities.Client;
 import entities.FraisCarnet;
-import entities.Privilege;
 import entities.Retrait;
 import entities.Versement;
 import java.io.Serializable;
@@ -87,7 +86,7 @@ public class RapportPeriodiqueController extends AbstractRapportPeriodiqueContro
                             } else {
                                 int montantF = 0;
                                 for (FraisCarnet f : fraisCarnets) {
-                                    montantF = (int) (montantF + f.getMontant().doubleValue());
+                                    montantF = (int) (montantF + f.getMontant());
                                 }
 
                                 solde.setCarnet((montantF));
@@ -111,13 +110,10 @@ public class RapportPeriodiqueController extends AbstractRapportPeriodiqueContro
 
     public void printReport() {
         try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-            if (p != null) {
+            if (this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1) != null) {
                 this.showReportPrintDialog = true;
             } else {
-                p = new Privilege();
-                p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 16);
-                if (p != null) {
+                if (this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 16) != null) {
                     this.showReportPrintDialog = true;
                 } else {
                     this.showReportPrintDialog = false;
@@ -135,10 +131,7 @@ public class RapportPeriodiqueController extends AbstractRapportPeriodiqueContro
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = 0;
-        for (Solde s : this.soldes) {
-            resultat += s.getMontantVerse();
-        }
+        int resultat = this.soldes.stream().mapToInt(Solde::getMontantVerse).sum();
         return JsfUtil.formaterStringMoney(resultat);
     }
 
@@ -146,21 +139,15 @@ public class RapportPeriodiqueController extends AbstractRapportPeriodiqueContro
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = 0;
-        for (Solde s : this.soldes) {
-            resultat += s.getMontantRetire();
-        }
-        return JsfUtil.formaterStringMoney((resultat));
+        int resultat = this.soldes.stream().mapToInt(Solde::getMontantRetire).sum();
+        return JsfUtil.formaterStringMoney(resultat);
     }
 
     public String calculSolde() {
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = 0;
-        for (Solde s : this.soldes) {
-            resultat += s.getClient().getSolde();
-        }
-        return JsfUtil.formaterStringMoney((resultat));
+        int resultat = this.soldes.stream().mapToInt(line -> line.getClient().getSolde()).sum();
+        return JsfUtil.formaterStringMoney(resultat);
     }
 }

@@ -25,7 +25,7 @@ public class UtilisateurController extends AbstractUtilisateurController impleme
         this.mode = "Create";
 
         try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1);
             if (p != null) {
                 this.showUserCreateDialog = true;
             } else {
@@ -50,7 +50,7 @@ public class UtilisateurController extends AbstractUtilisateurController impleme
         this.mode = "Edit";
 
         try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1);
             if (p != null) {
                 this.showUserCreateDialog = true;
                 return;
@@ -98,7 +98,7 @@ public class UtilisateurController extends AbstractUtilisateurController impleme
         try {
             if (this.utilisateur != null) {
 
-                Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+                Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1);
                 if (p != null) {
                     this.showUserDeleteDialog = true;
                 } else {
@@ -128,7 +128,7 @@ public class UtilisateurController extends AbstractUtilisateurController impleme
     public void changeStatus(Utilisateur utilisateur, String mode) {
         try {
             if (mode.equals("activer")) {
-                Privilege privilege = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+                Privilege privilege = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1);
                 if (privilege != null) {
                     utilisateur.setActif(true);
                     this.utilisateurFacadeLocal.edit(utilisateur);
@@ -149,7 +149,7 @@ public class UtilisateurController extends AbstractUtilisateurController impleme
                 return;
             }
 
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1);
             if (p != null) {
                 utilisateur.setActif(false);
                 this.utilisateurFacadeLocal.edit(utilisateur);
@@ -175,18 +175,14 @@ public class UtilisateurController extends AbstractUtilisateurController impleme
     }
 
     public void print() {
-        Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
-        if (p != null) {
+        if (this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1) != null) {
             this.showUserPrintDialog = true;
         } else {
-            p = new Privilege();
-            p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 4);
-            if (p != null) {
+            if (this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 4) != null) {
                 this.showUserPrintDialog = true;
             } else {
                 this.showUserPrintDialog = false;
                 JsfUtil.addErrorMessage("Vous n 'avez pas le privilege d'imprimer la liste des utilisateurs");
-                return;
             }
         }
     }
