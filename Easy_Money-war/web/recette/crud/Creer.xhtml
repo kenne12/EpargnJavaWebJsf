@@ -12,7 +12,6 @@
                   widgetVar="RecetteCreerDialog" 
                   modal="true" resizable="false" 
                   appendTo="@(body)"
-                  width="50%"
                   header="#{langue['Titre.Dlg.Creation']} : RECETTE" 
                   closeOnEscape="true">
 
@@ -22,7 +21,7 @@
 
                         <p:outputLabel value="Boutique" for="boutique" />
                         <h:panelGroup>
-                            <p:selectOneMenu disabled="#{versementRecetteController.mode.equals('Edit')}" filter="true" required="true" id="boutique" value="#{versementRecetteController.recette.boutique.idBoutique}" requiredMessage="Veuillez selectionner le mois de vente">
+                            <p:selectOneMenu style="width: 350px" disabled="#{versementRecetteController.mode.equals('Edit')}" filter="true" required="true" id="boutique" value="#{versementRecetteController.recette.boutique.idBoutique}" requiredMessage="Veuillez selectionner le mois de vente">
                                 <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
                                 <f:selectItems value="#{versementRecetteController.boutiques}" var="btq" itemLabel="#{btq.nom}" itemValue="#{btq.idBoutique}"/>                                                                             
                                 <p:ajax listener="#{versementRecetteController.handleFilterPersonne()}" update="personnel" />
@@ -33,7 +32,7 @@
 
                         <p:outputLabel value="Personel" for="personnel" />
                         <h:panelGroup>
-                            <p:selectOneMenu disabled="#{versementRecetteController.mode.equals('Edit')}" filter="true" required="true" id="personnel" value="#{versementRecetteController.recette.personnel.idPersonnel}" requiredMessage="Veuillez selectionner le mois de vente">
+                            <p:selectOneMenu style="width: 350px" disabled="#{versementRecetteController.mode.equals('Edit')}" filter="true" required="true" id="personnel" value="#{versementRecetteController.recette.personnel.idPersonnel}" requiredMessage="Veuillez selectionner le mois de vente">
                                 <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
                                 <f:selectItems value="#{versementRecetteController.personnels}" var="psn" itemLabel="#{psn.nom} #{psn.prenom}" itemValue="#{psn.idPersonnel}"/>                                                                             
                                 <p:ajax />
@@ -44,7 +43,7 @@
 
                         <p:outputLabel value="#{langue.date}" for="date" />
                         <h:panelGroup>
-                            <p:calendar navigator="true" pattern="dd/MM/yyyy" id="date" value="#{versementRecetteController.recette.dateOperation}" required="true" 
+                            <p:calendar style="width: 350px" navigator="true" pattern="dd/MM/yyyy" id="date" value="#{versementRecetteController.recette.dateOperation}" required="true" 
                                         requiredMessage="#{langue['Conv.Nom']}: #{langue['Conv.ValeurRequise']}">
                                 <p:ajax/>   
                             </p:calendar>
@@ -64,7 +63,7 @@
 
                         <p:outputLabel value="Observation" for="observation" />
                         <h:panelGroup>
-                            <p:inputTextarea rows="2" id="observation" value="#{versementRecetteController.recette.observation}"  >
+                            <p:inputTextarea style="width: 350px" rows="2" id="observation" value="#{versementRecetteController.recette.observation}"  >
                                 <p:ajax/>   
                             </p:inputTextarea>
                             <p:message for="observation" />

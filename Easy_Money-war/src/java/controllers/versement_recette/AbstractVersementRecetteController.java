@@ -47,7 +47,7 @@ public class AbstractVersementRecetteController {
     }
 
     public void setRecette(Recette recette) {
-        modifier = supprimer = (Objects.isNull(recette.getIdRecette()) || recette == null);
+        modifier = supprimer = (Objects.isNull(recette.getIdRecette()) || Objects.isNull(recette));
         this.recette = recette;
     }
 

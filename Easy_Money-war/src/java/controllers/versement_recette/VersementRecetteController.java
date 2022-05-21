@@ -112,4 +112,16 @@ public class VersementRecetteController extends AbstractVersementRecetteControll
             this.setPersonnels(this.personnelService.findByBoutiqueId(this.recette.getBoutique().getIdBoutique()));
         }
     }
+
+    private Integer sumTotalRecette() {
+        if (this.getRecettes().isEmpty()) {
+            return 0;
+        }
+        return this.getRecettes().stream().mapToInt(Recette::getMontant).sum();
+    }
+
+    public String getformatTotalRecette() {
+        return JsfUtil.formaterStringMoney(this.sumTotalRecette());
+    }
+
 }
