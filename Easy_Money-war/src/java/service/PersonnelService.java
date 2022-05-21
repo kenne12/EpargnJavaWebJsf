@@ -24,4 +24,6 @@ public interface PersonnelService {
 
     public List<Personnel> findAll();
 
+    public List<Personnel> findByBoutiqueId(int boutiqueId);
+
 }

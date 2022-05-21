@@ -6,6 +6,8 @@
 package service;
 
 import entities.Recette;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -20,5 +22,9 @@ public interface RecetteService {
     Recette editRecette(Recette recette);
 
     void deleteRecette(Integer idRecette);
+
+    List<Recette> findByOperationDate(Date operationDate);
+
+    List<Recette> findOperationBetweenTwoDates(Date startDate, Date endDate);
 
 }

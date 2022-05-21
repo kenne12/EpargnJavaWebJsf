@@ -6,6 +6,7 @@
 package sessions;
 
 import entities.Recette;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -29,5 +30,11 @@ public interface RecetteFacadeLocal {
     List<Recette> findRange(int[] range);
 
     int count();
-    
+
+    public Integer nextId();
+
+    List<Recette> findAll(Date date);
+
+    List<Recette> findAll(Date startDate, Date endDate);
+
 }

@@ -6,9 +6,12 @@
 package sessions;
 
 import entities.Recette;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,5 +31,29 @@ public class RecetteFacade extends AbstractFacade<Recette> implements RecetteFac
     public RecetteFacade() {
         super(Recette.class);
     }
-    
+
+    @Override
+    public Integer nextId() {
+        Query query = em.createQuery("SELECT max(r.idRecette) FROM Recette r");
+        try {
+            return ((Integer) query.getSingleResult() + 1);
+        } catch (Exception e) {
+            return 1;
+        }
+    }
+
+    @Override
+    public List<Recette> findAll(Date date) {
+        return em.createQuery("SELECT r FROM Recette r WHERE r.dateOperation=:dateOperation ORDER BY r.dateOperation DESC, r.idRecette DESC")
+                .setParameter("dateOperation", date)
+                .getResultList();
+    }
+
+    @Override
+    public List<Recette> findAll(Date startDate, Date endDate) {
+        return em.createQuery("SELECT r FROM Recette r WHERE r.dateOperation BETWEEN :startDate AND :endDate ORDER BY r.dateOperation DESC, r.idRecette DESC")
+                .setParameter("startDate", startDate).setParameter("endDate", endDate)
+                .getResultList();
+    }
+
 }

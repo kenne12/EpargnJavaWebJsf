@@ -34,4 +34,6 @@ public interface PersonnelFacadeLocal {
 
     List<Personnel> findAllOrderByName();
 
+    List<Personnel> findByBoutiqueId(int boutiqueId);
+
 }

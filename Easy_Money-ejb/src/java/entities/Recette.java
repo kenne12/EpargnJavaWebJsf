@@ -5,17 +5,17 @@
  */
 package entities;
 
+import enumeration.VersementState;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
@@ -28,8 +28,9 @@ import javax.validation.constraints.Min;
 public class Recette implements Serializable {
 
     @Id
-    @SequenceGenerator(name = "recette_sequence_id", sequenceName = "recette_sequence_id", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recette_sequence_id")
+    //@SequenceGenerator(name = "recette_sequence_id", sequenceName = "recette_sequence_id", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recette_sequence_id")
+    @Column(name = "id_recette")
     private Integer idRecette;
 
     @ManyToOne(optional = false)
@@ -42,19 +43,37 @@ public class Recette implements Serializable {
     @Min(value = 1, message = "Amount can not be less than 1, please provide valid amount")
     private Integer montant;
 
-    @Column(name = "date_operation")
+    @Column(name = "date_operation", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dateOperation;
 
-    @Column(name = "heure_operation")
+    @Column(name = "heure_operation", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date heureOperation;
 
+    @Column(length = 100)
+    private String observation;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "versement_state")
+    private VersementState versementState;
+
     public Recette() {
+        this.montant = 0;
+        this.versementState = VersementState.ATTENTE;
     }
 
     public Recette(Integer idRecette) {
         this.idRecette = idRecette;
+        this.montant = 0;
+        this.versementState = VersementState.ATTENTE;
+    }
+
+    public Recette(Boutique boutique, Personnel personnel) {
+        this.boutique = boutique;
+        this.personnel = personnel;
+        this.montant = 0;
+        this.versementState = VersementState.ATTENTE;
     }
 
     public Recette(Integer idRecette, Boutique boutique, Personnel personnel, Integer montant, Date dateOperation, Date heureOperation) {
@@ -129,6 +148,22 @@ public class Recette implements Serializable {
 
     public void setHeureOperation(Date heureOperation) {
         this.heureOperation = heureOperation;
+    }
+
+    public String getObservation() {
+        return observation;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
+    }
+
+    public VersementState getVersementState() {
+        return versementState;
+    }
+
+    public void setVersementState(VersementState versementState) {
+        this.versementState = versementState;
     }
 
     @Override

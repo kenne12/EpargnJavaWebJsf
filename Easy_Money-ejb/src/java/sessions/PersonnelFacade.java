@@ -47,4 +47,11 @@ public class PersonnelFacade extends AbstractFacade<Personnel> implements Person
                 .getResultList();
     }
 
+    @Override
+    public List<Personnel> findByBoutiqueId(int boutiqueId) {
+        return em.createQuery("SELECT p FROM Personnel p WHERE p.boutique.idBoutique=:boutiqueId ORDER BY p.nom,p.prenom")
+                .setParameter("boutiqueId", boutiqueId)
+                .getResultList();
+    }
+
 }

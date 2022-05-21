@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RecetteListerForm">
+
+        <p:messages id="growl" closable="true">
+            <p:effect type="pulsate" event="load" delay="50" />
+        </p:messages>
+
+        <p:panel header="#{langue['Conv.ListeDes']} : Recettes" style="width: 70%">
+            <p:contextMenu id="RecetteDataTableContextMenu" for="datalist">  
+                <p:menuitem value="#{langue['Conv.Creer']}" onclick="document.getElementById('actionsForm:creer').click();" icon="ui-icon-plus"/>
+                <p:menuitem value="#{langue['Conv.Modifier']}" onclick="document.getElementById('actionsForm:modifier').click();" icon="ui-icon-pencil"/>
+                <p:menuitem value="#{langue['Conv.Supprimer']}" onclick="document.getElementById('actionsForm:supprimer').click();" icon="ui-icon-trash"/>
+            </p:contextMenu>
+            <p:dataTable id="datalist"
+                         value="#{versementRecetteController.recettes}"
+                         var="item"
+                         rowKey="#{item.idRecette}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         selectionMode="single"
+                         selection="#{versementRecetteController.recette}">
+
+                <p:ajax event="rowSelect" update=":RecetteListerForm:RecetteDataTableContextMenu, :actionsForm"/>
+                <p:ajax event="rowUnselect" update=":RecetteListerForm:RecetteDataTableContextMenu, :actionsForm"/>
+
+
+                <p:column filterBy="#{item.boutique.nom}" style="width: 35%">
+                    <f:facet name="header">
+                        <h:outputText value="Boutique"/>
+                    </f:facet>
+                    <h:outputText value="#{item.boutique.nom}"/>
+                </p:column>
+                
+                
+                <p:column filterBy="#{item.personnel.nom}" style="width: 35%">
+                    <f:facet name="header">
+                        <h:outputText value="#{langue.nom}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.personnel.nom} #{item.personnel.prenom}"/>
+                </p:column>
+
+
+                <p:column filterBy="#{item.montant}" style="width: 15%">
+                    <f:facet name="header">
+                        <h:outputText style="text-align: center" value="Montant"/>
+                    </f:facet>
+                    <h:outputText value="#{item.montant}" style="text-align: right">
+                        <f:convertNumber />
+                    </h:outputText>
+                </p:column>
+                
+                <p:column  style="width: 15%;text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="Date"/>
+                    </f:facet>
+                    <h:outputText value="#{item.dateOperation}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+
+            </p:dataTable>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>
