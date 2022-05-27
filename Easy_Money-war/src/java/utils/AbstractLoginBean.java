@@ -82,39 +82,26 @@ public class AbstractLoginBean {
     }
 
     public List<AnneeMois> getAnneeMoises() {
-        try {
-            this.anneeMoises = this.anneeMoisFacadeLocal.findByEtat(Boolean.valueOf(true));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return this.anneeMoises;
     }
 
-    public void setAnneeMoises(List<AnneeMois> anneeMoises) {
-        /* 226 */ this.anneeMoises = anneeMoises;
-    }
-
     public Annee getAnnee() {
-        /* 230 */ return this.annee;
+        return this.annee;
     }
 
     public void setAnnee(Annee annee) {
-        /* 234 */ this.annee = annee;
+        this.annee = annee;
     }
 
     public List<Annee> getAnnees() {
-        /* 238 */ return this.annees;
-    }
-
-    public void setAnnees(List<Annee> annees) {
-        /* 242 */ this.annees = annees;
+        return this.annees;
     }
 
     public Date getDate() {
-        /* 246 */ return this.date;
+        return this.date;
     }
 
     public void setDate(Date date) {
-        /* 250 */ this.date = date;
+        this.date = date;
     }
 }

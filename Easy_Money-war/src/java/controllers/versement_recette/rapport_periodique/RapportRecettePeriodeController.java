@@ -8,7 +8,6 @@ package controllers.versement_recette.rapport_periodique;
 import entities.AnneeMois;
 import entities.Recette;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.Optional;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;

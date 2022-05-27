@@ -6,6 +6,7 @@ import entities.Privilege;
 import entities.Utilisateur;
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +52,8 @@ public class LoginBean extends AbstractLoginBean implements Serializable {
     public void login() {
         try {
 
-            this.utilisateur = this.utilisateurFacadeLocal.login(this.utilisateur.getLogin(), (new ShaHash()).hash(this.utilisateur.getPassword()));
+            this.utilisateur = this.utilisateurFacadeLocal
+                    .login(this.utilisateur.getLogin(), (new ShaHash()).hash(this.utilisateur.getPassword()));
             if (this.utilisateur != null) {
                 JsfUtil.addSuccessMessage("Operation reussie");
 
@@ -59,23 +61,28 @@ public class LoginBean extends AbstractLoginBean implements Serializable {
 
                 HttpSession session = SessionMBean.getSession();
                 session.setAttribute("compte", this.utilisateur);
-                this.anneeMoises = this.anneeMoisFacadeLocal.findByEtat(true);
+
                 this.annees = this.anneeFacadeLocal.findByEtat(true);
-                filterDate(new Date());
+                if (this.annees.size() == 1) {
+                    this.anneeMoises = this.anneeMoisFacadeLocal.findByAnneeEtat(this.annees.get(0).getIdannee(), true);
+                    this.annee = this.annees.get(0);
+                    filterDate(Date.from(Instant.now()));
+                }
 
                 List<Privilege> privilegesTemp = this.privilegeFacadeLocal.findByUser(this.utilisateur.getIdutilisateur());
                 List<Long> accesses = new ArrayList<>();
                 List<String> access = new ArrayList<>();
 
-                for (Privilege p : privilegesTemp) {
+                privilegesTemp.stream().map((p) -> {
                     accesses.add(Long.valueOf(p.getIdmenu().getIdmenu()));
-                    String[] menus = p.getIdmenu().getRessource().split(";");
+                    return p;
+                }).map((p) -> p.getIdmenu().getRessource().split(";")).forEachOrdered((menus) -> {
                     for (String temp : menus) {
                         if (!access.contains(temp)) {
                             access.add(temp);
                         }
                     }
-                }
+                });
 
                 session.setAttribute("accesses", accesses);
                 session.setAttribute("access", access);
@@ -95,11 +102,13 @@ public class LoginBean extends AbstractLoginBean implements Serializable {
 
     public void updateMois() {
         try {
-            if (this.annee.getIdannee().equals(0)) {
+            anneeMoises.clear();
+            if (annee.getIdannee().equals(0)) {
                 JsfUtil.addErrorMessage("Selectionner une année");
-            } else {
-                this.anneeMoises = this.anneeMoisFacadeLocal.findByAnnee(this.annee.getIdannee());
+                return;
             }
+            anneeMoises.addAll(this.anneeMoisFacadeLocal.findByAnneeEtat(annee.getIdannee(), true));
+            filterDate(Date.from(Instant.now()));
         } catch (Exception e) {
             e.printStackTrace();
             JsfUtil.addErrorMessage("Echec");
@@ -108,11 +117,11 @@ public class LoginBean extends AbstractLoginBean implements Serializable {
 
     public void updateCalendar() {
         try {
-            if (this.anneeMois.getIdAnneeMois() == 0) {
+            if (this.anneeMois.getIdAnneeMois().equals(0)) {
                 JsfUtil.addErrorMessage("Echec : sélectionner une année");
-            } else {
-                this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
+                return;
             }
+            this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
         } catch (Exception e) {
             e.printStackTrace();
             JsfUtil.addErrorMessage("Echec");
@@ -236,7 +245,7 @@ public class LoginBean extends AbstractLoginBean implements Serializable {
     private void filterDate(Date date) {
         for (AnneeMois a : this.anneeMoises) {
             try {
-                if ((a.getDateDebut().before(date) || a.getDateDebut().equals(date)) && ( /* 239 */a.getDateFin().after(date) || a.getDateFin().equals(date))) {
+                if ((a.getDateDebut().before(date) || a.getDateDebut().equals(date)) && (a.getDateFin().after(date) || a.getDateFin().equals(date))) {
                     this.anneeMois = a;
                     this.annee = a.getIdannee();
                     break;

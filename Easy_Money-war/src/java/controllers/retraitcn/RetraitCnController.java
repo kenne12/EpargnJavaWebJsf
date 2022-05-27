@@ -172,10 +172,6 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
                 default:
                     JsfUtil.addErrorMessage("Veuillez sélectionner un critère de recherche");
             }
-
-            if (searchMode.equals("mois")) {
-
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -4,7 +4,6 @@
     <jta-data-source>easy_money</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.schema-generation.database.action" value="create-tables"/>
     </properties>
   </persistence-unit>
 </persistence>
