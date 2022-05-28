@@ -24,6 +24,16 @@ public class AnneeMoisFacade extends AbstractFacade<AnneeMois> implements AnneeM
     }
 
     @Override
+    public Integer nextVal() {
+        Query query = em.createQuery("SELECT MAX(a.idAnneeMois) FROM AnneeMois a");
+        try {
+            return (Integer) query.getSingleResult() + 1;
+        } catch (Exception e) {
+            return 1;
+        }
+    }
+
+    @Override
     public List<AnneeMois> findByAnneeEtat(int idAnnee, boolean etat) {
         Query query = this.em.createQuery("SELECT a FROM AnneeMois a WHERE a.idannee.idannee=:annee AND a.etat=:etat ORDER BY a.idmois.idmois");
         query.setParameter("annee", idAnnee).setParameter("etat", etat);
@@ -52,6 +62,12 @@ public class AnneeMoisFacade extends AbstractFacade<AnneeMois> implements AnneeM
     public List<AnneeMois> findByAnnee(int idAnnee) {
         Query query = this.em.createQuery("SELECT a FROM AnneeMois a WHERE a.idannee.idannee=:annee ORDER BY a.idmois.idmois");
         query.setParameter("annee", idAnnee);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<AnneeMois> findByRange() {
+        Query query = this.em.createQuery("SELECT a FROM AnneeMois a ORDER BY a.idannee.nom DESC , a.idmois.numero ASC");
         return query.getResultList();
     }
 }

@@ -22,6 +22,8 @@ public interface AnneeMoisFacadeLocal {
 
     int count();
 
+    Integer nextVal();
+
     List<AnneeMois> findByAnneeEtat(int idAnnee, boolean etat);
 
     List<AnneeMois> findByEtat(boolean etat);
@@ -29,4 +31,6 @@ public interface AnneeMoisFacadeLocal {
     AnneeMois findByDate(Date date);
 
     List<AnneeMois> findByAnnee(int idAnnee);
+
+    List<AnneeMois> findByRange();
 }
