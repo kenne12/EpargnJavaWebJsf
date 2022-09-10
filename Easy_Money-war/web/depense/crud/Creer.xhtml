@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+
+        <p:dialog id="DepenseCreerDlg" 
+                  widgetVar="DepenseCreerDialog" 
+                  modal="true" resizable="false" 
+                  appendTo="@(body)"
+                  header="#{langue['Titre.Dlg.Creation']} : DEPENSE" 
+                  closeOnEscape="true">
+
+            <h:form id="DepenseCreerForm">
+                <h:panelGroup id="display">
+                    <h:panelGrid columns="2" columnClasses ="column">
+
+                        <p:outputLabel value="Boutique" for="boutique" />
+                        <h:panelGroup>
+                            <p:selectOneMenu style="width: 350px" disabled="#{depenseController.mode.equals('Edit')}" filter="true" required="true" id="boutique" value="#{depenseController.recette.boutique.idBoutique}" requiredMessage="Veuillez selectionner le mois de vente">
+                                <f:selectItem itemLabel="#{langue.choisir}" itemValue="0"/>
+                                <f:selectItems value="#{depenseController.boutiques}" var="btq" itemLabel="#{btq.nom}" itemValue="#{btq.idBoutique}"/>                                                                             
+                                <p:ajax listener="#{depenseController.handleFilterPersonne()}" update="personnel" />
+                            </p:selectOneMenu>
+                            <p:message for="boutique" />
+                        </h:panelGroup>
+
+
+                        <p:outputLabel value="Personel" for="personnel" />
+                        <h:panelGroup>
+                            <p:selectOneMenu style="width: 350px" disabled="#{depenseController.mode.equals('Edit')}" filter="true" required="true" id="personnel" value="#{depenseController.recette.personnel.idPersonnel}" requiredMessage="Veuillez selectionner le mois de vente">
+                                <f:selectItem itemLabel="#{langue.choisir}" itemValue="0"/>
+                                <f:selectItems value="#{depenseController.personnels}" var="psn" itemLabel="#{psn.nom} #{psn.prenom}" itemValue="#{psn.idPersonnel}"/>                                                                             
+                                <p:ajax />
+                            </p:selectOneMenu>
+                            <p:message for="boutique" />
+                        </h:panelGroup>
+
+
+                        <p:outputLabel value="#{langue.date}" for="date" />
+                        <h:panelGroup>
+                            <p:calendar style="width: 350px" navigator="true" pattern="dd/MM/yyyy" id="date" value="#{depenseController.recette.dateOperation}" required="true" 
+                                        requiredMessage="#{langue['Conv.Nom']}: #{langue['Conv.ValeurRequise']}">
+                                <p:ajax/>   
+                            </p:calendar>
+                            <p:message for="date" />
+                        </h:panelGroup>
+
+
+                        <p:outputLabel value="#{langue.montant}" for="montant" />
+
+                        <h:panelGroup>
+                            <p:inputText id="montant" value="#{depenseController.recette.montant}"  >
+                                <p:ajax/>   
+                            </p:inputText>
+                            <p:message for="montant" />
+                        </h:panelGroup>
+
+
+                        <p:outputLabel value="Motif" for="motif" />
+                        <h:panelGroup>
+                            <p:inputTextarea style="width: 350px" rows="2" id="motif" value="#{depenseController.recette.observation}"  >
+                                <p:ajax/>   
+                            </p:inputTextarea>
+                            <p:message for="motif" />
+                        </h:panelGroup>
+
+                    </h:panelGrid>
+
+                    <p:separator/>
+                    <center>
+                        <p:commandButton value="#{langue.annuler}" onclick="PF('DepenseCreerDialog').hide()"/>
+                        <p:commandButton actionListener="#{depenseController.save()}" value="#{langue['Conv.Enregistrer']}" 
+                                         update="display,:DepenseListerForm:datalist,:DepenseListerForm:growl, DepenseCreerForm" 
+                                         oncomplete="PF('DepenseCreerDialog').hide()"/>
+                    </center>
+
+                </h:panelGroup>  
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

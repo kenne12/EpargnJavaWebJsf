@@ -6,6 +6,7 @@
 package sessions;
 
 import entities.Recette;
+import enumeration.OperationModeType;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -43,16 +44,16 @@ public class RecetteFacade extends AbstractFacade<Recette> implements RecetteFac
     }
 
     @Override
-    public List<Recette> findAll(Date date) {
-        return em.createQuery("SELECT r FROM Recette r WHERE r.dateOperation=:dateOperation ORDER BY r.dateOperation DESC, r.idRecette DESC")
+    public List<Recette> findAll(OperationModeType operationType,  Date date) {
+        return em.createQuery("SELECT r FROM Recette r WHERE r.operationType=:operationType AND r.dateOperation=:dateOperation ORDER BY r.dateOperation DESC, r.idRecette DESC")
                 .setParameter("dateOperation", date)
                 .getResultList();
     }
 
     @Override
-    public List<Recette> findAll(Date startDate, Date endDate) {
-        return em.createQuery("SELECT r FROM Recette r WHERE r.dateOperation BETWEEN :startDate AND :endDate ORDER BY r.dateOperation DESC, r.idRecette DESC")
-                .setParameter("startDate", startDate).setParameter("endDate", endDate)
+    public List<Recette> findAll(OperationModeType operationType, Date startDate, Date endDate) {
+        return em.createQuery("SELECT r FROM Recette r WHERE r.operationType=:operationType AND r.dateOperation BETWEEN :startDate AND :endDate ORDER BY r.dateOperation DESC, r.idRecette DESC")
+                .setParameter("startDate", startDate).setParameter("endDate", endDate).setParameter("operationType", operationType)
                 .getResultList();
     }
 

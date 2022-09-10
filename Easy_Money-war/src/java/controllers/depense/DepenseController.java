@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controllers.versement_recette;
+package controllers.depense;
 
 import entities.Boutique;
 import entities.Personnel;
@@ -23,19 +23,19 @@ import utils.SessionMBean;
  *
  * @author kenne
  */
-@Named(value = "versementRecetteController")
+@Named(value = "depenseController")
 @SessionScoped
-public class VersementRecetteController extends AbstractVersementRecetteController implements Serializable {
+public class DepenseController extends AbstractDepenseController implements Serializable {
 
     /**
      * Creates a new instance of VersementRecetteController
      */
-    public VersementRecetteController() {
+    public DepenseController() {
     }
 
     @PostConstruct
     private void init() {
-        this.setRecette(new Recette(new Boutique(0), new Personnel(0), OperationModeType.RECETTE));
+        this.setRecette(new Recette(new Boutique(0), new Personnel(0), OperationModeType.DEPENSE));
         this.loadRecette();
         this.loadBoutique();
     }
@@ -46,7 +46,7 @@ public class VersementRecetteController extends AbstractVersementRecetteControll
     }
 
     private void loadRecette() {
-        this.setRecettes(recetteService
+        this.setRecettes(depenseService
                 .findOperationBetweenTwoDates(SessionMBean.getMois().getDateDebut(), SessionMBean.getMois().getDateFin()));
     }
 
@@ -56,18 +56,22 @@ public class VersementRecetteController extends AbstractVersementRecetteControll
 
     public void prepareCreate() {
         this.mode = "Create";
-        this.recette = new Recette(new Boutique(0), new Personnel(0), OperationModeType.RECETTE);
+        this.recette = new Recette(new Boutique(0), new Personnel(0), OperationModeType.DEPENSE);
         this.recette.setDateOperation(SessionMBean.getDate());
         this.setPersonnels(new ArrayList<>());
-        RequestContext.getCurrentInstance().execute("PF('RecetteCreerDialog').show()");
+        RequestContext.getCurrentInstance().execute("PF('DepenseCreerDialog').show()");
     }
 
     public void prepareEdit() {
         if (recette.getIdRecette() != null || Objects.nonNull(recette)) {
             this.mode = "Edit";
+            if(recette.getPersonnel()==null)
+                recette.setPersonnel(new Personnel(0));
+            if(recette.getBoutique()==null)
+                recette.setBoutique(new Boutique(0));
             this.setPersonnels(new ArrayList<>());
             this.personnels.add(recette.getPersonnel());
-            RequestContext.getCurrentInstance().execute("PF('RecetteCreerDialog').show()");
+            RequestContext.getCurrentInstance().execute("PF('DepenseCreerDialog').show()");
         }
     }
 
@@ -75,14 +79,14 @@ public class VersementRecetteController extends AbstractVersementRecetteControll
         try {
             switch (this.mode) {
                 case "Create":
-                    this.recetteService.saveRecette(recette);
-                    this.setRecette(new Recette(new Boutique(0), new Personnel(0), OperationModeType.RECETTE));
-                    RequestContext.getCurrentInstance().execute("PF('RecetteCreerDialog').hide()");
+                    this.depenseService.save(recette);
+                    this.setRecette(new Recette(new Boutique(0), new Personnel(0), OperationModeType.DEPENSE));
+                    RequestContext.getCurrentInstance().execute("PF('DepenseCreerDialog').hide()");
                     break;
                 case "Edit":
-                    recetteService.editRecette(recette);
-                    this.setRecette(new Recette(new Boutique(0), new Personnel(0), OperationModeType.RECETTE));
-                    RequestContext.getCurrentInstance().execute("PF('RecetteCreerDialog').hide()");
+                    depenseService.edit(recette);
+                    this.setRecette(new Recette(new Boutique(0), new Personnel(0), OperationModeType.DEPENSE));
+                    RequestContext.getCurrentInstance().execute("PF('DepenseCreerDialog').hide()");
                     break;
                 default:
                     JsfUtil.addErrorMessage("Operation non supportée");
@@ -97,8 +101,8 @@ public class VersementRecetteController extends AbstractVersementRecetteControll
 
     public void delete() {
         try {
-            recetteService.deleteRecette(recette.getIdRecette());
-            this.setRecette(new Recette(new Boutique(0), new Personnel(0), OperationModeType.RECETTE));
+            depenseService.delete(recette.getIdRecette());
+            this.setRecette(new Recette(new Boutique(0), new Personnel(0), OperationModeType.DEPENSE));
             this.loadRecette();
             JsfUtil.addSuccessMessage("Operation passed with success");
         } catch (Exception e) {
@@ -114,15 +118,17 @@ public class VersementRecetteController extends AbstractVersementRecetteControll
         }
     }
 
-    private Integer sumTotalRecette() {
+    private Integer sumTotalDepense() {
         if (this.getRecettes().isEmpty()) {
             return 0;
         }
         return this.getRecettes().stream().mapToInt(Recette::getMontant).sum();
     }
 
-    public String getformatTotalRecette() {
-        return JsfUtil.formaterStringMoney(this.sumTotalRecette());
+    public String getformatTotalDepense() {
+        return JsfUtil.formaterStringMoney(this.sumTotalDepense());
     }
+    
+    
 
 }

@@ -5,6 +5,7 @@
  */
 package entities;
 
+import enumeration.OperationModeType;
 import enumeration.VersementState;
 import java.io.Serializable;
 import java.util.Date;
@@ -58,6 +59,10 @@ public class Recette implements Serializable {
     @Column(name = "versement_state")
     private VersementState versementState;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "operation_type")
+    private OperationModeType operationType;
+
     public Recette() {
         this.montant = 0;
         this.versementState = VersementState.ATTENTE;
@@ -69,11 +74,12 @@ public class Recette implements Serializable {
         this.versementState = VersementState.ATTENTE;
     }
 
-    public Recette(Boutique boutique, Personnel personnel) {
+    public Recette(Boutique boutique, Personnel personnel, OperationModeType operationType) {
         this.boutique = boutique;
         this.personnel = personnel;
         this.montant = 0;
         this.versementState = VersementState.ATTENTE;
+        this.operationType = operationType;
     }
 
     public Recette(Integer idRecette, Boutique boutique, Personnel personnel, Integer montant, Date dateOperation, Date heureOperation) {
@@ -164,6 +170,14 @@ public class Recette implements Serializable {
 
     public void setVersementState(VersementState versementState) {
         this.versementState = versementState;
+    }
+
+    public OperationModeType getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(OperationModeType operationType) {
+        this.operationType = operationType;
     }
 
     @Override
