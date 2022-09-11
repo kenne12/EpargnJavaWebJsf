@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="RapportDepenseListerForm">
+
+        <p:messages id="growl" closable="true">
+            <p:effect type="pulsate" event="load" delay="50" />
+        </p:messages>
+
+        <p:panelGrid columns="8">
+
+
+            <p:outputLabel value="Mois" for="mois" />
+            <p:selectOneMenu required="true" id="mois" value="#{rapportDepensePeriodeController.anneeMois.idAnneeMois}">
+                <f:selectItem itemLabel="#{langue.choisir}" itemValue=""/>
+                <f:selectItems value="#{rapportDepensePeriodeController.anneeMoises}" var="mois" itemLabel="#{mois.idmois.nom}" itemValue="#{mois.idAnneeMois}"/>                                                                             
+                <p:ajax update="startDate , endDate" listener="#{rapportDepensePeriodeController.updateDate()}"/>
+            </p:selectOneMenu>
+
+            <p:outputLabel value="Date debut" for="startDate"/>
+            <p:calendar  id="startDate" value="#{rapportDepensePeriodeController.startDate}" navigator="true">
+                <p:ajax  event="dateSelect" />
+            </p:calendar>
+
+            <p:outputLabel value="Date fin" for="endDate"/>
+            <p:calendar id="endDate" value="#{rapportDepensePeriodeController.endDate}" navigator="true">
+                <p:ajax  event="dateSelect" />
+            </p:calendar>
+
+            <p:commandButton  icon="ui-icon-search"   
+                              value="#{langue.rechercher}" 
+                              actionListener="#{rapportDepensePeriodeController.onSearchRecettes()}"
+                              update="datalist,print"/>
+
+            <p:commandButton id="print"  icon="ui-icon-print"   
+                             value="Imprimer" 
+                             disabled="#{rapportDepensePeriodeController.showPrintButton}"
+                             actionListener="#{rapportDepensePeriodeController.onPrintReport()}"
+                             update=":RapportDepenseImprimerDlg,growl"/>
+
+        </p:panelGrid>
+
+        <p:panel header="RAPPORT PERIODIQUE DES DEPENSES" class="mtop5">
+
+            <p:dataTable id="datalist"
+                         value="#{rapportDepensePeriodeController.recettes}"
+                         var="item"
+                         rowKey="#{item.idRecette}"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50">
+                         
+
+                <p:column filterBy="#{item.boutique.nom}" style="width: 35%">
+                    <f:facet name="header">
+                        <h:outputText value="Boutique"/>
+                    </f:facet>
+                    <h:outputText value="#{item.boutique.nom}"/>
+                </p:column>
+
+
+                <p:column filterBy="#{item.personnel.nom}" style="width: 30%">
+                    <f:facet name="header">
+                        <h:outputText value="#{langue.nom}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.personnel.nom} #{item.personnel.prenom}"/>
+                </p:column>
+
+                <p:column filterBy="#{item.montant}" style="width: 15%">
+                    <f:facet name="header">
+                        <h:outputText style="text-align: center" value="Montant"/>
+                    </f:facet>
+                    <h:outputText value="#{item.montant}" style="text-align: right">
+                        <f:convertNumber />
+                    </h:outputText>
+                </p:column>
+
+                <p:column  style="width: 10%;text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="Date"/>
+                    </f:facet>
+                    <h:outputText value="#{item.dateOperation}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column  style="width: 10%;text-align: center">
+                    <f:facet name="header">
+                        <h:outputText value="STATE"/>
+                    </f:facet>
+                    <h:outputText value="#{item.versementState}" />
+                </p:column>
+
+                <p:columnGroup type="footer">
+                    <p:row>
+                        <p:column colspan="2" style="text-align:right" footerText="Totaux" />
+                        <p:column colspan="3" style="text-align: left" footerText="#{rapportDepensePeriodeController.getformatTotalRecette()}" />
+                    </p:row>
+                </p:columnGroup>
+
+            </p:dataTable>
+
+        </p:panel>
+    </h:form>
+
+</ui:composition>

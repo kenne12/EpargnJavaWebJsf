@@ -129,6 +129,4 @@ public class DepenseController extends AbstractDepenseController implements Seri
         return JsfUtil.formaterStringMoney(this.sumTotalDepense());
     }
     
-    
-
 }

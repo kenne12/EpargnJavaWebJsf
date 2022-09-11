@@ -15,6 +15,7 @@ import entities.Client;
 import entities.Recette;
 import entities.Retrait;
 import entities.Versement;
+import enumeration.OperationModeType;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
@@ -517,7 +518,39 @@ public class PrintUtils {
         return list.stream().mapToInt(Recette::getMontant).sum();
     }
 
-    public static String printPeriodicRecetteReport(Date startDate, Date endDate, List<Recette> recettes) {
+    private static void entrePortrait(Document rapport, String titre) throws DocumentException {
+        Paragraph entreprise = new Paragraph("ETS FIDO INTER", new Font(Font.FontFamily.TIMES_ROMAN, 14.0F, 1));
+        entreprise.setAlignment(1);
+        rapport.add(entreprise);
+
+        Paragraph entreprise1 = new Paragraph("Vente en gros et détail des Appareils Electroniques , Accessoires de télephone", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 1));
+        entreprise1.setAlignment(1);
+        rapport.add(entreprise1);
+
+        Paragraph entreprise2 = new Paragraph("Informatiques & divers Téléphones - Téléviseurs - Ecran plasma - DVD - Casque", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 1));
+        entreprise2.setAlignment(1);
+        rapport.add(entreprise2);
+
+        Paragraph entreprise3 = new Paragraph(" MP3 - Clés USB , Laptops - Chageurs et Battéries d'origine", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 1));
+        entreprise3.setAlignment(1);
+        rapport.add(entreprise3);
+
+        Paragraph adresse = new Paragraph("Avénue Kennedy situé à coté de Score , face SOCAEPE , Tél : 242 80 93 79", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 2));
+        adresse.setAlignment(1);
+        rapport.add(adresse);
+
+        Paragraph adresse2 = new Paragraph(" Marché Salade Tél.: 242 80 93 79 / 650 03 97 89 , N°  Cont : PO48012330267K ", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 2));
+        adresse2.setAlignment(1);
+        rapport.add(adresse2);
+
+        rapport.add(new Paragraph(" ", new Font(Font.FontFamily.TIMES_ROMAN, 8F, 0)));
+
+        Paragraph titreParagrap = new Paragraph(titre, new Font(Font.FontFamily.TIMES_ROMAN, 14.0F, 5));
+        titreParagrap.setAlignment(1);
+        rapport.add(titreParagrap);
+    }
+
+    public static String printPeriodicRecetteReport(Date startDate, Date endDate, List<Recette> recettes, OperationModeType modeType) {
         String fileName = "";
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -525,101 +558,109 @@ public class PrintUtils {
             Document rapport = new Document();
             PdfWriter.getInstance(rapport, new FileOutputStream(Utilitaires.path + "/reports/periodique/" + fileName));
             rapport.open();
-            float[] widths = {0.4F, 2.5F, 1.0F, 1.0F, 2.0F};
-            PdfPTable table = new PdfPTable(widths);
-            table.setWidthPercentage(100.0F);
 
-            Paragraph entreprise = new Paragraph("ETS FIDO INTER", new Font(Font.FontFamily.TIMES_ROMAN, 14.0F, 1));
-            entreprise.setAlignment(1);
-            rapport.add(entreprise);
-
-            Paragraph entreprise1 = new Paragraph("Vente en gros et détail des Appareils Electroniques , Accessoires de télephone", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 1));
-            entreprise1.setAlignment(1);
-            rapport.add(entreprise1);
-
-            Paragraph entreprise2 = new Paragraph("Informatiques & divers Téléphones - Téléviseurs - Ecran plasma - DVD - Casque", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 1));
-            entreprise2.setAlignment(1);
-            rapport.add(entreprise2);
-
-            Paragraph entreprise3 = new Paragraph(" MP3 - Clés USB , Laptops - Chageurs et Battéries d'origine", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 1));
-            entreprise3.setAlignment(1);
-            rapport.add(entreprise3);
-
-            Paragraph adresse = new Paragraph("Avénue Kennedy situé à coté de Score , face SOCAEPE , Tél : 242 80 93 79", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 2));
-            adresse.setAlignment(1);
-            rapport.add(adresse);
-
-            Paragraph adresse2 = new Paragraph(" Marché Salade Tél.: 242 80 93 79 / 650 03 97 89 , N°  Cont : PO48012330267K ", new Font(Font.FontFamily.TIMES_ROMAN, 8.0F, 2));
-            adresse2.setAlignment(1);
-            rapport.add(adresse2);
-
-            rapport.add(new Paragraph(" "));
-
-            Paragraph titre = new Paragraph("RAPPORT D'ACTIVITES - RECETTES DES BOUTIQUES", new Font(Font.FontFamily.TIMES_ROMAN, 14.0F, 5));
-            titre.setAlignment(1);
-            rapport.add(titre);
+            entrePortrait(rapport, modeType.equals(OperationModeType.RECETTE) ? "RAPPORT D'ACTIVITE - RECETTES DES BOUTIQUES" : "RAPPORT D'ACTIVITE - DEPENSE");
 
             Paragraph periode = new Paragraph("PERIODE DU " + sdf.format(startDate) + " AU " + sdf.format(endDate), new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 6));
             periode.setAlignment(1);
             rapport.add(periode);
 
-            rapport.add(new Paragraph(" "));
+            rapport.add(new Paragraph(" ", new Font(Font.FontFamily.TIMES_ROMAN, 8F, 0)));
 
             Font font_12 = new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0);
 
-            table.addCell(createPdfPCell("N°", true, font_12));
-            table.addCell(createPdfPCell("Personne", true, font_12));
-            table.addCell(createPdfPCell("Montant versé", true, font_12));
-            table.addCell(createPdfPCell("Date", true, font_12));
-            table.addCell(createPdfPCell("Observation", true, font_12));
+            switch (modeType) {
+                case RECETTE: {
 
-            List<Boutique> boutiques = new ArrayList<>();
-            recettes.stream().forEach((Recette item) -> {
-                if (!boutiques.contains(item.getBoutique())) {
-                    boutiques.add(item.getBoutique());
+                    float[] widths = {0.4F, 2.5F, 1.0F, 1.0F, 2.0F};
+                    PdfPTable table = new PdfPTable(widths);
+                    table.setWidthPercentage(100.0F);
+
+                    table.addCell(createPdfPCell("N°", true, font_12));
+                    table.addCell(createPdfPCell("Personne", true, font_12));
+                    table.addCell(createPdfPCell("Montant versé", true, font_12));
+                    table.addCell(createPdfPCell("Date", true, font_12));
+                    table.addCell(createPdfPCell("Observation", true, font_12));
+
+                    List<Boutique> boutiques = new ArrayList<>();
+                    recettes.stream().forEach((Recette item) -> {
+                        if (!boutiques.contains(item.getBoutique())) {
+                            boutiques.add(item.getBoutique());
+                        }
+                    });
+
+                    Map<Integer, List<Recette>> map = new HashMap<>();
+
+                    boutiques.forEach(item -> {
+                        map.put(item.getIdBoutique(), extractRecette(item.getIdBoutique(), recettes));
+                    });
+
+                    Integer montantTotal = 0;
+
+                    for (Boutique c : boutiques) {
+                        if (!map.get(c.getIdBoutique()).isEmpty()) {
+                            table.addCell(createPdfPCell(c.getNom() + " / " + c.getCode(), 5, 1, font_12));
+
+                            List<Recette> var = map.get(c.getIdBoutique());
+
+                            Font font = new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0);
+
+                            var.forEach(item -> {
+                                table.addCell(createPdfPCell("" + (var.indexOf(item) + 1), 1, 2, font));
+                                table.addCell(createPdfPCell("" + item.getPersonnel().getNom() + " " + item.getPersonnel().getPrenom(), 1, 1, font));
+                                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(item.getMontant()), 1, 3, font));
+                                table.addCell(createPdfPCell("" + dateFormat.format(item.getDateOperation()), 1, 2, font));
+                                table.addCell(createPdfPCell(item.getObservation(), 1, 1, font));
+                            });
+
+                            Integer sommeBloc = sumRecette(var);
+                            montantTotal += sommeBloc;
+
+                            table.addCell(createPdfPCell("Total -  " + c.getCode(), 2, 1, font_12));
+                            table.addCell(createPdfPCell(" " + JsfUtil.formaterStringMoney(sommeBloc), 1, 3, font_12));
+                            table.addCell(createPdfPCell(" ", 2, 2, font_12));
+                        }
+                    }
+
+                    Font font = new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0);
+
+                    table.addCell(createPdfPCell("Grand Total ", 2, 1, font));
+                    table.addCell(createPdfPCell(" " + JsfUtil.formaterStringMoney(montantTotal), 1, 3, font));
+                    table.addCell(createPdfPCell(" ", 2, 2, font));
+
+                    rapport.add(table);
+                    break;
                 }
-            });
 
-            Map<Integer, List<Recette>> map = new HashMap<>();
+                case DEPENSE: {
 
-            boutiques.forEach(item -> {
-                map.put(item.getIdBoutique(), extractRecette(item.getIdBoutique(), recettes));
-            });
+                    float[] widths = {0.6F, 1.0F, 1.0F, 3.0F};
+                    PdfPTable table = new PdfPTable(widths);
+                    table.setWidthPercentage(100.0F);
 
-            Integer montantTotal = 0;
-
-            for (Boutique c : boutiques) {
-                if (!map.get(c.getIdBoutique()).isEmpty()) {
-                    table.addCell(createPdfPCell(c.getNom() + " / " + c.getCode(), 5, 1, font_12));
-
-                    List<Recette> var = map.get(c.getIdBoutique());
+                    table.addCell(createPdfPCell("N°", true, font_12));
+                    table.addCell(createPdfPCell("Montant versé", true, font_12));
+                    table.addCell(createPdfPCell("Date", true, font_12));
+                    table.addCell(createPdfPCell("Observation", true, font_12));
 
                     Font font = new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0);
-
-                    var.forEach(item -> {
-                        table.addCell(createPdfPCell("" + (var.indexOf(item) + 1), 1, 2, font));
-                        table.addCell(createPdfPCell("" + item.getPersonnel().getNom() + " " + item.getPersonnel().getPrenom(), 1, 1, font));
+                    int montantTotal = 0;
+                    recettes.forEach(item -> {
+                        table.addCell(createPdfPCell("" + (recettes.indexOf(item) + 1), 1, 2, font));
                         table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(item.getMontant()), 1, 3, font));
                         table.addCell(createPdfPCell("" + dateFormat.format(item.getDateOperation()), 1, 2, font));
                         table.addCell(createPdfPCell(item.getObservation(), 1, 1, font));
                     });
 
-                    Integer sommeBloc = sumRecette(var);
-                    montantTotal += sommeBloc;
+                    table.addCell(createPdfPCell("Total ", 1, 1, font));
+                    table.addCell(createPdfPCell(" " + JsfUtil.formaterStringMoney(recettes.stream().mapToInt(Recette::getMontant).sum()), 1, 3, font));
+                    table.addCell(createPdfPCell(" ", 2, 2, font));
 
-                    table.addCell(createPdfPCell("Total -  " + c.getCode(), 2, 1, font_12));
-                    table.addCell(createPdfPCell(" " + JsfUtil.formaterStringMoney(sommeBloc), 1, 3, font_12));
-                    table.addCell(createPdfPCell(" ", 2, 2, font_12));
+                    rapport.add(table);
+                    break;
                 }
             }
 
-            Font font = new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0);
-
-            table.addCell(createPdfPCell("Grand Total ", 2, 1, font));
-            table.addCell(createPdfPCell(" " + JsfUtil.formaterStringMoney(montantTotal), 1, 3, font));
-            table.addCell(createPdfPCell(" ", 2, 2, font));
-
-            rapport.add(table);
             rapport.close();
         } catch (DocumentException ex) {
             Logger.getLogger(utils.PrintUtils.class.getName()).log(Level.SEVERE, (String) null, (Throwable) ex);
