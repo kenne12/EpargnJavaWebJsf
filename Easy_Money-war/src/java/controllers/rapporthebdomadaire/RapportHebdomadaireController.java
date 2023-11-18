@@ -17,7 +17,7 @@ import utils.Solde;
 
 @ManagedBean
 @ViewScoped
-public class RapportHebdomadaireController extends AbstractRapportHebdomaireController implements Serializable{
+public class RapportHebdomadaireController extends AbstractRapportHebdomaireController implements Serializable {
 
     @PostConstruct
     private void init() {
@@ -43,13 +43,10 @@ public class RapportHebdomadaireController extends AbstractRapportHebdomaireCont
             this.anneeMois = this.anneeMoisFacadeLocal.find(this.anneeMois.getIdAnneeMois());
 
             for (Client c : this.clients) {
-                Solde solde = new Solde();
-                solde.setClient(c);
+                Solde solde = new Solde(c);
 
                 List<Versement> versements = this.versementFacadeLocal.find(c, this.anneeMois);
-                if (versements.isEmpty()) {
-                    solde.setMontantVerse(0);
-                } else {
+                if (!versements.isEmpty()) {
                     int montantverse = 0;
                     for (Versement v : versements) {
                         montantverse += v.getMontant();
@@ -58,10 +55,7 @@ public class RapportHebdomadaireController extends AbstractRapportHebdomaireCont
                 }
 
                 List<Retrait> retraits = this.retraitFacadeLocal.find(c, this.anneeMois);
-                if (retraits.isEmpty()) {
-                    solde.setMontantRetire(0);
-                    solde.setCommission(0);
-                } else {
+                if (!retraits.isEmpty()) {
                     int montantRetire = 0;
                     int commission = 0;
                     for (Retrait r : retraits) {
@@ -73,23 +67,21 @@ public class RapportHebdomadaireController extends AbstractRapportHebdomaireCont
                 }
 
                 List<FraisCarnet> fraisCarnets = this.fraisCarnetFacadeLocal.find(c, this.anneeMois);
-                if (fraisCarnets.isEmpty()) {
-                    solde.setCarnet(0);
-                } else {
+                if (!fraisCarnets.isEmpty()) {
                     int montantF = 0;
                     for (FraisCarnet f : fraisCarnets) {
                         montantF = (int) (montantF + f.getMontant());
                     }
-                    solde.setCarnet(montantF);
+                    solde.setFraisCarnet(montantF);
                 }
-                this.soldes.add(solde);
+                if (solde.getMontantVerse() > 0 || solde.getMontantRetire() > 0 || solde.getFraisCarnet() > 0) {
+                    this.soldes.add(solde);
+                }
+
             }
 
-            if (this.soldes.isEmpty()) {
-                this.showPrintButton = true;
-            } else {
-                this.showPrintButton = false;
-            }
+            this.showPrintButton = soldes.isEmpty();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,11 +89,10 @@ public class RapportHebdomadaireController extends AbstractRapportHebdomaireCont
 
     public void printReport() {
         try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1);
             if (p != null) {
                 this.showReportPrintDialog = true;
             } else {
-                p = new Privilege();
                 p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 17);
                 if (p != null) {
                     this.showReportPrintDialog = true;
@@ -121,32 +112,38 @@ public class RapportHebdomadaireController extends AbstractRapportHebdomaireCont
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = 0;
+        int totalVersement = 0;
         for (Solde s : this.soldes) {
-            resultat += s.getMontantVerse();
+            totalVersement += s.getMontantVerse();
         }
-        return JsfUtil.formaterStringMoney(resultat);
+        return JsfUtil.formaterStringMoney(totalVersement);
     }
 
     public String calculMontantRetire() {
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = 0;
+        int totalRetrait = 0;
         for (Solde s : this.soldes) {
-            resultat += s.getMontantRetire();
+            totalRetrait += s.getMontantRetire();
         }
-        return JsfUtil.formaterStringMoney(resultat);
+        return JsfUtil.formaterStringMoney(totalRetrait);
     }
-
-    public String calculSolde() {
+    
+    public String calculCommission() {
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = 0;
-        for (Solde s : this.soldes) {
-            resultat += s.getClient().getSolde();
+        int resultat = this.soldes.stream().mapToInt(line -> line.getCommission()).sum();
+        return JsfUtil.formaterStringMoney(resultat);
+    }
+    
+    
+    public String calculFraisCarnet() {
+        if (this.soldes.isEmpty()) {
+            return "";
         }
+        int resultat = this.soldes.stream().mapToInt(line -> line.getFraisCarnet()).sum();
         return JsfUtil.formaterStringMoney(resultat);
     }
 }

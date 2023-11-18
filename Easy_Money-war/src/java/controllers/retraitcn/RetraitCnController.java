@@ -195,6 +195,7 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
                 operation.setLibelle("Rétrait espèce : " + retrait.getIdclient().getPrenom());
 
                 Operation newOperation = operationService.saveOperation(operation);
+                System.err.println("operationId"+ operation.getIdOperation());
 
                 retrait.setIdretrait(retraitFacadeLocal.nextLongVal());
                 retrait.setIdOperation(newOperation.getIdOperation());
@@ -205,6 +206,8 @@ public class RetraitCnController extends AbstractRetraitCnController implements 
                 retrait.setIdmois(anneeMois);
                 retrait.setCommissionAuto(false);
                 retraitFacadeLocal.create(retrait);
+                
+                System.err.println("Retrait : "+retrait.getIdretrait());
 
                 utilService.updateCaisse((newOperation.getCommission() + newOperation.getMontant()), OperationType.DEBIT);
 

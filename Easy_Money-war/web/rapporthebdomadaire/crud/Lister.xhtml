@@ -71,7 +71,6 @@
                     </h:outputText>
                 </p:column>
 
-
                 <p:column style="text-align: center" filterBy="#{item.montantRetire}">
                     <f:facet name="header">
                         <h:outputText value="Montant Retiré"/>
@@ -80,35 +79,34 @@
                         <f:convertNumber/>
                     </h:outputText>
                 </p:column>
-
-                <p:column style="text-align: center">
+                
+                <p:column style="text-align: center" filterBy="#{item.commission}">
                     <f:facet name="header">
-                        <h:outputText value="F. Carnet"/>
+                        <h:outputText value="Commission"/>
                     </f:facet>
-                    <h:outputText value="#{item.carnet}">
+                    <h:outputText value="#{item.commission}">
                         <f:convertNumber/>
                     </h:outputText>
                 </p:column>
 
                 <p:column style="text-align: center">
                     <f:facet name="header">
-                        <h:outputText value="Solde"/>
+                        <h:outputText value="F. Carnet"/>
                     </f:facet>
-                    <h:outputText value="#{item.client.solde}">
+                    <h:outputText value="#{item.fraisCarnet}">
                         <f:convertNumber/>
                     </h:outputText>
                 </p:column>
 
                 <p:columnGroup type="footer">
                     <p:row>
-                        <p:column  style="text-align:right" footerText="Totaux" />
-                        <p:column  style="text-align: center" footerText="#{rapportHebdomadaireController.calculMontantVerse()}" />
+                        <p:column style="text-align:right" footerText="Totaux" />
+                        <p:column style="text-align: center" footerText="#{rapportHebdomadaireController.calculMontantVerse()}" />
                         <p:column style="text-align: center" footerText="#{rapportHebdomadaireController.calculMontantRetire()}" />
-                        <p:column style="text-align: center" footerText="--" />
-                        <p:column style="text-align: center" footerText="#{rapportHebdomadaireController.calculSolde()}" />
+                        <p:column style="text-align: center" footerText="#{rapportHebdomadaireController.calculCommission()}" />
+                        <p:column style="text-align: center" footerText="#{rapportHebdomadaireController.calculFraisCarnet()}" />
                     </p:row>
                 </p:columnGroup>
-
 
             </p:dataTable>
 

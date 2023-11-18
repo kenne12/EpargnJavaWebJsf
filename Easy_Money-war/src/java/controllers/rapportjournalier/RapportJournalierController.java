@@ -17,12 +17,12 @@ import utils.Solde;
 @ManagedBean
 @ViewScoped
 public class RapportJournalierController extends AbstractRapportJournalierController implements Serializable {
-    
+
     @PostConstruct
     private void init() {
         this.soldes.clear();
     }
-    
+
     public void updateDate() {
         try {
             if (this.anneeMois.getIdAnneeMois() != null) {
@@ -32,7 +32,7 @@ public class RapportJournalierController extends AbstractRapportJournalierContro
             e.printStackTrace();
         }
     }
-    
+
     public void filterMois() {
         try {
             if (this.annee.getIdannee() != null) {
@@ -42,66 +42,59 @@ public class RapportJournalierController extends AbstractRapportJournalierContro
             e.printStackTrace();
         }
     }
-    
+
     public void find() {
         this.soldes.clear();
         try {
-            if (!this.date.equals(null)) {
-                
+            if (this.date != null) {
+
                 this.clients = this.clientFacadeLocal.findAllRange(true);
-                
+
                 for (Client c : this.clients) {
                     Solde solde = new Solde();
                     solde.setClient(c);
-                    
+
                     List<Versement> versements = this.versementFacadeLocal.find(c, this.date);
-                    if (versements.isEmpty()) {
-                        solde.setMontantVerse(0);
-                    } else {
-                        int montantverse = 0;
+                    if (!versements.isEmpty()) {
+                        int totalVersement = 0;
                         for (Versement v : versements) {
-                            montantverse += v.getMontant();
+                            totalVersement += v.getMontant();
                         }
-                        solde.setMontantVerse(montantverse);
+                        solde.setMontantVerse(totalVersement);
                     }
-                    
+
                     List<Retrait> retraits = this.retraitFacadeLocal.find(c, this.date);
-                    if (retraits.isEmpty()) {
-                        solde.setMontantRetire(0);
-                        solde.setCommission(0);
-                    } else {
-                        int montantRetire = 0;
-                        int montantCommission = 0;
+                    if (!retraits.isEmpty()) {
+                        int totalRetrait = 0;
+                        int totalCommission = 0;
                         for (Retrait r : retraits) {
-                            montantRetire += r.getMontant();
-                            montantCommission += r.getCommission();
+                            totalRetrait += r.getMontant();
+                            totalCommission += r.getCommission();
                         }
-                        solde.setMontantRetire(montantRetire);
-                        solde.setCommission(montantCommission);
+                        solde.setMontantRetire(totalRetrait);
+                        solde.setCommission(totalCommission);
                     }
-                    
-                    solde.setCarnet(0);
-                    this.soldes.add(solde);
+
+                    solde.setFraisCarnet(0);
+
+                    if (solde.getMontantVerse() > 0 || solde.getMontantRetire() > 0 || solde.getFraisCarnet() > 0) {
+                        this.soldes.add(solde);
+                    }
                 }
-                
-                if (this.soldes.isEmpty()) {
-                    this.showPrintButton = true;
-                } else {
-                    this.showPrintButton = false;
-                }
+
+                this.showPrintButton = this.soldes.isEmpty();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     public void printReport() {
         try {
-            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur().intValue(), 1);
+            Privilege p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 1);
             if (p != null) {
                 this.showReportPrintDialog = true;
             } else {
-                p = new Privilege();
                 p = this.privilegeFacadeLocal.findByUser(SessionMBean.getUserAccount().getIdutilisateur(), 16);
                 if (p != null) {
                     this.showReportPrintDialog = true;
@@ -116,7 +109,7 @@ public class RapportJournalierController extends AbstractRapportJournalierContro
             e.printStackTrace();
         }
     }
-    
+
     public String calculMontantVerse() {
         if (this.soldes.isEmpty()) {
             return "";
@@ -127,7 +120,7 @@ public class RapportJournalierController extends AbstractRapportJournalierContro
         }
         return JsfUtil.formaterStringMoney(resultat);
     }
-    
+
     public String calculMontantRetire() {
         if (this.soldes.isEmpty()) {
             return "";
@@ -138,15 +131,22 @@ public class RapportJournalierController extends AbstractRapportJournalierContro
         }
         return JsfUtil.formaterStringMoney(resultat);
     }
+
     
-    public String calculSolde() {
+    public String calculCommission() {
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = 0;
-        for (Solde s : this.soldes) {
-            resultat += s.getClient().getSolde();
+        int resultat = this.soldes.stream().mapToInt(line -> line.getCommission()).sum();
+        return JsfUtil.formaterStringMoney(resultat);
+    }
+    
+    
+    public String calculFraisCarnet() {
+        if (this.soldes.isEmpty()) {
+            return "";
         }
+        int resultat = this.soldes.stream().mapToInt(line -> line.getFraisCarnet()).sum();
         return JsfUtil.formaterStringMoney(resultat);
     }
 }

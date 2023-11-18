@@ -80,12 +80,18 @@
                     <h:outputText value="#{item.montantRetire}"/>
                 </p:column>
 
-
-                <p:column style="text-align: center">
+                <p:column style="text-align: center" filterBy="#{item.commission}">
                     <f:facet name="header">
-                        <h:outputText value="Solde"/>
+                        <h:outputText value="Commission"/>
                     </f:facet>
-                    <h:outputText value="#{item.client.solde}"/>
+                    <h:outputText value="#{item.commission}"/>
+                </p:column>
+                
+                <p:column style="text-align: center" filterBy="#{item.fraisCarnet}">
+                    <f:facet name="header">
+                        <h:outputText value="F. Carnet"/>
+                    </f:facet>
+                    <h:outputText value="#{item.fraisCarnet}"/>
                 </p:column>
 
                 <p:columnGroup type="footer">
@@ -93,7 +99,8 @@
                         <p:column  style="text-align:right" footerText="Totaux" />
                         <p:column style="text-align: center" footerText="#{rapportJournalierController.calculMontantVerse()}" />
                         <p:column style="text-align: center" footerText="#{rapportJournalierController.calculMontantRetire()}" />
-                        <p:column style="text-align: center" footerText="#{rapportJournalierController.calculSolde()}" />
+                        <p:column style="text-align: center" footerText="#{rapportJournalierController.calculCommission()}" />
+                        <p:column style="text-align: center" footerText="#{rapportJournalierController.calculFraisCarnet()}" />
                     </p:row>
                 </p:columnGroup>
 

@@ -29,12 +29,12 @@
             </p:selectOneMenu>
 
             <p:outputLabel value="Date debut" for="date1"/>
-            <p:calendar mindate="#{rapportPeriodiqueController.anneeMois.dateDebut}" maxdate="#{rapportPeriodiqueController.anneeMois.dateFin}" id="date1" value="#{rapportPeriodiqueController.date}" navigator="true">
+            <p:calendar mindate="#{rapportPeriodiqueController.anneeMois.dateDebut}" maxdate="#{rapportPeriodiqueController.anneeMois.dateFin}" id="date1" value="#{rapportPeriodiqueController.startDate}" navigator="true">
                 <p:ajax  event="dateSelect" update="datalist,print" listener="#{rapportPeriodiqueController.find()}"/>
             </p:calendar>
             
             <p:outputLabel value="Date fin" for="date2"/>
-            <p:calendar mindate="#{rapportPeriodiqueController.anneeMois.dateDebut}" maxdate="#{rapportPeriodiqueController.anneeMois.dateFin}" id="date2" value="#{rapportPeriodiqueController.date1}" navigator="true">
+            <p:calendar mindate="#{rapportPeriodiqueController.anneeMois.dateDebut}" maxdate="#{rapportPeriodiqueController.anneeMois.dateFin}" id="date2" value="#{rapportPeriodiqueController.endDate}" navigator="true">
                 <p:ajax  event="dateSelect" update="datalist,print" listener="#{rapportPeriodiqueController.find()}"/>
             </p:calendar>
 
@@ -69,14 +69,12 @@
                     <h:outputText value="#{item.client.nom} #{item.client.prenom}"/>
                 </p:column>
 
-
                 <p:column style="text-align: center" filterBy="#{item.montantVerse}">
                     <f:facet name="header">
                         <h:outputText value="Montant versé"/>
                     </f:facet>
                     <h:outputText value="#{item.montantVerse}"/>
                 </p:column>
-
 
                 <p:column style="text-align: center" filterBy="#{item.montantRetire}">
                     <f:facet name="header">
@@ -85,19 +83,18 @@
                     <h:outputText value="#{item.montantRetire}"/>
                 </p:column>
                 
-                <p:column style="text-align: center" filterBy="#{item.carnet}">
+                <p:column style="text-align: center" filterBy="#{item.commission}">
+                    <f:facet name="header">
+                        <h:outputText value="Commission"/>
+                    </f:facet>
+                    <h:outputText value="#{item.commission}"/>
+                </p:column>
+                
+                <p:column style="text-align: center" filterBy="#{item.fraisCarnet}">
                     <f:facet name="header">
                         <h:outputText value="F. Carnet"/>
                     </f:facet>
-                    <h:outputText value="#{item.carnet}"/>
-                </p:column>
-
-
-                <p:column style="text-align: center">
-                    <f:facet name="header">
-                        <h:outputText value="Solde"/>
-                    </f:facet>
-                    <h:outputText value="#{item.client.solde}"/>
+                    <h:outputText value="#{item.fraisCarnet}"/>
                 </p:column>
 
                 <p:columnGroup type="footer">
@@ -105,8 +102,8 @@
                         <p:column  style="text-align:right" footerText="Totaux" />
                         <p:column style="text-align: center" footerText="#{rapportPeriodiqueController.calculMontantVerse()}" />
                         <p:column style="text-align: center" footerText="#{rapportPeriodiqueController.calculMontantRetire()}" />
-                        <p:column style="text-align: center" footerText="--" />
-                        <p:column style="text-align: center" footerText="#{rapportPeriodiqueController.calculSolde()}" />
+                        <p:column style="text-align: center" footerText="#{rapportPeriodiqueController.calculCommission()}" />
+                        <p:column style="text-align: center" footerText="#{rapportPeriodiqueController.calculFraisCarnet()}" />
                     </p:row>
                 </p:columnGroup>
 

@@ -46,8 +46,8 @@ public class AbstractRapportPeriodiqueController {
 
     protected List<Solde> soldes = new ArrayList<>();
 
-    protected Date date = new Date();
-    protected Date date1 = new Date();
+    protected Date startDate = new Date();
+    protected Date endDate = new Date();
 
     protected String fileName = "";
 
@@ -58,12 +58,12 @@ public class AbstractRapportPeriodiqueController {
         return this.soldes;
     }
 
-    public Date getDate() {
-        return this.date;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
     public boolean isShowPrintButton() {
@@ -111,11 +111,11 @@ public class AbstractRapportPeriodiqueController {
         this.annee = annee;
     }
 
-    public Date getDate1() {
-        return this.date1;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setDate1(Date date1) {
-        this.date1 = date1;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

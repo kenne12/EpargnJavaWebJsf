@@ -111,11 +111,7 @@ public class AbstractRapportHebdomaireController {
     }
 
     public List<Annee> getAnnees() {
-        try {
-            this.annees = this.anneeFacadeLocal.findByEtat(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.annees = this.anneeFacadeLocal.findByEtat(true);
         return this.annees;
     }
 

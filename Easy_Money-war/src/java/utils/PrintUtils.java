@@ -107,7 +107,7 @@ public class PrintUtils {
             Document rapport = new Document();
             PdfWriter.getInstance(rapport, new FileOutputStream(Utilitaires.path + "/reports/hebdomadaire/" + fileName));
             rapport.open();
-            float[] widths = {0.4F, 2.5F, 1.0F, 1.0F, 1.2F, 1.0F, 1.2F};
+            float[] widths = {0.5F, 2.7F, 1.2F, 1.2F, 1.2F, 1.2F};
             PdfPTable table = new PdfPTable(widths);
             table.setWidthPercentage(100.0F);
 
@@ -153,34 +153,32 @@ public class PrintUtils {
             table.addCell(createPdfPCell("Montant retiré", true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
             table.addCell(createPdfPCell("Commissions", true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
             table.addCell(createPdfPCell("F. Carnet", true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
-            table.addCell(createPdfPCell("Solde", true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
+            
 
-            int sommeVerse = 0;
-            int sommeRetire = 0;
+            int totalVersement = 0;
+            int totalRetrait = 0;
             int sommeCarnet = 0;
-            int sommeCommission = 0;
-            int solde = 0;
+            int totalFraisCartnet = 0;
+
             for (Solde s : soldes) {
-                sommeVerse += s.getMontantVerse();
-                sommeRetire += s.getMontantRetire();
-                sommeCommission += s.getCommission();
-                sommeCarnet += s.getCarnet();
-                solde += s.getClient().getSolde();
+                totalVersement += s.getMontantVerse();
+                totalRetrait += s.getMontantRetire();
+                totalFraisCartnet += s.getCommission();
+                sommeCarnet += s.getFraisCarnet();
+
                 table.addCell(createPdfPCell("" + s.getClient().getNumerocarnet(), true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
                 table.addCell(createPdfPCell("" + s.getClient().getNom() + " " + s.getClient().getPrenom(), false, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getMontantVerse()), true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getMontantRetire()), true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getCommission()) + "", true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
-                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getCarnet()) + "", true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
-                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getClient().getSolde()) + "", true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
+                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getFraisCarnet()) + "", true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
             }
 
             table.addCell(createPdfPCell("Totaux", 2, true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeVerse)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeRetire)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeCommission)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalVersement), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalRetrait), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalFraisCartnet), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
             table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeCarnet)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((solde)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
 
             rapport.add(table);
             rapport.close();
@@ -200,7 +198,7 @@ public class PrintUtils {
             Document rapport = new Document();
             PdfWriter.getInstance(rapport, new FileOutputStream(Utilitaires.path + "/reports/journalier/" + fileName));
             rapport.open();
-            float[] widths = {0.4F, 2.5F, 1.0F, 1.0F, 1.2F, 1.0F, 1.2F};
+            float[] widths = {0.5F, 2.7F, 1.2F, 1.2F, 1.2F, 1.2F};
             PdfPTable table = new PdfPTable(widths);
             table.setWidthPercentage(100.0F);
 
@@ -246,34 +244,30 @@ public class PrintUtils {
             table.addCell(createPdfPCell("Montant retiré", true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
             table.addCell(createPdfPCell("Commissions", true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
             table.addCell(createPdfPCell("F. Carnet", true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
-            table.addCell(createPdfPCell("Solde", true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
 
-            int sommeVerse = 0;
-            int sommeRetire = 0;
-            int sommeCarnet = 0;
-            int sommeCommission = 0;
-            int solde = 0;
+            int totalVersement = 0;
+            int totalRetrait = 0;
+            int totalFraisCarnet = 0;
+            int totalCommission = 0;
             for (Solde s : soldes) {
-                sommeVerse += s.getMontantVerse();
-                sommeRetire += s.getMontantRetire();
-                sommeCommission += s.getCommission();
-                sommeCarnet += s.getCarnet();
-                solde += s.getClient().getSolde();
+                totalVersement += s.getMontantVerse();
+                totalRetrait += s.getMontantRetire();
+                totalCommission += s.getCommission();
+                totalFraisCarnet += s.getFraisCarnet();
+
                 table.addCell(createPdfPCell("" + s.getClient().getNumerocarnet(), true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
                 table.addCell(createPdfPCell("" + s.getClient().getNom() + " " + s.getClient().getPrenom(), false, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getMontantVerse()), true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getMontantRetire()), true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getCommission()) + "", true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
-                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getCarnet()) + "", true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
-                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getClient().getSolde()) + "", true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
+                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getFraisCarnet()) + "", true, new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0)));
             }
 
             table.addCell(createPdfPCell("Totaux", 2, true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeVerse)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeRetire)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeCommission)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeCarnet)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((solde)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalVersement), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalRetrait), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalCommission), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalFraisCarnet), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
 
             rapport.add(table);
             rapport.close();
@@ -413,7 +407,7 @@ public class PrintUtils {
             Document rapport = new Document();
             PdfWriter.getInstance(rapport, new FileOutputStream(Utilitaires.path + "/reports/periodique/" + fileName));
             rapport.open();
-            float[] widths = {0.4F, 2.5F, 1.0F, 1.0F, 1.0F, 1.0F, 1.2F};
+            float[] widths = {0.5F, 2.7F, 1.2F, 1.2F, 1.2F, 1.2F};
             PdfPTable table = new PdfPTable(widths);
             table.setWidthPercentage(100.0F);
 
@@ -461,36 +455,32 @@ public class PrintUtils {
             table.addCell(createPdfPCell("Montant retiré", true, font_12));
             table.addCell(createPdfPCell("Commissions", true, font_12));
             table.addCell(createPdfPCell("F. Carnet", true, font_12));
-            table.addCell(createPdfPCell("Solde", true, font_12));
 
-            int sommeVerse = 0;
-            int sommeRetire = 0;
-            int sommeCarnet = 0;
-            int sommeCommission = 0;
-            int solde = 0;
+            int totalVersement = 0;
+            int totalRetrait = 0;
+            int totalFraisCarnet = 0;
+            int totalCommission = 0;
 
             Font font = new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0);
             for (Solde s : soldes) {
-                sommeVerse += s.getMontantVerse();
-                sommeRetire += s.getMontantRetire();
-                sommeCommission += s.getCommission();
-                sommeCarnet += s.getCarnet();
-                solde += s.getClient().getSolde();
+                totalVersement += s.getMontantVerse();
+                totalRetrait += s.getMontantRetire();
+                totalCommission += s.getCommission();
+                totalFraisCarnet += s.getFraisCarnet();
+              
                 table.addCell(createPdfPCell("" + s.getClient().getNumerocarnet(), true, font));
                 table.addCell(createPdfPCell("" + s.getClient().getNom() + " " + s.getClient().getPrenom(), false, font));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getMontantVerse()), true, font));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getMontantRetire()), true, font));
                 table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getCommission()) + "", true, font));
-                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getCarnet()) + "", true, font));
-                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getClient().getSolde()) + "", true, font));
+                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(s.getFraisCarnet()) + "", true, font));
             }
 
             table.addCell(createPdfPCell("Totaux", 2, true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeVerse)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeRetire)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeCommission)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((sommeCarnet)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((solde)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalVersement), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalRetrait), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalCommission), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(totalFraisCarnet), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
 
             rapport.add(table);
             rapport.close();
@@ -644,7 +634,6 @@ public class PrintUtils {
                     table.addCell(createPdfPCell("Observation", true, font_12));
 
                     Font font = new Font(Font.FontFamily.TIMES_ROMAN, 11.0F, 0);
-                    int montantTotal = 0;
                     recettes.forEach(item -> {
                         table.addCell(createPdfPCell("" + (recettes.indexOf(item) + 1), 1, 2, font));
                         table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(item.getMontant()), 1, 3, font));
@@ -659,6 +648,7 @@ public class PrintUtils {
                     rapport.add(table);
                     break;
                 }
+
             }
 
             rapport.close();
@@ -709,7 +699,7 @@ public class PrintUtils {
 
             rapport.add(new Paragraph(" "));
 
-            Paragraph titre = new Paragraph("LISTE DES CLIENTS", new Font(Font.FontFamily.TIMES_ROMAN, 14.0F, 5));
+            Paragraph titre = new Paragraph("LISTE DES CLIENTS 3", new Font(Font.FontFamily.TIMES_ROMAN, 14.0F, 5));
             titre.setAlignment(1);
             rapport.add(titre);
 
@@ -725,8 +715,8 @@ public class PrintUtils {
             table.addCell(createPdfPCell("Nom(s)", true, font_12));
             table.addCell(createPdfPCell("Prenom(s)", true, font_12));
             table.addCell(createPdfPCell("N° CNI", true, font_12));
-            table.addCell(createPdfPCell("CONTACT", true, font_12));
-            table.addCell(createPdfPCell("SOLDE", true, font_12));
+            table.addCell(createPdfPCell("Contact", true, font_12));
+            table.addCell(createPdfPCell("Solde", true, font_12));
 
             int solde = 0;
             for (Client c : clients) {
@@ -736,10 +726,11 @@ public class PrintUtils {
                 table.addCell(createPdfPCell("" + c.getPrenom(), true, font_12));
                 table.addCell(createPdfPCell("" + c.getCni(), true, font_12));
                 table.addCell(createPdfPCell("" + c.getContact() + "", true, font_12));
-                table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney(c.getSolde()) + "", true, font_12));
+                table.addCell(createPdfPCell(JsfUtil.formaterStringMoney(c.getSolde()), 1, 3, font_12));
             }
-            table.addCell(createPdfPCell("Liquidité en caisse : ", 4, true, font_12));
-            table.addCell(createPdfPCell("" + JsfUtil.formaterStringMoney((solde)), true, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
+            table.addCell(createPdfPCell("Total Solde", 5, 2, font_12));
+            
+            table.addCell(createPdfPCell(JsfUtil.formaterStringMoney(solde), 1, 3, new Font(Font.FontFamily.TIMES_ROMAN, 12.0F, 0, BaseColor.BLUE)));
 
             rapport.add(table);
             rapport.close();

@@ -46,60 +46,49 @@ public class RapportPeriodiqueController extends AbstractRapportPeriodiqueContro
     public void find() {
         this.soldes.clear();
         try {
-            if (!this.date.equals(null)) {
+            if (this.startDate != null) {
                 this.clients = this.clientFacadeLocal.findAllRange(true);
-                if (!this.date1.equals(null)) {
-                    if (this.date1.after(this.date)) {
+                if (this.endDate != null) {
+                    if (this.endDate.after(this.startDate)) {
                         for (Client c : this.clients) {
-                            Solde solde = new Solde();
-                            solde.setClient(c);
+                            Solde solde = new Solde(c);
 
-                            List<Versement> versements = this.versementFacadeLocal.find(c, this.date, this.date1);
-                            if (versements.isEmpty()) {
-                                solde.setMontantVerse(0);
-                            } else {
-                                int montantverse = 0;
+                            List<Versement> versements = this.versementFacadeLocal.find(c, this.startDate, this.endDate);
+                            if (!versements.isEmpty()) {
+                                int totalVersement = 0;
                                 for (Versement v : versements) {
-                                    montantverse += v.getMontant();
+                                    totalVersement += v.getMontant();
                                 }
-                                solde.setMontantVerse(montantverse);
+                                solde.setMontantVerse(totalVersement);
                             }
 
-                            List<Retrait> retraits = this.retraitFacadeLocal.find(c, this.date, this.date1);
-                            if (retraits.isEmpty()) {
-                                solde.setMontantRetire(0);
-                                solde.setCommission(0);
-                            } else {
-                                int montantRetire = 0;
-                                int montantCommission = 0;
+                            List<Retrait> retraits = this.retraitFacadeLocal.find(c, this.startDate, this.endDate);
+                            if (!retraits.isEmpty()) {
+                                int totalRetrait = 0;
+                                int totalCommission = 0;
                                 for (Retrait r : retraits) {
-                                    montantRetire += r.getMontant();
-                                    montantCommission += r.getCommission();
+                                    totalRetrait += r.getMontant();
+                                    totalCommission += r.getCommission();
                                 }
-                                solde.setMontantRetire((montantRetire));
-                                solde.setCommission((montantCommission));
+                                solde.setMontantRetire(totalRetrait);
+                                solde.setCommission(totalCommission);
                             }
 
-                            List<FraisCarnet> fraisCarnets = this.fraisCarnetFacadeLocal.find(c, this.date, this.date1);
-                            if (fraisCarnets.isEmpty()) {
-                                solde.setCarnet((0));
-                            } else {
-                                int montantF = 0;
+                            List<FraisCarnet> fraisCarnets = this.fraisCarnetFacadeLocal.find(c, this.startDate, this.endDate);
+                            if (!fraisCarnets.isEmpty()) {
+                                int totalCarnet = 0;
                                 for (FraisCarnet f : fraisCarnets) {
-                                    montantF = (int) (montantF + f.getMontant());
+                                    totalCarnet = (int) (totalCarnet + f.getMontant());
                                 }
-
-                                solde.setCarnet((montantF));
+                                solde.setFraisCarnet(totalCarnet);
                             }
 
-                            this.soldes.add(solde);
+                            if (solde.getMontantVerse() > 0 || solde.getMontantRetire() > 0 || solde.getFraisCarnet() > 0) {
+                                this.soldes.add(solde);
+                            }
                         }
 
-                        if (this.soldes.isEmpty()) {
-                            this.showPrintButton = true;
-                        } else {
-                            this.showPrintButton = false;
-                        }
+                        this.showPrintButton = this.soldes.isEmpty();
                     }
                 }
             }
@@ -121,7 +110,7 @@ public class RapportPeriodiqueController extends AbstractRapportPeriodiqueContro
                     return;
                 }
             }
-            this.fileName = PrintUtils.printDailylyReport(this.date, this.date1, this.soldes);
+            this.fileName = PrintUtils.printDailylyReport(this.startDate, this.endDate, this.soldes);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -131,7 +120,9 @@ public class RapportPeriodiqueController extends AbstractRapportPeriodiqueContro
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = this.soldes.stream().mapToInt(Solde::getMontantVerse).sum();
+        int resultat = this.soldes.stream()
+                .mapToInt(Solde::getMontantVerse)
+                .sum();
         return JsfUtil.formaterStringMoney(resultat);
     }
 
@@ -139,15 +130,28 @@ public class RapportPeriodiqueController extends AbstractRapportPeriodiqueContro
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = this.soldes.stream().mapToInt(Solde::getMontantRetire).sum();
+        int resultat = this.soldes.stream()
+                .mapToInt(Solde::getMontantRetire)
+                .sum();
         return JsfUtil.formaterStringMoney(resultat);
     }
 
-    public String calculSolde() {
+    public String calculCommission() {
         if (this.soldes.isEmpty()) {
             return "";
         }
-        int resultat = this.soldes.stream().mapToInt(line -> line.getClient().getSolde()).sum();
+        int resultat = this.soldes.stream()
+                .mapToInt(line -> line.getCommission())
+                .sum();
+        return JsfUtil.formaterStringMoney(resultat);
+    }
+    
+    
+    public String calculFraisCarnet() {
+        if (this.soldes.isEmpty()) {
+            return "";
+        }
+        int resultat = this.soldes.stream().mapToInt(line -> line.getFraisCarnet()).sum();
         return JsfUtil.formaterStringMoney(resultat);
     }
 }

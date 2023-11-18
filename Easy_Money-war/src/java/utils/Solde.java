@@ -7,17 +7,24 @@ public class Solde {
     private Client client;
     private Integer montantVerse;
     private Integer montantRetire;
-    private Integer carnet;
+    private Integer fraisCarnet;
     private Integer commission;
 
     public Solde() {
+        this.initAmounts();
+    }
+    
+    public Solde(Client client) {
+        this.client = client;
+        this.initAmounts();
     }
 
-    public Solde(Client client, Integer montantVerse, Integer montantRetire) {
+
+    /*public Solde(Client client, Integer montantVerse, Integer montantRetire) {
         this.client = client;
         this.montantVerse = montantVerse;
         this.montantRetire = montantRetire;
-    }
+    }*/
 
     public Client getClient() {
         return this.client;
@@ -43,13 +50,14 @@ public class Solde {
         this.montantRetire = montantRetire;
     }
 
-    public Integer getCarnet() {
-        return this.carnet;
+    public Integer getFraisCarnet() {
+        return fraisCarnet;
     }
 
-    public void setCarnet(Integer carnet) {
-        this.carnet = carnet;
+    public void setFraisCarnet(Integer fraisCarnet) {
+        this.fraisCarnet = fraisCarnet;
     }
+
 
     public Integer getCommission() {
         return this.commission;
@@ -57,5 +65,12 @@ public class Solde {
 
     public void setCommission(Integer commission) {
         this.commission = commission;
+    }
+    
+    private void initAmounts() {
+        this.fraisCarnet = 0;
+        this.montantVerse = 0;
+        this.montantRetire = 0;
+        this.commission = 0;
     }
 }
